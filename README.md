@@ -81,7 +81,7 @@ The `@nova-infra/electrobun-vite` package is linked to this GitHub repository th
 
 ### Install from GitHub Packages
 
-If you want the `@nova-infra` scope to resolve from GitHub Packages on this machine, run:
+Run this first to point the `@nova-infra` scope at GitHub Packages on this machine:
 
 ```bash
 npm config set @nova-infra:registry https://npm.pkg.github.com
