@@ -686,7 +686,7 @@ export function App() {
               <section className="rounded-[24px] border border-stone-900/10 bg-[rgba(255,251,245,0.86)] p-6" id="config">
                 <h2 className="m-0 text-2xl md:text-3xl">{activeCopy.configTitle}</h2>
                 <p className="mt-3 max-w-4xl text-sm leading-8 text-stone-600">{activeCopy.configIntro}</p>
-                <div className="mt-6 grid gap-4 lg:grid-cols-2">
+                <div className="mt-6 space-y-4">
                   {activeCopy.configBlocks.map((block) => (
                     <article
                       className={`rounded-[20px] border p-5 ${
@@ -716,7 +716,7 @@ export function App() {
               <section className="rounded-[24px] border border-stone-900/10 bg-[rgba(255,251,245,0.86)] p-6" id="packages">
                 <h2 className="m-0 text-2xl md:text-3xl">{activeCopy.packageTitle}</h2>
                 <p className="mt-3 max-w-4xl text-sm leading-8 text-stone-600">{activeCopy.packageIntro}</p>
-                <div className="mt-6 grid gap-4 lg:grid-cols-2">
+                <div className="mt-6 space-y-4">
                   {activeCopy.packageBlocks.map((block) => (
                     <article
                       className={`rounded-[20px] border p-5 ${
