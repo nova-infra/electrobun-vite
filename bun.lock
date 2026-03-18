@@ -47,10 +47,10 @@
     },
     "packages/electrobun-vite": {
       "name": "@nova-infra/electrobun-vite",
-      "version": "0.1.0",
+      "version": "0.1.8",
       "bin": {
-        "electrobun-vite": "./dist/electrobun-vite.js",
-        "create-electrobun": "./dist/create-electrobun.js",
+        "electrobun-vite": "./dist/bin/electrobun-vite.js",
+        "create-electrobun": "./dist/bin/create-electrobun.js",
       },
       "dependencies": {
         "cac": "^6.7.14",
@@ -71,6 +71,7 @@
         "react-dom": "19.2.4",
       },
       "devDependencies": {
+        "@nova-infra/electrobun-vite": "0.1.8",
         "@types/bun": "latest",
         "@types/react": "19.2.14",
         "@types/react-dom": "19.2.3",
