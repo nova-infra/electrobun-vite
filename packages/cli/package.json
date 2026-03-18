@@ -1,0 +1,29 @@
+{
+  "name": "@electrobun-vite/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "electrobun-vite": "./dist/electrobun-vite.js"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./dist --target node && bun build ./bin/electrobun-vite.ts --outfile ./dist/electrobun-vite.js --target bun && tsc -p tsconfig.build.json && chmod +x ./dist/electrobun-vite.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@electrobun-vite/core": "workspace:*",
+    "@electrobun-vite/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.9.3"
+  }
+}

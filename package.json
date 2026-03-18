@@ -1,0 +1,29 @@
+{
+  "name": "electrobun-vite",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "bun@1.3.10",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "templates/*"
+  ],
+  "scripts": {
+    "dev": "bun run --cwd templates/react-ts dev",
+    "dev:docs": "bun run --cwd apps/docs dev",
+    "info": "bun packages/cli/bin/electrobun-vite.ts info",
+    "new": "bun packages/create/bin/create-electrobun-vite.ts",
+    "build": "bun run build:packages && bun run build:template && bun run build:docs",
+    "build:packages": "bun run --cwd packages/shared build && bun run --cwd packages/core build && bun run --cwd packages/cli build && bun run --cwd packages/create build",
+    "build:template": "bun run --cwd templates/react-ts build",
+    "build:docs": "bun run --cwd apps/docs build",
+    "typecheck": "bun run typecheck:packages && bun run typecheck:template && bun run typecheck:docs",
+    "typecheck:packages": "bun run --cwd packages/shared typecheck && bun run --cwd packages/core typecheck && bun run --cwd packages/cli typecheck && bun run --cwd packages/create typecheck",
+    "typecheck:template": "bun run --cwd templates/react-ts typecheck",
+    "typecheck:docs": "bun run --cwd apps/docs typecheck"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.9.3"
+  }
+}
