@@ -99,7 +99,7 @@ bun add @nova-infra/electrobun-vite
 | `bun run dev:template` | 以模板项目启动开发 |
 | `bun run dev:docs` | 启动文档站点 |
 | `bun run new -- <name>` | 脚手架生成新项目（调用 create-electrobun） |
-| `bun run update` | 在已有项目里刷新模板管理的依赖版本 |
+| `bun run update` | 在已有项目里刷新模板管理的依赖版本并迁移旧脚本 |
 | `bun run build` | 构建 demo + 模板 |
 | `bun run build:docs` | 构建文档站 |
 | `bun run typecheck` | 类型检查 |
@@ -112,7 +112,7 @@ bun add @nova-infra/electrobun-vite
 - **`electrobun-vite build [root]`** — 构建 renderer 并交给 Electrobun 打包。
 - **`electrobun-vite preview [root]`** — 用生产资源启动桌面应用；`--skipBuild` 跳过构建。
 - **`electrobun-vite info [root]`** — 输出解析后的配置与版本信息。
-- **`electrobun-vite update [root]`** — 刷新已有项目里的模板依赖版本，并执行 `bun install`。
+- **`electrobun-vite update [root]`** — 刷新已有项目里的模板依赖版本、迁移旧脚本，并执行 `bun install`。
 - **`create-electrobun <projectName>`** — 创建新项目（当前模板：react-ts）。省略 `<projectName>` 或传 `.` 都会在当前目录生成；如果目录不为空，会先确认，除非你加上 `--force`。
 
 常用全局参数：`-c, --config`、`-l, --logLevel`、`--clearScreen`、`-m, --mode`、`-w, --watch`、`--outDir`。

@@ -1,30 +1,75 @@
 import { existsSync } from "node:fs";
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, rm, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import colors from "picocolors";
-import { starterDependencyVersions } from "./metadata";
+import { PACKAGE_VERSION, starterDependencyVersions } from "./metadata";
 import { createToolLogger } from "./logger";
 
 type PackageJson = {
+  scripts?: Record<string, string>;
   dependencies?: Record<string, string>;
   devDependencies?: Record<string, string>;
 };
 
-const updateDependencySection = (section: Record<string, string> | undefined) => {
-  const changed: Array<{ name: string; from: string; to: string }> = [];
-  if (!section) {
-    return changed;
+type ManagedDependency = {
+  name: string;
+  version: string;
+  section: "dependencies" | "devDependencies";
+};
+
+const managedDependencies: ManagedDependency[] = [
+  { name: "@nova-infra/electrobun-vite", version: PACKAGE_VERSION, section: "devDependencies" },
+  { name: "electrobun", version: starterDependencyVersions.electrobun, section: "dependencies" },
+  { name: "react", version: starterDependencyVersions.react, section: "dependencies" },
+  { name: "react-dom", version: starterDependencyVersions["react-dom"], section: "dependencies" },
+  { name: "vite", version: starterDependencyVersions.vite, section: "devDependencies" },
+  { name: "@vitejs/plugin-react", version: starterDependencyVersions["@vitejs/plugin-react"], section: "devDependencies" },
+  { name: "typescript", version: starterDependencyVersions.typescript, section: "devDependencies" },
+  { name: "@types/bun", version: starterDependencyVersions["@types/bun"], section: "devDependencies" },
+  { name: "@types/react", version: starterDependencyVersions["@types/react"], section: "devDependencies" },
+  { name: "@types/react-dom", version: starterDependencyVersions["@types/react-dom"], section: "devDependencies" },
+];
+
+const ensureManagedDependency = (
+  packageJson: PackageJson,
+  { name, version, section }: ManagedDependency,
+) => {
+  const dependencies = packageJson.dependencies ?? {};
+  const devDependencies = packageJson.devDependencies ?? {};
+  const targetSection = section === "dependencies" ? dependencies : devDependencies;
+  const otherSection = section === "dependencies" ? devDependencies : dependencies;
+  const currentVersion = targetSection[name] ?? otherSection[name];
+
+  if (currentVersion === version && targetSection[name] === version && !(name in otherSection)) {
+    return null;
   }
 
-  for (const [name, version] of Object.entries(starterDependencyVersions)) {
-    const currentVersion = section[name];
-    if (currentVersion && currentVersion !== version) {
-      section[name] = version;
-      changed.push({ name, from: currentVersion, to: version });
+  delete otherSection[name];
+  targetSection[name] = version;
+  packageJson.dependencies = dependencies;
+  packageJson.devDependencies = devDependencies;
+
+  return currentVersion ? { name, from: currentVersion, to: version } : { name, from: "(missing)", to: version };
+};
+
+const updateDependencySections = (packageJson: PackageJson) => {
+  const changed: Array<{ name: string; from: string; to: string }> = [];
+
+  for (const dependency of managedDependencies) {
+    const change = ensureManagedDependency(packageJson, dependency);
+    if (change) {
+      changed.push(change);
     }
   }
 
   return changed;
+};
+
+const desiredScripts = {
+  dev: "electrobun-vite",
+  build: "electrobun-vite build",
+  preview: "electrobun-vite preview",
+  update: "electrobun-vite update",
 };
 
 export type UpdateProjectOptions = {
@@ -40,32 +85,61 @@ export const updateProject = async ({ cwd = process.cwd() }: UpdateProjectOption
   }
 
   const packageJson = JSON.parse(await readFile(packageJsonPath, "utf8")) as PackageJson;
-  const dependencyChanges = updateDependencySection(packageJson.dependencies);
-  const devDependencyChanges = updateDependencySection(packageJson.devDependencies);
-  const allChanges = [...dependencyChanges, ...devDependencyChanges];
+  const dependencyChanges = updateDependencySections(packageJson);
+  const scripts = packageJson.scripts ?? {};
+  const scriptChanges: Array<{ name: string; from: string; to: string }> = [];
+
+  for (const [name, command] of Object.entries(desiredScripts)) {
+    if (scripts[name] !== command) {
+      scriptChanges.push({
+        name: `scripts.${name}`,
+        from: scripts[name] ?? "(missing)",
+        to: command,
+      });
+      scripts[name] = command;
+    }
+  }
+
+  packageJson.scripts = scripts;
+
+  const allChanges = [...dependencyChanges, ...scriptChanges];
 
   if (allChanges.length === 0) {
-    logger.info("No template dependency updates were needed.");
+    logger.info("No template project updates were needed.");
     return { changed: false, changes: [] as Array<{ name: string; from: string; to: string }> };
   }
 
   await writeFile(packageJsonPath, `${JSON.stringify(packageJson, null, 2)}\n`);
 
-  logger.output(colors.cyan("updated dependency versions:"));
+  for (const helperFile of [
+    "scripts/dev.ts",
+    "scripts/build.ts",
+    "scripts/preview.ts",
+    "scripts/electrobun-vite.ts",
+  ]) {
+    const helperPath = resolve(cwd, helperFile);
+    if (existsSync(helperPath)) {
+      await rm(helperPath, { force: true });
+    }
+  }
+
+  logger.output(colors.cyan("updated template project files:"));
   for (const change of allChanges) {
     logger.output(colors.dim(`  ${change.name}: ${change.from} -> ${change.to}`));
   }
 
-  logger.output(colors.cyan("running bun install to refresh the lockfile..."));
-  const install = Bun.spawn(["bun", "install"], {
-    cwd,
-    stdin: "inherit",
-    stdout: "inherit",
-    stderr: "inherit",
-  });
-  const exitCode = await install.exited;
-  if (exitCode !== 0) {
-    throw new Error(`bun install failed with exit code ${exitCode}`);
+  if (dependencyChanges.length > 0) {
+    logger.output(colors.cyan("running bun install to refresh the lockfile..."));
+    const install = Bun.spawn(["bun", "install"], {
+      cwd,
+      stdin: "inherit",
+      stdout: "inherit",
+      stderr: "inherit",
+    });
+    const exitCode = await install.exited;
+    if (exitCode !== 0) {
+      throw new Error(`bun install failed with exit code ${exitCode}`);
+    }
   }
 
   return { changed: true, changes: allChanges };

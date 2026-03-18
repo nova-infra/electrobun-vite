@@ -23,6 +23,7 @@ export const starterVersions = {
 } as const;
 
 export const starterDependencyVersions = {
+  "@nova-infra/electrobun-vite": PACKAGE_VERSION,
   electrobun: starterVersions.electrobun,
   react: starterVersions.react,
   "react-dom": starterVersions.reactDom,

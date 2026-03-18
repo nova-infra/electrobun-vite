@@ -3,10 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "bun run scripts/dev.ts",
-    "build": "bun run scripts/build.ts",
-    "preview": "bun run scripts/preview.ts",
-    "update": "bunx -p @nova-infra/electrobun-vite update",
+    "dev": "electrobun-vite",
+    "build": "electrobun-vite build",
+    "preview": "electrobun-vite preview",
+    "update": "electrobun-vite update",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -15,6 +15,7 @@
     "react-dom": "19.2.4"
   },
   "devDependencies": {
+    "@nova-infra/electrobun-vite": "0.1.7",
     "@types/bun": "latest",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",

@@ -38,6 +38,7 @@ bun run update
 bun run typecheck
 ```
 
+The `package.json` scripts call `electrobun-vite` directly, so no local wrapper script is needed.
 `bun run dev` will generate the initial `dist` output once, then keep Electrobun in watch mode with the Vite dev server.
 `bun run update` refreshes the template-managed dependency versions and then runs `bun install`.
 
@@ -60,7 +61,7 @@ Both forms target the current directory; if it is not empty, the CLI will ask yo
 - [src/ui/main.tsx](src/ui/main.tsx): React bootstrap
 - [src/ui/App.tsx](src/ui/App.tsx): starter UI
 - [electrobun.vite.config.ts](electrobun.vite.config.ts): the only top-level config file
-- [scripts/electrobun-vite.ts](scripts/electrobun-vite.ts): local dev/build/preview orchestrator for generated projects
+- `package.json` scripts: direct `electrobun-vite` entry points for dev/build/preview/update
 
 ## Extending the starter
 

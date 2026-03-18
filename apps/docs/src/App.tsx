@@ -251,9 +251,9 @@ export function App() {
           {
             title: "更新",
             command: "electrobun-vite update [root]",
-            description: "刷新已有项目里的模板管理依赖版本，然后执行 bun install。",
+            description: "刷新已有项目里的模板管理依赖版本、迁移旧脚本，然后执行 bun install。",
             details: [
-              "适合项目已经创建过、但你想和当前 starter 版本对齐的时候。",
+              "适合项目已经创建过、但你想和当前 starter 版本对齐并清理旧脚本入口的时候。",
               "`[root]` 可选，默认当前目录。",
             ],
           },
@@ -404,9 +404,9 @@ export function App() {
           {
             title: "Update",
             command: "electrobun-vite update [root]",
-            description: "Refresh template-managed dependency versions in an existing project, then run bun install.",
+            description: "Refresh template-managed dependency versions, migrate old scripts, and then run bun install.",
             details: [
-              "Use this when a project was created earlier and you want it aligned with the current starter versions.",
+              "Use this when a project was created earlier and you want it aligned with the current starter versions and script layout.",
               "`[root]` is optional and defaults to the current directory.",
             ],
           },
