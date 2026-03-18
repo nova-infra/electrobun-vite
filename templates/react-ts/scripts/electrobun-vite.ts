@@ -30,6 +30,27 @@ const cwd = process.cwd();
 const configPath = join(cwd, "electrobun.vite.config.ts");
 const generatedElectrobunConfigPath = join(cwd, "electrobun.config.ts");
 
+const ANSI = {
+  reset: "\x1b[0m",
+  bold: "\x1b[1m",
+  yellow: "\x1b[33m",
+  magenta: "\x1b[35m",
+} as const;
+
+const color = (value: string, code: keyof typeof ANSI) => `${ANSI.bold}${ANSI[code]}${value}${ANSI.reset}`;
+
+const formatLogPrefix = (prefix: string) => {
+  if (prefix === "electrobun-build") {
+    return color(prefix, "magenta");
+  }
+
+  if (prefix === "electrobun-dev" || prefix === "electrobun-preview") {
+    return color(prefix, "yellow");
+  }
+
+  return `${ANSI.bold}${prefix}${ANSI.reset}`;
+};
+
 const serialize = (value: Serializable): string => {
   if (value === null) return "null";
   if (typeof value === "string") return JSON.stringify(value);
@@ -105,10 +126,10 @@ const pipeSubprocessLogs = async (child: StreamedProcess, prefix: string) => {
 
   await Promise.all([
     readLines(child.stdout, (line) => {
-      console.log(`[${prefix}] ${line}`);
+      console.log(`${formatLogPrefix(prefix)} ${line}`);
     }),
     readLines(child.stderr, (line) => {
-      console.error(`[${prefix}] ${line}`);
+      console.error(`${formatLogPrefix(prefix)} ${line}`);
     }),
   ]);
 };
