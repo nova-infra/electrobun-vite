@@ -10,6 +10,37 @@
 
 ---
 
+## GitHub Packages
+
+`@nova-infra/electrobun-vite` 已通过 `repository` 元数据关联到这个 GitHub 仓库，并且 `publishConfig` 现在默认指向 GitHub Packages。发布流程见 [`.github/workflows/publish-package.yml`](.github/workflows/publish-package.yml)，只会在 push `packages/electrobun-vite-v*` tag 时触发。
+
+### 从 GitHub Packages 安装
+
+先执行这条命令，把这台机器上的 `@nova-infra` 作用域切到 GitHub Packages：
+
+```bash
+npm config set @nova-infra:registry https://npm.pkg.github.com
+```
+
+然后再在项目级 `.npmrc` 里加入认证信息：
+
+```ini
+@nova-infra:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=YOUR_TOKEN
+```
+
+然后按常规方式安装即可：
+
+```bash
+npm install @nova-infra/electrobun-vite
+# 或
+bun add @nova-infra/electrobun-vite
+```
+
+如果包在你的环境里是公开可用的，token 行有时可以省略，但作用域 registry 映射是关键。
+
+---
+
 ## Quick Start
 
 1. **创建项目**
@@ -74,37 +105,6 @@
 - **`create-electrobun <projectName>`** — 创建新项目（当前模板：react-ts）。省略 `<projectName>` 或传 `.` 都会在空的当前目录生成。
 
 常用全局参数：`-c, --config`、`-l, --logLevel`、`--clearScreen`、`-m, --mode`、`-w, --watch`、`--outDir`。
-
-## GitHub Packages
-
-`@nova-infra/electrobun-vite` 已通过 `repository` 元数据关联到这个 GitHub 仓库，并且 `publishConfig` 现在默认指向 GitHub Packages。发布流程见 [`.github/workflows/publish-package.yml`](.github/workflows/publish-package.yml)，只会在 push `packages/electrobun-vite-v*` tag 时触发。
-
-### 从 GitHub Packages 安装
-
-先执行这条命令，把这台机器上的 `@nova-infra` 作用域切到 GitHub Packages：
-
-```bash
-npm config set @nova-infra:registry https://npm.pkg.github.com
-```
-
-然后再在项目级 `.npmrc` 里加入认证信息：
-
-```ini
-@nova-infra:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=YOUR_TOKEN
-```
-
-然后按常规方式安装即可：
-
-```bash
-npm install @nova-infra/electrobun-vite
-# 或
-bun add @nova-infra/electrobun-vite
-```
-
-如果包在你的环境里是公开可用的，token 行有时可以省略，但作用域 registry 映射是关键。
-
----
 
 ## 仓库结构
 

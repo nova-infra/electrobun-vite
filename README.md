@@ -10,6 +10,37 @@ Shortest path to first run: single config, Quick Start, and a react-ts template 
 
 ---
 
+## GitHub Packages
+
+The `@nova-infra/electrobun-vite` package is linked to this GitHub repository through its `repository` metadata. Its `publishConfig` now targets GitHub Packages, and the publish workflow in [`.github/workflows/publish-package.yml`](.github/workflows/publish-package.yml) is tag-only: push a `packages/electrobun-vite-v*` tag to publish.
+
+### Install from GitHub Packages
+
+Run this first to point the `@nova-infra` scope at GitHub Packages on this machine:
+
+```bash
+npm config set @nova-infra:registry https://npm.pkg.github.com
+```
+
+Then add this to your project-level `.npmrc` for auth:
+
+```ini
+@nova-infra:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=YOUR_TOKEN
+```
+
+Then install the package as usual:
+
+```bash
+npm install @nova-infra/electrobun-vite
+# or
+bun add @nova-infra/electrobun-vite
+```
+
+If the package is public in your environment, the token line may still be useful for GitHub rate limits or private repo access, but the scoped registry entry is the important part.
+
+---
+
 ## Quick Start
 
 1. **Scaffold a project**
@@ -74,37 +105,6 @@ Shortest path to first run: single config, Quick Start, and a react-ts template 
 - **`create-electrobun <projectName>`** — Create a new project (current template: react-ts). Omit `<projectName>` or pass `.` to scaffold into an empty current directory.
 
 Common flags: `-c, --config`, `-l, --logLevel`, `--clearScreen`, `-m, --mode`, `-w, --watch`, `--outDir`.
-
-## GitHub Packages
-
-The `@nova-infra/electrobun-vite` package is linked to this GitHub repository through its `repository` metadata. Its `publishConfig` now targets GitHub Packages, and the publish workflow in [`.github/workflows/publish-package.yml`](.github/workflows/publish-package.yml) is tag-only: push a `packages/electrobun-vite-v*` tag to publish.
-
-### Install from GitHub Packages
-
-Run this first to point the `@nova-infra` scope at GitHub Packages on this machine:
-
-```bash
-npm config set @nova-infra:registry https://npm.pkg.github.com
-```
-
-Then add this to your project-level `.npmrc` for auth:
-
-```ini
-@nova-infra:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=YOUR_TOKEN
-```
-
-Then install the package as usual:
-
-```bash
-npm install @nova-infra/electrobun-vite
-# or
-bun add @nova-infra/electrobun-vite
-```
-
-If the package is public in your environment, the token line may still be useful for GitHub rate limits or private repo access, but the scoped registry entry is the important part.
-
----
 
 ## Repo structure
 

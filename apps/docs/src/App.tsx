@@ -132,11 +132,54 @@ export function App() {
         electrobunRepoLink: "Electrobun",
         badges: ["Quick Start", "单配置", "react-ts 模板", "CLI 参数说明"],
         sections: [
+          { id: "packages", label: "Packages", summary: "GitHub Packages 发布与安装方式。" },
           { id: "quickstart", label: "Quick Start", summary: "从创建项目到 build / preview 的最短路径。" },
           { id: "cli", label: "CLI", summary: "每个命令做什么，以及参数分别影响哪里。" },
           { id: "config", label: "Config", summary: "围绕一个 electrobun.vite.config.ts 工作。" },
-          { id: "packages", label: "Packages", summary: "GitHub Packages 发布与安装方式。" },
           { id: "faq", label: "FAQ", summary: "保留两个最常见的问题，避免页面继续膨胀。" },
+        ],
+        configTitle: "Config",
+        configIntro:
+          "项目层继续围绕一个 `electrobun.vite.config.ts` 工作，把 renderer 和 Electrobun 相关配置放在同一个入口里看清楚。",
+        configBlocks: [
+          {
+            title: "推荐结构",
+            body: "如果你是第一次接入 electrobun-vite，先从这个结构开始，不必急着拆成多份配置。",
+            code: recommendedConfigCode,
+            tone: "accent",
+          },
+          {
+            title: "重点字段",
+            body: "先理解下面几个字段，基本就能覆盖大部分上手场景。",
+            bullets: [
+              "`renderer.vite`：直接内联 Vite 配置。",
+              "`electrobun.outDir`：renderer 和桌面打包共用的产物目录。",
+              "`electrobun.config`：集中声明 app / build / copy 信息。",
+            ],
+          },
+        ],
+        packageTitle: "Packages",
+        packageIntro:
+          "包已经关联到这个 GitHub 仓库，并默认发布到 GitHub Packages。下面是安装时需要的最小配置。",
+        packageBlocks: [
+          {
+            title: "全局 registry",
+            body: "先把 `@nova-infra` 作用域在这台机器上指向 GitHub Packages。",
+            code: `npm config set @nova-infra:registry https://npm.pkg.github.com`,
+          },
+          {
+            title: "项目级 .npmrc",
+            body: "再在项目里写入认证信息，确保安装时能通过 GitHub Packages 读取包。",
+            code: `@nova-infra:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=YOUR_TOKEN`,
+          },
+          {
+            title: "安装命令",
+            body: "然后按常规方式安装即可。Bun 和 npm 都可以直接使用同一个包名。",
+            bullets: [
+              "npm install @nova-infra/electrobun-vite",
+              "bun add @nova-infra/electrobun-vite",
+            ],
+          },
         ],
         quickStartTitle: "Quick Start",
         quickStartIntro:
@@ -246,49 +289,6 @@ export function App() {
               { flag: "--rendererOnly", effect: "仅用于 `dev`，只启动 Vite renderer，不拉起 Electrobun shell。" },
               { flag: "--skipBuild", effect: "仅用于 `preview`，跳过预构建，直接使用现有产物。" },
               { flag: "-t, --template <template>", effect: "仅用于 `create`，选择模板；当前只支持 `react-ts`。" },
-            ],
-          },
-        ],
-        configTitle: "Config",
-        configIntro:
-          "项目层继续围绕一个 `electrobun.vite.config.ts` 工作，把 renderer 和 Electrobun 相关配置放在同一个入口里看清楚。",
-        configBlocks: [
-          {
-            title: "推荐结构",
-            body: "如果你是第一次接入 electrobun-vite，先从这个结构开始，不必急着拆成多份配置。",
-            code: recommendedConfigCode,
-            tone: "accent",
-          },
-          {
-            title: "重点字段",
-            body: "先理解下面几个字段，基本就能覆盖大部分上手场景。",
-            bullets: [
-              "`renderer.vite`：直接内联 Vite 配置。",
-              "`electrobun.outDir`：renderer 和桌面打包共用的产物目录。",
-              "`electrobun.config`：集中声明 app / build / copy 信息。",
-            ],
-          },
-        ],
-        packageTitle: "Packages",
-        packageIntro:
-          "包已经关联到这个 GitHub 仓库，并默认发布到 GitHub Packages。下面是安装时需要的最小配置。",
-        packageBlocks: [
-          {
-            title: "全局 registry",
-            body: "先把 `@nova-infra` 作用域在这台机器上指向 GitHub Packages。",
-            code: `npm config set @nova-infra:registry https://npm.pkg.github.com`,
-          },
-          {
-            title: "项目级 .npmrc",
-            body: "再在项目里写入认证信息，确保安装时能通过 GitHub Packages 读取包。",
-            code: `@nova-infra:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=YOUR_TOKEN`,
-          },
-          {
-            title: "安装命令",
-            body: "然后按常规方式安装即可。Bun 和 npm 都可以直接使用同一个包名。",
-            bullets: [
-              "npm install @nova-infra/electrobun-vite",
-              "bun add @nova-infra/electrobun-vite",
             ],
           },
         ],
@@ -627,6 +627,36 @@ export function App() {
             </aside>
 
             <div className="space-y-6">
+              <section className="rounded-[24px] border border-stone-900/10 bg-[rgba(255,251,245,0.86)] p-6" id="packages">
+                <h2 className="m-0 text-2xl md:text-3xl">{activeCopy.packageTitle}</h2>
+                <p className="mt-3 max-w-4xl text-sm leading-8 text-stone-600">{activeCopy.packageIntro}</p>
+                <div className="mt-6 space-y-4">
+                  {activeCopy.packageBlocks.map((block) => (
+                    <article
+                      className={`rounded-[20px] border p-5 ${
+                        block.tone === "accent"
+                          ? "border-teal-700/12 bg-[linear-gradient(135deg,rgba(221,245,239,0.92),rgba(255,251,245,0.94))]"
+                          : "border-stone-900/10 bg-white/80"
+                      }`}
+                      key={block.title}
+                    >
+                      <h3 className="m-0 text-lg text-stone-950">{block.title}</h3>
+                      <p className="mt-3 text-sm leading-7 text-stone-600">{block.body}</p>
+                      {block.bullets ? (
+                        <ul className="mt-4 space-y-2 pl-5 text-sm leading-7 text-stone-700">
+                          {block.bullets.map((item) => (
+                            <li key={item}>{item}</li>
+                          ))}
+                        </ul>
+                      ) : null}
+                      {block.code ? (
+                        <pre className="mt-4 overflow-x-auto rounded-[18px] bg-stone-950 p-4 text-sm leading-7 text-stone-100"><code>{block.code}</code></pre>
+                      ) : null}
+                    </article>
+                  ))}
+                </div>
+              </section>
+
               <section className="rounded-[24px] border border-stone-900/10 bg-[rgba(255,251,245,0.86)] p-6" id="quickstart">
                 <h2 className="m-0 text-2xl md:text-3xl">{activeCopy.quickStartTitle}</h2>
                 <p className="mt-3 max-w-4xl text-sm leading-8 text-stone-600">{activeCopy.quickStartIntro}</p>
@@ -688,36 +718,6 @@ export function App() {
                 <p className="mt-3 max-w-4xl text-sm leading-8 text-stone-600">{activeCopy.configIntro}</p>
                 <div className="mt-6 space-y-4">
                   {activeCopy.configBlocks.map((block) => (
-                    <article
-                      className={`rounded-[20px] border p-5 ${
-                        block.tone === "accent"
-                          ? "border-teal-700/12 bg-[linear-gradient(135deg,rgba(221,245,239,0.92),rgba(255,251,245,0.94))]"
-                          : "border-stone-900/10 bg-white/80"
-                      }`}
-                      key={block.title}
-                    >
-                      <h3 className="m-0 text-lg text-stone-950">{block.title}</h3>
-                      <p className="mt-3 text-sm leading-7 text-stone-600">{block.body}</p>
-                      {block.bullets ? (
-                        <ul className="mt-4 space-y-2 pl-5 text-sm leading-7 text-stone-700">
-                          {block.bullets.map((item) => (
-                            <li key={item}>{item}</li>
-                          ))}
-                        </ul>
-                      ) : null}
-                      {block.code ? (
-                        <pre className="mt-4 overflow-x-auto rounded-[18px] bg-stone-950 p-4 text-sm leading-7 text-stone-100"><code>{block.code}</code></pre>
-                      ) : null}
-                    </article>
-                  ))}
-                </div>
-              </section>
-
-              <section className="rounded-[24px] border border-stone-900/10 bg-[rgba(255,251,245,0.86)] p-6" id="packages">
-                <h2 className="m-0 text-2xl md:text-3xl">{activeCopy.packageTitle}</h2>
-                <p className="mt-3 max-w-4xl text-sm leading-8 text-stone-600">{activeCopy.packageIntro}</p>
-                <div className="mt-6 space-y-4">
-                  {activeCopy.packageBlocks.map((block) => (
                     <article
                       className={`rounded-[20px] border p-5 ${
                         block.tone === "accent"
