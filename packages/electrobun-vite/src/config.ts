@@ -42,7 +42,6 @@ export type ElectrobunToolConfig = {
 export type ElectrobunViteUserConfig = {
   renderer?: RendererConfig;
   electrobun?: ElectrobunToolConfig;
-  template?: string;
   site?: {
     title?: string;
     base?: string;

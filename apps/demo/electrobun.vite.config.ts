@@ -5,7 +5,6 @@ import { defineConfig } from "@nova-infra/electrobun-vite";
 const rootDir = import.meta.dir;
 
 export default defineConfig({
-  template: "react-ts",
   renderer: {
     configFile: false,
     vite: {

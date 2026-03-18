@@ -1,9 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  starterVersions,
-  templatePackages,
-  workspaceModules,
-} from "@nova-infra/electrobun-vite/metadata";
+import { starterVersions } from "@nova-infra/electrobun-vite/metadata";
 
 type Locale = "zh" | "en";
 
@@ -13,15 +9,29 @@ type SectionLink = {
   summary: string;
 };
 
+type QuickStartStep = {
+  title: string;
+  description: string;
+  code: string;
+  note?: string;
+};
+
 type CommandCard = {
   title: string;
   command: string;
   description: string;
+  details?: string[];
 };
 
-type FAQItem = {
-  question: string;
-  answer: string;
+type OptionItem = {
+  flag: string;
+  effect: string;
+};
+
+type OptionGroup = {
+  title: string;
+  intro: string;
+  options: OptionItem[];
 };
 
 type GuideBlock = {
@@ -32,11 +42,9 @@ type GuideBlock = {
   tone?: "default" | "accent";
 };
 
-type GuideSection = {
-  id: string;
-  title: string;
-  intro: string;
-  blocks: GuideBlock[];
+type FAQItem = {
+  question: string;
+  answer: string;
 };
 
 type DocsCopy = {
@@ -48,29 +56,46 @@ type DocsCopy = {
   secondaryCta: string;
   badges: string[];
   sections: SectionLink[];
-  overviewTitle: string;
-  overviewIntro: string;
-  overviewBlocks: GuideBlock[];
+  quickStartTitle: string;
+  quickStartIntro: string;
+  quickStartSteps: QuickStartStep[];
   commandsTitle: string;
   commandsIntro: string;
   commands: CommandCard[];
+  optionGroups: OptionGroup[];
   configTitle: string;
   configIntro: string;
   configBlocks: GuideBlock[];
-  templateTitle: string;
-  templateIntro: string;
-  templateBlocks: GuideBlock[];
-  deployTitle: string;
-  deployIntro: string;
-  deployBlocks: GuideBlock[];
-  migrationTitle: string;
-  migrationIntro: string;
-  migrationBlocks: GuideBlock[];
   faqTitle: string;
   faqs: FAQItem[];
 };
 
 const localeStorageKey = "electrobun-vite-docs-locale";
+
+const recommendedConfigCode = `export default defineConfig({
+  renderer: {
+    vite: {
+      root: resolve(import.meta.dir, "src/ui"),
+      plugins: [react()],
+    },
+  },
+  electrobun: {
+    outDir: "dist",
+    config: ({ outDir }) => ({
+      app: {
+        name: "My App",
+        identifier: "dev.my.app",
+        version: "0.0.1",
+      },
+      build: {
+        bun: { entrypoint: "src/bun/index.ts" },
+        copy: {
+          [\`${"${outDir}"}/index.html\`]: "views/app/index.html",
+        },
+      },
+    }),
+  },
+})`;
 
 export function App() {
   const previewImage = `${import.meta.env.BASE_URL}app-preview.png`;
@@ -91,379 +116,326 @@ export function App() {
   const copy = useMemo<Record<Locale, DocsCopy>>(
     () => ({
       zh: {
-        eyebrow: "Electrobun + Vite 8 桌面工具链",
-        title: "默认单配置，尽量少约定，更适合桌面端 vibe coding。",
+        eyebrow: `Electrobun ${starterVersions.electrobun} + Vite ${starterVersions.vite}`,
+        title: "把第一次上手需要的命令收敛成最短主路径。",
         lede:
-          "electrobun-vite 把 dev、build、preview、脚手架、项目配置和文档收敛成一条稳定主路径，优先解决 Electrobun 真实桌面项目的开发体验。",
-        sublede:
-          "当前默认模板锁定为 react-ts，并围绕 electrobun@1.16.0、react@19.2.4、vite@8.0.0 构建最少配置体验。",
-        primaryCta: "开始使用",
-        secondaryCta: "查看配置",
-        badges: ["默认中文文档", "单配置模型", "React 19", "Vite 8", "Electrobun 1.16"],
+          "electrobun-vite 现在更适合作为一个直接上手的桌面开发入口：先创建项目，再启动 dev，最后 build / preview，不需要先消化一整页背景介绍。",
+        sublede: `当前默认模板为 react-ts，文档示例基于 electrobun@${starterVersions.electrobun}、react@${starterVersions.react}、vite@${starterVersions.vite}。`,
+        primaryCta: "Quick Start",
+        secondaryCta: "查看 CLI",
+        badges: ["中文优先", "Quick Start", "单配置", "react-ts 模板", "CLI 参数说明"],
         sections: [
-          { id: "overview", label: "总览", summary: "工具定位、当前产品结构、推荐命令。" },
-          { id: "cli", label: "CLI", summary: "dev / build / preview / create 的命令面。" },
-          { id: "config", label: "配置", summary: "如何围绕一个 electrobun.vite.config.ts 工作。" },
-          { id: "template", label: "模板", summary: "react-ts 默认模板和当前边界。" },
-          { id: "deploy", label: "部署", summary: "GitHub Pages 与桌面产物验证路径。" },
-          { id: "migration", label: "迁移", summary: "从旧的多包结构迁到单包结构。" },
-          { id: "faq", label: "FAQ", summary: "关于单配置、模板数量和运行时桥接。" },
-        ] satisfies SectionLink[],
-        overviewTitle: "文档总览",
-        overviewIntro:
-          "electrobun-vite 现在不是一个孤立 starter，而是一个围绕单配置项目模型组织起来的桌面开发工具链。demo、模板和官网都围绕同一套约定验证。",
-        overviewBlocks: [
+          { id: "quickstart", label: "Quick Start", summary: "从创建项目到 build / preview 的最短路径。" },
+          { id: "cli", label: "CLI", summary: "每个命令做什么，以及参数分别影响哪里。" },
+          { id: "config", label: "Config", summary: "围绕一个 electrobun.vite.config.ts 工作。" },
+          { id: "faq", label: "FAQ", summary: "保留两个最常见的问题，避免页面继续膨胀。" },
+        ],
+        quickStartTitle: "Quick Start",
+        quickStartIntro:
+          "第一次使用时，按下面三步走就够了。先生成项目，再本地联调，最后构建和预览生产产物。",
+        quickStartSteps: [
           {
-            title: "推荐命令",
-            body: "从仓库根目录开始，你只需要记住这几个命令就能覆盖大部分日常工作。",
-            code: `bun install\nbun run dev\nbun run new -- my-app\nbun run build\nbun run build:docs`,
-            tone: "accent",
+            title: "1. 创建项目",
+            description: "在当前仓库根目录执行脚手架命令，生成一个新的 react-ts 桌面项目。",
+            code: `bun install\nbun run new -- my-app\ncd my-app`,
+            note: "`bun run new -- <name>` 会调用 `create-electrobun`，目前模板固定为 `react-ts`。",
           },
           {
-            title: "当前产品结构",
-            body: "当前阶段先把主路径做扎实，因此产品结构刻意保持克制。",
-            bullets: [
-              "一个主包：@nova-infra/electrobun-vite",
-              "一个默认模板：react-ts",
-              "一个验收应用：apps/demo",
-              "一个官网：apps/docs",
-            ],
+            title: "2. 本地开发",
+            description: "安装依赖后直接启动开发模式，Vite renderer 和 Electrobun shell 会一起拉起。",
+            code: `bun install\nbun run dev`,
+            note: "如果你只想调试 renderer，可以在项目里运行 `electrobun-vite --rendererOnly`。",
           },
-        ] satisfies GuideBlock[],
-        commandsTitle: "CLI 文档",
+          {
+            title: "3. 构建与预览",
+            description: "确认生产资源和桌面壳子都能正常工作，再决定是否继续发布流程。",
+            code: `bun run build\nbun run preview`,
+            note: "`preview` 默认会先 build；如果你已经构建过，可以加 `--skipBuild`。",
+          },
+        ],
+        commandsTitle: "CLI",
         commandsIntro:
-          "命令面尽量向 electron-vite 靠近，但不机械复制 Electron 语义；重点是让 Electrobun 项目在最少配置下保持一致体验。",
+          "CLI 只保留和日常使用直接相关的命令。下面先看命令本身，再看位置参数、全局参数和命令专属参数分别影响什么。",
         commands: [
           {
             title: "开发",
-            command: "electrobun-vite dev",
-            description: "启动 Vite dev server，并拉起 Electrobun 应用。裸命令 `electrobun-vite` 默认等同于它。",
+            command: "electrobun-vite [root]",
+            description: "默认命令，等同于 `electrobun-vite dev [root]`，会同时启动 Vite dev server 和 Electrobun 应用。",
+            details: [
+              "`[root]` 可选，默认当前目录。",
+              "`serve` 和 `dev` 都是它的别名。",
+              "`--rendererOnly` 只启动 renderer，适合纯前端联调。",
+            ],
           },
           {
             title: "构建",
-            command: "electrobun-vite build",
-            description: "先构建 renderer，再调用 Electrobun 打包桌面产物。",
+            command: "electrobun-vite build [root]",
+            description: "构建 renderer 产物，并把结果交给 Electrobun 打包桌面端资源。",
+            details: [
+              "`[root]` 可选，适合从 monorepo 根目录指定子项目。",
+              "`--outDir` 会覆盖默认输出目录。",
+              "`--watch` 会在支持的链路里持续重建。",
+            ],
           },
           {
             title: "预览",
-            command: "electrobun-vite preview",
-            description: "使用生产资源启动桌面应用，用于最终行为核验。",
+            command: "electrobun-vite preview [root]",
+            description: "使用生产资源启动桌面应用，验证最终行为是否和 build 产物一致。",
+            details: [
+              "`preview` 默认会先执行一次 build。",
+              "`--skipBuild` 会直接复用已有产物。",
+              "适合在发布前快速验收窗口行为和资源路径。",
+            ],
+          },
+          {
+            title: "信息",
+            command: "electrobun-vite info [root]",
+            description: "输出解析后的配置文件位置、默认模板、版本信息和模板元数据。",
+            details: [
+              "适合排查 CLI 实际读到了哪个配置文件。",
+              "`[root]` 可选，用来查看指定项目目录的解析结果。",
+            ],
           },
           {
             title: "脚手架",
-            command: "create-electrobun my-app",
-            description: "创建新的桌面项目，目前模板列表刻意只开放 react-ts。",
+            command: "create-electrobun <projectName>",
+            description: "创建新的桌面项目目录，并写入当前默认模板。",
+            details: [
+              "`<projectName>` 是目标目录名，也是生成后的项目名。",
+              "`-t, --template` 目前只接受 `react-ts`。",
+            ],
           },
-        ] satisfies CommandCard[],
-        configTitle: "配置文档",
+        ],
+        optionGroups: [
+          {
+            title: "位置参数",
+            intro: "这些参数写在命令名后面，不带 `--`。",
+            options: [
+              { flag: "[root]", effect: "指定项目根目录；不传时默认使用当前工作目录。" },
+              { flag: "<projectName>", effect: "指定脚手架输出目录名，`create` 命令必填。" },
+            ],
+          },
+          {
+            title: "全局参数",
+            intro: "这些参数可用于 `dev / build / preview / info`，影响配置解析、日志或输出目录。",
+            options: [
+              { flag: "-c, --config <file>", effect: "指定要读取的配置文件，而不是默认查找 `electrobun.vite.config.ts`。" },
+              { flag: "-l, --logLevel <level>", effect: "控制日志级别，可选 `info | warn | error | silent`。" },
+              { flag: "--clearScreen", effect: "控制日志刷新时是否清屏，适合调试 watch 场景。" },
+              { flag: "-m, --mode <mode>", effect: "设置运行模式，并参与 env 和配置解析。" },
+              { flag: "-w, --watch", effect: "在支持 watch 的命令里持续监听文件变化并重建或重启。" },
+              { flag: "--outDir <dir>", effect: "覆盖输出目录，影响 renderer 产物和后续打包交接目录。" },
+              { flag: "--sourcemap", effect: "在支持 sourcemap 的链路里输出 source map，方便排查问题。" },
+              { flag: "--entry <file>", effect: "为未来的 Bun entry 覆盖预留；当前主要是占位参数。" },
+            ],
+          },
+          {
+            title: "命令专属参数",
+            intro: "只在对应命令下生效。",
+            options: [
+              { flag: "--rendererOnly", effect: "仅用于 `dev`，只启动 Vite renderer，不拉起 Electrobun shell。" },
+              { flag: "--skipBuild", effect: "仅用于 `preview`，跳过预构建，直接使用现有产物。" },
+              { flag: "-t, --template <template>", effect: "仅用于 `create`，选择模板；当前只支持 `react-ts`。" },
+            ],
+          },
+        ],
+        configTitle: "Config",
         configIntro:
-          "项目层默认围绕一个 `electrobun.vite.config.ts`。renderer 和 electrobun 都能在这个文件里声明，工具层负责在需要时桥接底层配置。",
+          "项目层继续围绕一个 `electrobun.vite.config.ts` 工作，把 renderer 和 Electrobun 相关配置放在同一个入口里看清楚。",
         configBlocks: [
           {
-            title: "为什么是单配置",
-            body: "Electrobun 还处在快速演进期，项目层如果一开始就拆成太多配置文件，团队很快会失去对入口的整体感。单配置的目标是先把关键决策放在一处。",
-          },
-          {
-            title: "推荐示例",
-            body: "下面是当前推荐写法。",
-            code: `export default defineConfig({\n  template: "react-ts",\n  renderer: {\n    vite: {\n      root: resolve(import.meta.dir, "src/ui"),\n      plugins: [react()],\n    },\n  },\n  electrobun: {\n    outDir: "dist",\n    config: ({ outDir }) => ({\n      app: { name: "My App", identifier: "dev.my.app", version: "0.0.1" },\n      build: {\n        bun: { entrypoint: "src/bun/index.ts" },\n        copy: {\n          [\`${"${outDir}"}/index.html\`]: "views/app/index.html",\n        },\n      },\n    }),\n  },\n})`,
+            title: "推荐结构",
+            body: "如果你是第一次接入 electrobun-vite，先从这个结构开始，不必急着拆成多份配置。",
+            code: recommendedConfigCode,
             tone: "accent",
           },
           {
-            title: "字段边界",
-            body: "当前工具层重点支持下面这些概念。",
+            title: "重点字段",
+            body: "先理解下面几个字段，基本就能覆盖大部分上手场景。",
             bullets: [
-              "renderer.vite：直接内联 Vite 配置",
-              "electrobun.outDir：统一 renderer 与桌面打包产物的连接点",
-              "electrobun.config：在一个文件里描述 app/build/copy 信息",
-              "template：当前主要用于标记项目属于哪个模板族",
+              "`renderer.vite`：直接内联 Vite 配置。",
+              "`electrobun.outDir`：renderer 和桌面打包共用的产物目录。",
+              "`electrobun.config`：集中声明 app / build / copy 信息。",
             ],
           },
-        ] satisfies GuideBlock[],
-        templateTitle: "模板文档",
-        templateIntro:
-          "模板列表现在只保留 react-ts。一方面保持文档和验收面聚焦，另一方面避免在 Electrobun 还很新的阶段过早铺开矩阵。",
-        templateBlocks: [
-          {
-            title: "为什么先只做 react-ts",
-            body: "先把主路径做稳定，比一次性堆很多模板更重要。当前文档、demo 和模板共用相同的单配置模型，所以 react-ts 是最好的收敛点。",
-          },
-          {
-            title: "模板里内置了什么",
-            body: "默认模板并不是只有 UI，而是带着可以立刻开始桌面开发的一整套骨架。",
-            bullets: [
-              "React 19 renderer",
-              "Electrobun bun entry",
-              "Vite 8 构建链路",
-              "typed RPC 示例",
-              "AGENTS.md 与本地 skill 指南",
-            ],
-          },
-        ] satisfies GuideBlock[],
-        deployTitle: "部署与发布",
-        deployIntro:
-          "官网由 `apps/docs` 构建，并通过 GitHub Actions 自动部署到 GitHub Pages。桌面端产物则继续由 `electrobun-vite build` 和模板自己的脚本验证。",
-        deployBlocks: [
-          {
-            title: "GitHub Pages",
-            body: "本仓库已经启用 Pages workflow 模式，推送到 main 会自动构建并发布 docs。",
-            bullets: [
-              "工作流文件：.github/workflows/deploy-docs.yml",
-              "构建命令：bun run build:docs",
-              "产物目录：apps/docs/dist",
-              "公开地址：https://nova-infra.github.io/electrobun-vite/",
-            ],
-            tone: "accent",
-          },
-          {
-            title: "桌面端验收",
-            body: "日常更推荐先通过 demo 和模板的本地构建来确认工具链没有退化。",
-            code: `bun run build:demo\nbun run --cwd apps/demo preview -- --skipBuild\nbun run --cwd templates/react-ts build`,
-          },
-        ] satisfies GuideBlock[],
-        migrationTitle: "迁移说明",
-        migrationIntro:
-          "如果你之前跟着仓库早期结构工作，这里是最重要的迁移方向。",
-        migrationBlocks: [
-          {
-            title: "从多包到单包",
-            body: "原先拆开的 cli/core/create/shared 现在统一归到 `packages/electrobun-vite`，这样能显著降低维护复杂度。",
-            bullets: [
-              "主能力统一入口：packages/electrobun-vite",
-              "docs 只消费 metadata 子导出，不再把运行时代码卷进来",
-              "demo 和模板都围绕同一个单配置模型验证",
-            ],
-          },
-          {
-            title: "从多配置到单配置",
-            body: "项目层优先只保留 `electrobun.vite.config.ts`。如果底层仍要求额外文件，工具层在运行时桥接，而不是让项目结构继续膨胀。",
-          },
-        ] satisfies GuideBlock[],
-        faqTitle: "常见问题",
+        ],
+        faqTitle: "FAQ",
         faqs: [
           {
-            question: "为什么模板现在只支持 react-ts？",
+            question: "为什么页面里不再放部署、迁移、模板介绍这些内容？",
             answer:
-              "因为当前阶段最重要的是把 Electrobun + Vite 8 的主路径打磨稳定。模板先收敛，后面再扩。",
-          },
-          {
-            question: "为什么项目层只保留一个 electrobun.vite.config.ts？",
-            answer:
-              "这是为了减少心智负担，让 renderer 和 desktop shell 的关键配置能放在同一处查看和修改。",
+              "因为首页现在优先承担“第一次上手”的职责。和 quick start 无关的内容先收掉，避免用户还没跑通命令就被背景信息打断。",
           },
           {
             question: "为什么构建日志里还会看到 electrobun.config.ts？",
             answer:
-              "因为 Electrobun CLI 当前仍会查找这个文件，所以 electrobun-vite 会在运行时临时生成，再在命令结束后清掉。",
+              "因为 Electrobun CLI 目前仍会查找这个文件，electrobun-vite 会在运行时临时生成并在命令结束后清理掉。",
           },
-        ] satisfies FAQItem[],
+        ],
       },
       en: {
-        eyebrow: "Electrobun + Vite 8 desktop tooling",
-        title: "Single config by default, fewer moving parts, better for desktop vibe coding.",
+        eyebrow: `Electrobun ${starterVersions.electrobun} + Vite ${starterVersions.vite}`,
+        title: "Reduce first-run docs to the commands people actually need.",
         lede:
-          "electrobun-vite keeps dev, build, preview, scaffolding, project config, and docs aligned on one stable path for real Electrobun desktop work.",
-        sublede:
-          "The current default template stays focused on react-ts, pinned to electrobun@1.16.0, react@19.2.4, and vite@8.0.0.",
-        primaryCta: "Get Started",
-        secondaryCta: "See Config",
-        badges: ["Chinese-first docs", "Single-config model", "React 19", "Vite 8", "Electrobun 1.16"],
+          "electrobun-vite now reads more like a practical getting-started guide: create a project, run dev, then build and preview. The landing page should help people ship, not make them scroll through repo history.",
+        sublede: `The default template is still react-ts, and the examples here target electrobun@${starterVersions.electrobun}, react@${starterVersions.react}, and vite@${starterVersions.vite}.`,
+        primaryCta: "Quick Start",
+        secondaryCta: "See CLI",
+        badges: ["Chinese-first docs", "Quick Start", "Single config", "react-ts template", "CLI parameter notes"],
         sections: [
-          { id: "overview", label: "Overview", summary: "Positioning, product shape, and recommended commands." },
-          { id: "cli", label: "CLI", summary: "The surface for dev / build / preview / create." },
-          { id: "config", label: "Config", summary: "How everything centers on electrobun.vite.config.ts." },
-          { id: "template", label: "Template", summary: "What react-ts includes and why it is the only template today." },
-          { id: "deploy", label: "Deploy", summary: "GitHub Pages and desktop verification flow." },
-          { id: "migration", label: "Migration", summary: "How the repo moved from split packages to one product package." },
-          { id: "faq", label: "FAQ", summary: "Answers about single config, template scope, and runtime bridging." },
-        ] satisfies SectionLink[],
-        overviewTitle: "Docs overview",
-        overviewIntro:
-          "electrobun-vite is no longer an isolated starter. It is a desktop toolchain organized around a single-config project model, with the demo, template, and docs validating the same workflow.",
-        overviewBlocks: [
+          { id: "quickstart", label: "Quick Start", summary: "The shortest path from scaffold to build / preview." },
+          { id: "cli", label: "CLI", summary: "What each command does and what every parameter affects." },
+          { id: "config", label: "Config", summary: "Work around one electrobun.vite.config.ts file." },
+          { id: "faq", label: "FAQ", summary: "Two common questions, without bringing back unrelated sections." },
+        ],
+        quickStartTitle: "Quick Start",
+        quickStartIntro:
+          "For a first run, these three steps are enough: scaffold the project, start local development, then build and preview production assets.",
+        quickStartSteps: [
           {
-            title: "Recommended commands",
-            body: "These root commands cover most daily work inside the repository.",
-            code: `bun install\nbun run dev\nbun run new -- my-app\nbun run build\nbun run build:docs`,
-            tone: "accent",
+            title: "1. Scaffold a project",
+            description: "Run the workspace scaffold command from this repository root to create a new react-ts desktop app.",
+            code: `bun install\nbun run new -- my-app\ncd my-app`,
+            note: "`bun run new -- <name>` calls `create-electrobun`, which currently scaffolds the `react-ts` template.",
           },
           {
-            title: "Current product shape",
-            body: "The product intentionally stays compact at this stage.",
-            bullets: [
-              "One main package: @nova-infra/electrobun-vite",
-              "One default template: react-ts",
-              "One acceptance app: apps/demo",
-              "One docs site: apps/docs",
-            ],
+            title: "2. Start local development",
+            description: "Install dependencies in the generated app and start the combined Vite renderer + Electrobun development flow.",
+            code: `bun install\nbun run dev`,
+            note: "If you only need the renderer dev server, run `electrobun-vite --rendererOnly` inside the app.",
           },
-        ] satisfies GuideBlock[],
-        commandsTitle: "CLI docs",
+          {
+            title: "3. Build and preview",
+            description: "Confirm that production assets and the desktop shell still behave correctly before moving on to release work.",
+            code: `bun run build\nbun run preview`,
+            note: "`preview` builds first by default. Add `--skipBuild` when you want to reuse an existing build.",
+          },
+        ],
+        commandsTitle: "CLI",
         commandsIntro:
-          "The CLI shape stays close to electron-vite where that helps, while still respecting Electrobun’s own runtime model.",
+          "The CLI surface stays intentionally small. Read the commands first, then use the parameter groups below to see exactly what each flag changes.",
         commands: [
           {
             title: "Development",
-            command: "electrobun-vite dev",
-            description: "Start the Vite dev server and launch the Electrobun app together. The bare `electrobun-vite` command resolves here by default.",
+            command: "electrobun-vite [root]",
+            description: "The default command, equivalent to `electrobun-vite dev [root]`, starts the Vite dev server and the Electrobun app together.",
+            details: [
+              "`[root]` is optional and defaults to the current directory.",
+              "`serve` and `dev` are aliases for the same flow.",
+              "`--rendererOnly` keeps the run focused on the renderer dev server.",
+            ],
           },
           {
             title: "Build",
-            command: "electrobun-vite build",
-            description: "Build the renderer first, then package desktop output with Electrobun.",
+            command: "electrobun-vite build [root]",
+            description: "Build the renderer output, then hand those assets off to Electrobun packaging.",
+            details: [
+              "`[root]` is useful when you launch from a monorepo root.",
+              "`--outDir` overrides the default output directory.",
+              "`--watch` keeps rebuilding where the flow supports it.",
+            ],
           },
           {
             title: "Preview",
-            command: "electrobun-vite preview",
-            description: "Run the desktop app against production assets for final verification.",
+            command: "electrobun-vite preview [root]",
+            description: "Run the desktop app against production assets so final behavior matches the build output you intend to ship.",
+            details: [
+              "`preview` triggers a build first by default.",
+              "`--skipBuild` reuses existing output instead of rebuilding.",
+              "This is the fast final verification command before release work.",
+            ],
+          },
+          {
+            title: "Info",
+            command: "electrobun-vite info [root]",
+            description: "Print the resolved config path, default template, versions, and template metadata.",
+            details: [
+              "Useful when you need to confirm which config file the CLI actually resolved.",
+              "`[root]` lets you inspect a specific project directory.",
+            ],
           },
           {
             title: "Scaffold",
-            command: "create-electrobun my-app",
-            description: "Create a new desktop project. The template registry is intentionally react-ts only for now.",
+            command: "create-electrobun <projectName>",
+            description: "Create a new desktop project directory and write the current default starter into it.",
+            details: [
+              "`<projectName>` becomes the output directory name.",
+              "`-t, --template` is currently limited to `react-ts`.",
+            ],
           },
-        ] satisfies CommandCard[],
-        configTitle: "Config docs",
+        ],
+        optionGroups: [
+          {
+            title: "Positional parameters",
+            intro: "These appear directly after the command name, without `--`.",
+            options: [
+              { flag: "[root]", effect: "Choose the project root directory. Defaults to the current working directory." },
+              { flag: "<projectName>", effect: "Choose the scaffold output directory name. Required for `create`." },
+            ],
+          },
+          {
+            title: "Global parameters",
+            intro: "These work across `dev / build / preview / info` and affect config resolution, logging, or output paths.",
+            options: [
+              { flag: "-c, --config <file>", effect: "Read a specific config file instead of auto-discovering `electrobun.vite.config.ts`." },
+              { flag: "-l, --logLevel <level>", effect: "Control CLI log verbosity: `info | warn | error | silent`." },
+              { flag: "--clearScreen", effect: "Control whether previous logs are cleared between updates, especially in watch mode." },
+              { flag: "-m, --mode <mode>", effect: "Set the mode used for env loading and config resolution." },
+              { flag: "-w, --watch", effect: "Keep watching files and rebuild or restart when the active command supports it." },
+              { flag: "--outDir <dir>", effect: "Override the output directory shared between renderer output and packaging handoff." },
+              { flag: "--sourcemap", effect: "Emit source maps on commands that support them, which helps during debugging." },
+              { flag: "--entry <file>", effect: "Reserved for future Bun entry overrides; currently a placeholder option." },
+            ],
+          },
+          {
+            title: "Command-specific parameters",
+            intro: "These only apply to one command family.",
+            options: [
+              { flag: "--rendererOnly", effect: "For `dev` only. Start the Vite renderer dev server without launching the Electrobun shell." },
+              { flag: "--skipBuild", effect: "For `preview` only. Reuse the existing build output instead of building first." },
+              { flag: "-t, --template <template>", effect: "For `create` only. Pick the scaffold template, currently limited to `react-ts`." },
+            ],
+          },
+        ],
+        configTitle: "Config",
         configIntro:
-          "Projects center on one `electrobun.vite.config.ts`. Both renderer and electrobun settings can live there, while the toolchain bridges lower-level config only when necessary.",
+          "Projects still center on one `electrobun.vite.config.ts`, so renderer and Electrobun settings stay visible in the same place.",
         configBlocks: [
           {
-            title: "Why single config",
-            body: "Electrobun is still evolving quickly. If project structure starts by spreading intent across too many files, teams lose the shape of the app very quickly. Single config keeps the important decisions visible together.",
-          },
-          {
-            title: "Recommended example",
-            body: "This is the current recommended shape.",
-            code: `export default defineConfig({\n  template: "react-ts",\n  renderer: {\n    vite: {\n      root: resolve(import.meta.dir, "src/ui"),\n      plugins: [react()],\n    },\n  },\n  electrobun: {\n    outDir: "dist",\n    config: ({ outDir }) => ({\n      app: { name: "My App", identifier: "dev.my.app", version: "0.0.1" },\n      build: {\n        bun: { entrypoint: "src/bun/index.ts" },\n        copy: {\n          [\`${"${outDir}"}/index.html\`]: "views/app/index.html",\n        },\n      },\n    }),\n  },\n})`,
+            title: "Recommended shape",
+            body: "If you are starting fresh, begin with this shape instead of splitting configuration too early.",
+            code: recommendedConfigCode,
             tone: "accent",
           },
           {
-            title: "Field boundaries",
-            body: "These are the main concepts the toolchain currently expects.",
+            title: "Key fields",
+            body: "These are the fields worth understanding first.",
             bullets: [
-              "renderer.vite: inline Vite configuration",
-              "electrobun.outDir: the shared handoff point between renderer and desktop packaging",
-              "electrobun.config: app/build/copy information in the same file",
-              "template: project family marker used by the toolchain",
+              "`renderer.vite`: inline Vite configuration.",
+              "`electrobun.outDir`: shared output directory between renderer output and desktop packaging.",
+              "`electrobun.config`: app / build / copy details in one place.",
             ],
           },
-        ] satisfies GuideBlock[],
-        templateTitle: "Template docs",
-        templateIntro:
-          "The template registry currently stays focused on react-ts so the docs, acceptance app, and toolchain can all mature around one reliable path first.",
-        templateBlocks: [
-          {
-            title: "Why react-ts first",
-            body: "Stabilizing one main path matters more than expanding a template matrix too early. The docs, demo, and template all validate the same single-config model today.",
-          },
-          {
-            title: "What the template includes",
-            body: "The default template ships as a real desktop starter, not just a UI shell.",
-            bullets: [
-              "React 19 renderer",
-              "Electrobun bun entry",
-              "Vite 8 build pipeline",
-              "typed RPC sample",
-              "AGENTS.md and local skill guidance",
-            ],
-          },
-        ] satisfies GuideBlock[],
-        deployTitle: "Deploy and release",
-        deployIntro:
-          "The docs site is built from `apps/docs` and automatically published to GitHub Pages. Desktop output continues to be validated through the demo app and the template build flow.",
-        deployBlocks: [
-          {
-            title: "GitHub Pages",
-            body: "This repository already uses Pages in workflow mode, so pushing to main rebuilds and republishes the docs site automatically.",
-            bullets: [
-              "Workflow file: .github/workflows/deploy-docs.yml",
-              "Build command: bun run build:docs",
-              "Artifact path: apps/docs/dist",
-              "Public URL: https://nova-infra.github.io/electrobun-vite/",
-            ],
-            tone: "accent",
-          },
-          {
-            title: "Desktop verification",
-            body: "For day-to-day development, it is still better to keep validating the demo app and the template locally.",
-            code: `bun run build:demo\nbun run --cwd apps/demo preview -- --skipBuild\nbun run --cwd templates/react-ts build`,
-          },
-        ] satisfies GuideBlock[],
-        migrationTitle: "Migration notes",
-        migrationIntro:
-          "If you worked against the early repo shape, these are the key moves to keep in mind.",
-        migrationBlocks: [
-          {
-            title: "From many packages to one product package",
-            body: "The old split between cli/core/create/shared is now flattened into `packages/electrobun-vite`, which sharply reduces maintenance overhead.",
-            bullets: [
-              "Single tool entry: packages/electrobun-vite",
-              "Docs only import the metadata subpath now",
-              "Demo and template validate the same single-config model",
-            ],
-          },
-          {
-            title: "From many config files to one project config",
-            body: "Projects should prefer one `electrobun.vite.config.ts`. If lower layers still expect more files, the toolchain should bridge them at runtime instead of pushing that complexity into every app.",
-          },
-        ] satisfies GuideBlock[],
+        ],
         faqTitle: "FAQ",
         faqs: [
           {
-            question: "Why is the template list react-ts only right now?",
+            question: "Why remove deploy, migration, and template overview content from the landing page?",
             answer:
-              "Because the current priority is stabilizing the main Electrobun + Vite 8 path before expanding the template matrix.",
-          },
-          {
-            question: "Why keep everything in one electrobun.vite.config.ts?",
-            answer:
-              "Because it lowers project setup overhead and keeps renderer and desktop-shell decisions visible in one place.",
+              "Because the page should now act as a first-run guide. Anything that interrupts quick start without helping someone run their first commands was cut back.",
           },
           {
             question: "Why do build logs still mention electrobun.config.ts?",
             answer:
-              "Because the Electrobun CLI still looks for that file today, so electrobun-vite generates it temporarily at runtime and removes it afterward.",
+              "Because the Electrobun CLI still looks for that file today, so electrobun-vite generates it temporarily at runtime and cleans it up afterward.",
           },
-        ] satisfies FAQItem[],
+        ],
       },
     }),
     [],
   );
 
   const activeCopy = copy[locale];
-
-  const guideSections = [
-    {
-      id: "overview",
-      title: activeCopy.overviewTitle,
-      intro: activeCopy.overviewIntro,
-      blocks: activeCopy.overviewBlocks,
-    },
-    {
-      id: "config",
-      title: activeCopy.configTitle,
-      intro: activeCopy.configIntro,
-      blocks: activeCopy.configBlocks,
-    },
-    {
-      id: "template",
-      title: activeCopy.templateTitle,
-      intro: activeCopy.templateIntro,
-      blocks: activeCopy.templateBlocks,
-    },
-    {
-      id: "deploy",
-      title: activeCopy.deployTitle,
-      intro: activeCopy.deployIntro,
-      blocks: activeCopy.deployBlocks,
-    },
-    {
-      id: "migration",
-      title: activeCopy.migrationTitle,
-      intro: activeCopy.migrationIntro,
-      blocks: activeCopy.migrationBlocks,
-    },
-  ] satisfies GuideSection[];
 
   return (
     <div className="min-h-screen text-stone-900">
@@ -524,13 +496,13 @@ export function App() {
               <div className="mt-7 flex flex-wrap gap-3">
                 <a
                   className="rounded-full bg-teal-700 px-5 py-3 text-sm font-medium text-white shadow-[0_16px_30px_rgba(15,118,110,0.24)] transition hover:bg-teal-800"
-                  href="#overview"
+                  href="#quickstart"
                 >
                   {activeCopy.primaryCta}
                 </a>
                 <a
                   className="rounded-full border border-stone-900/10 bg-white/80 px-5 py-3 text-sm font-medium text-stone-800 transition hover:border-stone-900/20 hover:bg-white"
-                  href="#config"
+                  href="#cli"
                 >
                   {activeCopy.secondaryCta}
                 </a>
@@ -543,7 +515,7 @@ export function App() {
                 className="w-full rounded-[22px] border border-stone-900/10 bg-white object-cover shadow-[0_24px_50px_rgba(26,32,35,0.18)]"
                 src={previewImage}
               />
-              <nav className="grid grid-cols-2 gap-3 rounded-[20px] border border-stone-900/10 bg-white/72 p-4 text-sm md:grid-cols-3">
+              <nav className="grid grid-cols-2 gap-3 rounded-[20px] border border-stone-900/10 bg-white/72 p-4 text-sm md:grid-cols-2">
                 {activeCopy.sections.map((section) => (
                   <a
                     className="rounded-2xl border border-stone-900/8 bg-[rgba(250,248,244,0.92)] px-4 py-3 text-stone-700 transition hover:-translate-y-0.5 hover:border-teal-700/25 hover:text-stone-950"
@@ -578,51 +550,87 @@ export function App() {
             </aside>
 
             <div className="space-y-6">
-              {guideSections.map((section) => (
-                <section
-                  className="rounded-[24px] border border-stone-900/10 bg-[rgba(255,251,245,0.86)] p-6"
-                  id={section.id}
-                  key={section.id}
-                >
-                  <h2 className="m-0 text-2xl md:text-3xl">{section.title}</h2>
-                  <p className="mt-3 max-w-4xl text-sm leading-8 text-stone-600">{section.intro}</p>
-                  <div className="mt-6 grid gap-4 lg:grid-cols-2">
-                    {section.blocks.map((block) => (
-                      <article
-                        className={`rounded-[20px] border p-5 ${
-                          block.tone === "accent"
-                            ? "border-teal-700/12 bg-[linear-gradient(135deg,rgba(221,245,239,0.92),rgba(255,251,245,0.94))]"
-                            : "border-stone-900/10 bg-white/80"
-                        }`}
-                        key={block.title}
-                      >
-                        <h3 className="m-0 text-lg text-stone-950">{block.title}</h3>
-                        <p className="mt-3 text-sm leading-7 text-stone-600">{block.body}</p>
-                        {block.bullets ? (
-                          <ul className="mt-4 space-y-2 pl-5 text-sm leading-7 text-stone-700">
-                            {block.bullets.map((item) => (
-                              <li key={item}>{item}</li>
-                            ))}
-                          </ul>
-                        ) : null}
-                        {block.code ? (
-                          <pre className="mt-4 overflow-x-auto rounded-[18px] bg-stone-950 p-4 text-sm leading-7 text-stone-100"><code>{block.code}</code></pre>
-                        ) : null}
-                      </article>
-                    ))}
-                  </div>
-                </section>
-              ))}
+              <section className="rounded-[24px] border border-stone-900/10 bg-[rgba(255,251,245,0.86)] p-6" id="quickstart">
+                <h2 className="m-0 text-2xl md:text-3xl">{activeCopy.quickStartTitle}</h2>
+                <p className="mt-3 max-w-4xl text-sm leading-8 text-stone-600">{activeCopy.quickStartIntro}</p>
+                <div className="mt-6 grid gap-4 lg:grid-cols-3">
+                  {activeCopy.quickStartSteps.map((step) => (
+                    <article
+                      className="rounded-[20px] border border-teal-700/12 bg-[linear-gradient(135deg,rgba(221,245,239,0.92),rgba(255,251,245,0.94))] p-5"
+                      key={step.title}
+                    >
+                      <h3 className="m-0 text-lg text-stone-950">{step.title}</h3>
+                      <p className="mt-3 text-sm leading-7 text-stone-600">{step.description}</p>
+                      <pre className="mt-4 overflow-x-auto rounded-[18px] bg-stone-950 p-4 text-sm leading-7 text-stone-100"><code>{step.code}</code></pre>
+                      {step.note ? <p className="mt-3 text-xs leading-6 text-stone-500">{step.note}</p> : null}
+                    </article>
+                  ))}
+                </div>
+              </section>
 
               <section className="rounded-[24px] border border-stone-900/10 bg-[rgba(255,251,245,0.86)] p-6" id="cli">
                 <h2 className="m-0 text-2xl md:text-3xl">{activeCopy.commandsTitle}</h2>
                 <p className="mt-3 max-w-4xl text-sm leading-8 text-stone-600">{activeCopy.commandsIntro}</p>
-                <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                   {activeCopy.commands.map((item) => (
                     <article className="rounded-[20px] border border-stone-900/10 bg-white/80 p-5" key={item.command}>
                       <p className="m-0 text-xs uppercase tracking-[0.14em] text-stone-500">{item.title}</p>
                       <code className="mt-3 block text-sm text-stone-950">{item.command}</code>
                       <p className="mt-3 text-sm leading-7 text-stone-600">{item.description}</p>
+                      {item.details ? (
+                        <ul className="mt-4 space-y-2 pl-5 text-sm leading-7 text-stone-700">
+                          {item.details.map((detail) => (
+                            <li key={detail}>{detail}</li>
+                          ))}
+                        </ul>
+                      ) : null}
+                    </article>
+                  ))}
+                </div>
+
+                <div className="mt-6 grid gap-4 xl:grid-cols-3">
+                  {activeCopy.optionGroups.map((group) => (
+                    <article className="rounded-[20px] border border-stone-900/10 bg-white/80 p-5" key={group.title}>
+                      <h3 className="m-0 text-lg text-stone-950">{group.title}</h3>
+                      <p className="mt-3 text-sm leading-7 text-stone-600">{group.intro}</p>
+                      <div className="mt-4 space-y-3">
+                        {group.options.map((option) => (
+                          <div className="rounded-[16px] border border-stone-900/8 bg-[rgba(250,248,244,0.92)] px-4 py-3" key={option.flag}>
+                            <code className="block text-sm text-stone-950">{option.flag}</code>
+                            <p className="mt-2 text-sm leading-7 text-stone-600">{option.effect}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+
+              <section className="rounded-[24px] border border-stone-900/10 bg-[rgba(255,251,245,0.86)] p-6" id="config">
+                <h2 className="m-0 text-2xl md:text-3xl">{activeCopy.configTitle}</h2>
+                <p className="mt-3 max-w-4xl text-sm leading-8 text-stone-600">{activeCopy.configIntro}</p>
+                <div className="mt-6 grid gap-4 lg:grid-cols-2">
+                  {activeCopy.configBlocks.map((block) => (
+                    <article
+                      className={`rounded-[20px] border p-5 ${
+                        block.tone === "accent"
+                          ? "border-teal-700/12 bg-[linear-gradient(135deg,rgba(221,245,239,0.92),rgba(255,251,245,0.94))]"
+                          : "border-stone-900/10 bg-white/80"
+                      }`}
+                      key={block.title}
+                    >
+                      <h3 className="m-0 text-lg text-stone-950">{block.title}</h3>
+                      <p className="mt-3 text-sm leading-7 text-stone-600">{block.body}</p>
+                      {block.bullets ? (
+                        <ul className="mt-4 space-y-2 pl-5 text-sm leading-7 text-stone-700">
+                          {block.bullets.map((item) => (
+                            <li key={item}>{item}</li>
+                          ))}
+                        </ul>
+                      ) : null}
+                      {block.code ? (
+                        <pre className="mt-4 overflow-x-auto rounded-[18px] bg-stone-950 p-4 text-sm leading-7 text-stone-100"><code>{block.code}</code></pre>
+                      ) : null}
                     </article>
                   ))}
                 </div>

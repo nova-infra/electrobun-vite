@@ -4,7 +4,6 @@ import react from "@vitejs/plugin-react";
 const rootDir = import.meta.dir;
 
 export default {
-  template: "react-ts",
   renderer: {
     vite: {
       root: resolve(rootDir, "src/ui"),
