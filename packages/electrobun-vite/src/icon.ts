@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
-import { join, resolve } from "node:path";
+import { join } from "node:path";
 
 /** Electrobun 官方要求的 icon.iconset 尺寸与文件名（见 Application Icons 文档） */
 const ICONSET_ENTRIES: { size: number; name: string }[] = [
@@ -17,20 +17,17 @@ const ICONSET_ENTRIES: { size: number; name: string }[] = [
 ];
 
 const SOURCE_FILENAME = "logo.png";
-const APPBUNDLE_ICONSET_DIR = "AppIcon.appiconset";
 
-/** 包内默认图标路径（无 AppIcon.appiconset 时使用） */
-const defaultIconPath = join(import.meta.dir, "..", "assets", SOURCE_FILENAME);
+/** 包内默认图标路径（当项目根没有 logo.png 时使用） */
+const defaultIconPath = join(import.meta.dir, "..", SOURCE_FILENAME);
 
 /**
- * 在应用目录或上级（monorepo 根）查找 AppIcon.appiconset，并返回其目录；否则返回 null。
+ * 查找项目根的 logo.png，并返回其路径；否则返回包内默认 logo.png。
  */
-export function findAppIconSource(cwd: string): string | null {
-  const inCwd = join(cwd, APPBUNDLE_ICONSET_DIR, SOURCE_FILENAME);
-  if (existsSync(inCwd)) return join(cwd, APPBUNDLE_ICONSET_DIR);
-  const inParent = join(cwd, "..", APPBUNDLE_ICONSET_DIR, SOURCE_FILENAME);
-  if (existsSync(inParent)) return resolve(cwd, "..", APPBUNDLE_ICONSET_DIR);
-  return null;
+export function findLogoSource(cwd: string): string {
+  const inCwd = join(cwd, SOURCE_FILENAME);
+  if (existsSync(inCwd)) return inCwd;
+  return defaultIconPath;
 }
 
 /**
@@ -72,16 +69,13 @@ async function generateIconIconsetFromPng(
 
 /**
  * 确保 appRoot 下存在符合 Electrobun 约定的 icon.iconset。
- * 优先使用应用目录或上级的 AppIcon.appiconset/logo.png，否则使用包内默认图标。
+ * 优先使用项目根目录的 logo.png，否则使用包内默认图标。
  * 返回是否已确保 icon.iconset 可用（可用于决定是否写入 build.mac.icons）。
  */
 export async function ensureIconIconset(appRoot: string): Promise<boolean> {
   if (hasValidIconIconset(appRoot)) return true;
 
-  const appIconDir = findAppIconSource(appRoot);
-  const sourcePng = appIconDir
-    ? join(appIconDir, SOURCE_FILENAME)
-    : defaultIconPath;
+  const sourcePng = findLogoSource(appRoot);
   if (!existsSync(sourcePng)) return false;
 
   const outDir = join(appRoot, "icon.iconset");

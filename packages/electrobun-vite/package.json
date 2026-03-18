@@ -28,7 +28,7 @@
     }
   },
   "files": [
-    "assets/logo.png",
+    "logo.png",
     "dist"
   ],
   "scripts": {
