@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import { ensureIconIconset } from "./icon";
 import { templatePackages } from "./metadata";
 import { mergeConfig, type LogLevel, type UserConfig as ViteUserConfig } from "vite";
 
@@ -315,6 +316,8 @@ const serializeElectrobunValue = (value: ElectrobunSerializableValue): string =>
 };
 
 export const ensureElectrobunConfigFile = async (resolved: ResolvedElectrobunViteConfig) => {
+  await ensureIconIconset(resolved.cwd);
+
   const existingConfigFile = resolveElectrobunConfigFile(resolved);
 
   if (existingConfigFile) {
@@ -324,11 +327,23 @@ export const ensureElectrobunConfigFile = async (resolved: ResolvedElectrobunVit
     };
   }
 
-  const inlineConfig = resolved.config.electrobun.config;
+  let inlineConfig = resolved.config.electrobun.config;
   if (!inlineConfig) {
     throw new Error(
       "No Electrobun config found. Add electrobun.config.ts or define electrobun.config inside electrobun.vite.config.ts.",
     );
+  }
+
+  const hasIcon = await ensureIconIconset(resolved.cwd);
+  if (hasIcon) {
+    const build = (inlineConfig as Record<string, unknown>).build as Record<string, unknown> | undefined;
+    inlineConfig = {
+      ...inlineConfig,
+      build: {
+        ...build,
+        mac: { ...(build?.mac as Record<string, unknown>), icons: "icon.iconset" },
+      },
+    };
   }
 
   const generatedConfigPath = join(resolved.cwd, "electrobun.config.ts");

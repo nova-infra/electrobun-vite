@@ -3,11 +3,11 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "bun ../../packages/electrobun-vite/bin/electrobun-vite.ts dev",
-    "serve": "bun ../../packages/electrobun-vite/bin/electrobun-vite.ts serve",
-    "build": "bun ../../packages/electrobun-vite/bin/electrobun-vite.ts build",
-    "preview": "bun ../../packages/electrobun-vite/bin/electrobun-vite.ts preview",
-    "start": "bun ../../packages/electrobun-vite/bin/electrobun-vite.ts preview",
+    "dev": "PATH=../../packages/electrobun-vite/dist/bin:$PATH electrobun-vite dev",
+    "serve": "PATH=../../packages/electrobun-vite/dist/bin:$PATH electrobun-vite serve",
+    "build": "PATH=../../packages/electrobun-vite/dist/bin:$PATH electrobun-vite build",
+    "preview": "PATH=../../packages/electrobun-vite/dist/bin:$PATH electrobun-vite preview",
+    "start": "PATH=../../packages/electrobun-vite/dist/bin:$PATH electrobun-vite preview",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

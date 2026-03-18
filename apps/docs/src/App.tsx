@@ -116,7 +116,7 @@ export function App() {
   const copy = useMemo<Record<Locale, DocsCopy>>(
     () => ({
       zh: {
-        eyebrow: `Electrobun ${starterVersions.electrobun} + Vite ${starterVersions.vite}`,
+        eyebrow: "Electrobun + Vite",
         title: "把第一次上手需要的命令收敛成最短主路径。",
         lede:
           "electrobun-vite 现在更适合作为一个直接上手的桌面开发入口：先创建项目，再启动 dev，最后 build / preview，不需要先消化一整页背景介绍。",
@@ -274,7 +274,7 @@ export function App() {
         ],
       },
       en: {
-        eyebrow: `Electrobun ${starterVersions.electrobun} + Vite ${starterVersions.vite}`,
+        eyebrow: "Electrobun + Vite",
         title: "Reduce first-run docs to the commands people actually need.",
         lede:
           "electrobun-vite now reads more like a practical getting-started guide: create a project, run dev, then build and preview. The landing page should help people ship, not make them scroll through repo history.",

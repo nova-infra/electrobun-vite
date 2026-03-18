@@ -3,22 +3,28 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "bin": {
-    "electrobun-vite": "./bin/electrobun-vite.ts",
-    "create-electrobun": "./bin/create-electrobun.ts"
+    "electrobun-vite": "./dist/bin/electrobun-vite.js",
+    "create-electrobun": "./dist/bin/create-electrobun.js"
   },
   "exports": {
-    ".": "./src/index.ts",
-    "./metadata": "./src/metadata.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./metadata": {
+      "types": "./dist/metadata.d.ts",
+      "import": "./dist/metadata.js"
+    }
   },
   "files": [
-    "dist",
-    "src"
+    "assets",
+    "dist"
   ],
   "scripts": {
-    "build": "bun build ./src/index.ts --outdir ./dist --target node --packages external && bun build ./bin/electrobun-vite.ts --outfile ./dist/electrobun-vite.js --target bun --packages external && bun build ./bin/create-electrobun.ts --outfile ./dist/create-electrobun.js --target bun --packages external && tsc -p tsconfig.build.json && chmod +x ./dist/electrobun-vite.js ./dist/create-electrobun.js",
+    "build": "vite build && tsc -p tsconfig.build.json && chmod +x ./dist/bin/electrobun-vite.js ./dist/bin/create-electrobun.js && ln -sf electrobun-vite.js ./dist/bin/electrobun-vite && ln -sf create-electrobun.js ./dist/bin/create-electrobun",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

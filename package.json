@@ -15,8 +15,8 @@
     "dev:demo": "bun run --cwd apps/demo dev",
     "dev:template": "bun run --cwd templates/react-ts dev",
     "dev:docs": "bun run --cwd apps/docs dev",
-    "info": "bun packages/electrobun-vite/bin/electrobun-vite.ts info",
-    "new": "bun packages/electrobun-vite/bin/create-electrobun.ts",
+    "info": "bun packages/electrobun-vite/dist/bin/electrobun-vite.js info",
+    "new": "bun packages/electrobun-vite/dist/bin/create-electrobun.js",
     "build": "bun run build:package && bun run build:demo && bun run build:template",
     "build:all": "bun run build && bun run build:docs",
     "build:package": "bun run --cwd packages/electrobun-vite build",
@@ -28,7 +28,8 @@
     "typecheck:package": "bun run --cwd packages/electrobun-vite typecheck",
     "typecheck:demo": "bun run --cwd apps/demo typecheck",
     "typecheck:template": "bun run --cwd templates/react-ts typecheck",
-    "typecheck:docs": "bun run --cwd apps/docs typecheck"
+    "typecheck:docs": "bun run --cwd apps/docs typecheck",
+    "postinstall": "bun run build:package"
   },
   "devDependencies": {
     "@types/bun": "latest",

@@ -1,6 +1,6 @@
 import { cac } from "cac";
 import colors from "picocolors";
-import { createLogger, type LogLevel } from "vite";
+import type { LogLevel } from "vite";
 import {
   getDefaultTemplateName,
   loadUserConfig,
@@ -14,6 +14,7 @@ import {
   workspaceModules,
 } from "./metadata";
 import { build } from "./build";
+import { createToolLogger } from "./logger";
 import { createServer } from "./server";
 import { preview } from "./preview";
 
@@ -50,9 +51,10 @@ const createInlineConfig = (root: string | undefined, options: GlobalCLIOptions)
 });
 
 const handleError = (logLevel: LogLevel | undefined, label: string, error: unknown) => {
-  const logger = createLogger(logLevel);
+  const logger = createToolLogger(logLevel);
   const message = error instanceof Error ? error.message : String(error);
-  logger.error(colors.red(`${label}\n${message}`));
+  logger.fatal(colors.red(colors.bold(label)));
+  logger.fatal(colors.dim(message));
   process.exit(1);
 };
 
@@ -60,20 +62,20 @@ export const runCLI = async (argv = process.argv) => {
   const cli = cac("electrobun-vite");
 
   cli
-    .option("-c, --config <file>", "[string] use specified config file")
-    .option("-l, --logLevel <level>", "[string] info | warn | error | silent")
-    .option("--clearScreen", "[boolean] allow/disable clear screen when logging")
-    .option("-m, --mode <mode>", "[string] set env mode")
-    .option("-w, --watch", "[boolean] rebuild or restart when supported files change")
-    .option("--outDir <dir>", "[string] output directory (default: dist)")
-    .option("--sourcemap", "[boolean] enable source maps when supported")
+    .option("-c, --config <file>", "[string] use a specific electrobun.vite.config.ts file")
+    .option("-l, --logLevel <level>", "[string] control log verbosity: info | warn | error | silent")
+    .option("--clearScreen", "[boolean] clear previous logs between updates when supported")
+    .option("-m, --mode <mode>", "[string] set mode for env loading and config resolution")
+    .option("-w, --watch", "[boolean] watch files and rebuild or restart when supported")
+    .option("--outDir <dir>", "[string] override the generated asset directory (default: dist)")
+    .option("--sourcemap", "[boolean] emit source maps when the active command supports them")
     .option("--entry <file>", "[string] reserved for future bun entry overrides");
 
   cli
-    .command("[root]", "start dev server and electrobun app")
+    .command("[root]", "start the Vite dev server and Electrobun app from [root]")
     .alias("serve")
     .alias("dev")
-    .option("--rendererOnly", "[boolean] only start renderer dev server")
+    .option("--rendererOnly", "[boolean] start only the renderer dev server")
     .action(async (root: string, options: DevCLIOptions) => {
       try {
         await createServer(createInlineConfig(root, options), {
@@ -85,7 +87,7 @@ export const runCLI = async (argv = process.argv) => {
       }
     });
 
-  cli.command("build [root]", "build for production").action(async (root: string, options: GlobalCLIOptions) => {
+  cli.command("build [root]", "build renderer and desktop output for production").action(async (root: string, options: GlobalCLIOptions) => {
     try {
       await build(createInlineConfig(root, options));
     } catch (error) {
@@ -94,8 +96,8 @@ export const runCLI = async (argv = process.argv) => {
   });
 
   cli
-    .command("preview [root]", "start electrobun app to preview production build")
-    .option("--skipBuild", "[boolean] skip build")
+    .command("preview [root]", "start the desktop app against the production build")
+    .option("--skipBuild", "[boolean] preview the existing build without rebuilding first")
     .action(async (root: string, options: PreviewCLIOptions) => {
       try {
         await preview(createInlineConfig(root, options), {
@@ -106,39 +108,40 @@ export const runCLI = async (argv = process.argv) => {
       }
     });
 
-  cli.command("info [root]", "print resolved package metadata").action(async (root: string, options: GlobalCLIOptions) => {
+  cli.command("info [root]", "print resolved config, versions, and template metadata").action(async (root: string, options: GlobalCLIOptions) => {
+    const logger = createToolLogger(options.logLevel);
     const resolved = await loadUserConfig(createInlineConfig(root, options), "serve", "development");
-    console.log(
-      JSON.stringify(
-        {
-          configFile: resolved.configFile,
-          defaultTemplate: getDefaultTemplateName(),
-          versions: starterVersions,
-          modules: workspaceModules,
-          templates: templatePackages,
-        },
-        null,
-        2,
-      ),
-    );
+    const out = {
+      configFile: resolved.configFile,
+      defaultTemplate: getDefaultTemplateName(),
+      versions: starterVersions,
+      modules: workspaceModules,
+      templates: templatePackages,
+    };
+    logger.output(colors.cyan("resolved config:"));
+    logger.output(JSON.stringify(out, null, 2));
   });
 
   cli
-    .command("create <projectName>", "scaffold a react-ts project")
-    .option("-t, --template <template>", "[string] currently only react-ts is supported")
+    .command("create <projectName>", "scaffold a new react-ts project into <projectName>")
+    .option("-t, --template <template>", "[string] choose scaffold template; currently only react-ts is supported")
     .action(async (projectName: string, options: { template?: string }) => {
+      const logger = createToolLogger("info");
       try {
         const result = await scaffoldProject({
           projectName,
           template: options.template ?? "react-ts",
         });
 
-        console.log(`Created ${projectName} from ${result.template.directory}`);
-        console.log(`Location: ${result.targetDir}`);
-        console.log("Next steps:");
-        console.log(`  cd ${projectName}`);
-        console.log("  bun install");
-        console.log("  bun run dev");
+        logger.output(
+          `${colors.green(colors.bold("✓"))} created ${projectName} from template ${result.template.directory}`,
+        );
+        logger.output(colors.dim(`  ${result.targetDir}`));
+        logger.output("");
+        logger.output(colors.dim("next steps:"));
+        logger.output(colors.cyan(`  cd ${projectName}`));
+        logger.output(colors.cyan("  bun install"));
+        logger.output(colors.cyan("  bun run dev"));
       } catch (error) {
         handleError("error", "error during scaffold:", error);
       }

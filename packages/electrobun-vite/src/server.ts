@@ -1,10 +1,19 @@
-import { createServer as viteCreateServer, createLogger } from "vite";
+import colors from "picocolors";
+import { createServer as viteCreateServer } from "vite";
 import {
   ensureElectrobunConfigFile,
   getRendererOutDir,
   loadUserConfig,
   type InlineConfig,
 } from "./config";
+import {
+  createLogEnvironment,
+  createToolLogger,
+  createViteLogger,
+  LOG_SCOPE_LAUNCHER,
+  LOG_SCOPE_VITE,
+  pipeSubprocessLogs,
+} from "./logger";
 
 const waitForTermination = async (cleanup: () => Promise<void>) => {
   await new Promise<void>((resolve, reject) => {
@@ -28,9 +37,8 @@ export async function createServer(
 ): Promise<void> {
   process.env.NODE_ENV_ELECTROBUN_VITE = "development";
   const resolved = await loadUserConfig(inlineConfig, "serve", "development");
-  const logger = createLogger(resolved.logLevel, {
-    allowClearScreen: resolved.clearScreen,
-  });
+  const logger = createToolLogger(resolved.logLevel);
+  const viteLogger = createViteLogger(resolved.logLevel);
 
   const server = await viteCreateServer({
     ...resolved.config.renderer.vite,
@@ -38,6 +46,7 @@ export async function createServer(
     mode: resolved.mode,
     logLevel: resolved.logLevel,
     clearScreen: resolved.clearScreen,
+    customLogger: viteLogger,
   });
 
   const electrobunConfig = await ensureElectrobunConfigFile(resolved);
@@ -50,7 +59,9 @@ export async function createServer(
       `http://${resolved.config.renderer.dev.host}:${resolved.config.renderer.dev.port}`;
 
     if (options.rendererOnly) {
-      logger.info(`renderer dev server running at ${devServerUrl}`);
+      logger.info(`renderer dev server -> ${devServerUrl}`, {
+        scope: LOG_SCOPE_VITE,
+      });
       await waitForTermination(async () => {
         await server.close();
         await electrobunConfig.cleanup();
@@ -58,23 +69,34 @@ export async function createServer(
       return;
     }
 
+    logger.info(`renderer -> ${devServerUrl}`, { scope: LOG_SCOPE_VITE });
+    logger.info("starting electrobun dev process...", {
+      scope: LOG_SCOPE_LAUNCHER,
+    });
+
     const child = Bun.spawn(["bunx", "electrobun", "dev", ...(options.watch ? ["--watch"] : [])], {
       cwd: resolved.cwd,
       env: {
         ...process.env,
         ELECTROBUN_VITE_DEV_SERVER_URL: devServerUrl,
         ELECTROBUN_VITE_OUT_DIR: getRendererOutDir(resolved),
+        ...createLogEnvironment(resolved.logLevel),
       },
       stdin: "inherit",
-      stdout: "inherit",
-      stderr: "inherit",
+      stdout: "pipe",
+      stderr: "pipe",
     });
+    const childLogs = pipeSubprocessLogs(child, logger, "electrobun-dev");
 
     await Promise.race([
       child.exited.then(async (exitCode) => {
+        await childLogs;
         await server.close();
         await electrobunConfig.cleanup();
         if (exitCode !== 0) {
+          logger.fatal(colors.red(`electrobun dev failed (exit ${exitCode})`), {
+            scope: LOG_SCOPE_LAUNCHER,
+          });
           process.exit(exitCode);
         }
       }),
@@ -83,6 +105,7 @@ export async function createServer(
           child.kill();
           await child.exited;
         }
+        await childLogs;
         await server.close();
         await electrobunConfig.cleanup();
       }),

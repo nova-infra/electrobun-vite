@@ -1,5 +1,6 @@
+import { existsSync } from "node:fs";
 import { cp, mkdir, readFile, writeFile } from "node:fs/promises";
-import { basename, join, resolve } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { getTemplateDirectory } from "./config";
 import { templatePackages } from "./metadata";
@@ -27,7 +28,24 @@ export type ScaffoldProjectOptions = {
 };
 
 const ignoredDirectories = new Set(["node_modules", "dist", "build"]);
-const repoRoot = fileURLToPath(new URL("../../..", import.meta.url));
+const findWorkspaceRoot = (startDir: string) => {
+  let currentDir = startDir;
+
+  while (true) {
+    if (existsSync(resolve(currentDir, "templates", "react-ts"))) {
+      return currentDir;
+    }
+
+    const parentDir = dirname(currentDir);
+    if (parentDir === currentDir) {
+      throw new Error("Could not locate workspace root containing templates/react-ts.");
+    }
+
+    currentDir = parentDir;
+  }
+};
+
+const repoRoot = findWorkspaceRoot(dirname(fileURLToPath(import.meta.url)));
 
 const sanitizePackageName = (value: string) =>
   value

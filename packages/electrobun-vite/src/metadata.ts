@@ -43,6 +43,11 @@ export const workspaceModules: WorkspaceModule[] = [
     description: "Shares versions and docs-facing product metadata in one place.",
     descriptionZh: "统一维护版本信息与官网展示元数据。",
   },
+  {
+    name: "logger",
+    description: "Normalizes CLI logs, subprocess output, and future runtime log handoff in one place.",
+    descriptionZh: "统一处理 CLI 日志、子进程输出，以及后续运行时日志接入的公共约定。",
+  },
 ];
 
 export const templatePackages: TemplatePackage[] = [
