@@ -26,7 +26,15 @@ Then add this to your project-level `.npmrc` for auth:
 
 ```ini
 @nova-infra:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=YOUR_TOKEN
+//npm.pkg.github.com/:_authToken=${NPM_TOKEN}
+```
+
+Set `NPM_TOKEN` to a GitHub classic personal access token with `read:packages` for installs. In CI, you can inject the same value from a secret instead of hardcoding it into `.npmrc`.
+
+For a quick local setup, you can export it in the same shell before installing:
+
+```bash
+export NPM_TOKEN=ghp_your_token_here
 ```
 
 Then install the package as usual:
@@ -37,7 +45,7 @@ npm install @nova-infra/electrobun-vite
 bun add @nova-infra/electrobun-vite
 ```
 
-If the package is public in your environment, the token line may still be useful for GitHub rate limits or private repo access, but the scoped registry entry is the important part.
+If the package is public in your environment, the token line may still be useful for GitHub rate limits or private repo access, but the scoped registry entry is the important part. Using an environment variable keeps the setup easy to copy, script, and automate.
 
 ---
 
@@ -56,8 +64,9 @@ If the package is public in your environment, the token line may still be useful
    ```bash
    bunx -p @nova-infra/electrobun-vite create-electrobun .
    bunx -p @nova-infra/electrobun-vite create-electrobun
+   bunx -p @nova-infra/electrobun-vite create-electrobun --force
    ```
-   Both forms target the current directory; if it is not empty, you will be asked to confirm before scaffolding continues.
+   The first two forms target the current directory; if it is not empty, you will be asked to confirm before scaffolding continues. Add `--force` to skip the prompt and scaffold immediately.
 
    **From this repo** (monorepo root):
    ```bash
@@ -102,7 +111,7 @@ If the package is public in your environment, the token line may still be useful
 - **`electrobun-vite build [root]`** — Build renderer and hand off to Electrobun packaging.
 - **`electrobun-vite preview [root]`** — Run desktop app with production assets; `--skipBuild` skips build.
 - **`electrobun-vite info [root]`** — Print resolved config and version info.
-- **`create-electrobun <projectName>`** — Create a new project (current template: react-ts). Omit `<projectName>` or pass `.` to scaffold into the current directory with a confirm prompt if it is not empty.
+- **`create-electrobun <projectName>`** — Create a new project (current template: react-ts). Omit `<projectName>` or pass `.` to scaffold into the current directory; if it is not empty, you will be asked to confirm unless you pass `--force`.
 
 Common flags: `-c, --config`, `-l, --logLevel`, `--clearScreen`, `-m, --mode`, `-w, --watch`, `--outDir`.
 

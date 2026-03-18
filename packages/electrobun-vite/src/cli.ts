@@ -123,15 +123,20 @@ export const runCLI = async (argv = process.argv) => {
   });
 
   cli
-    .command("create [projectName]", "scaffold a new react-ts project into <projectName> or into the current directory with '.' and a confirm prompt")
+    .command(
+      "create [projectName]",
+      "scaffold a new react-ts project into <projectName> or into the current directory with '.'; use --force to skip confirm prompts",
+    )
     .option("-t, --template <template>", "[string] choose scaffold template; currently only react-ts is supported")
-    .action(async (projectName: string | undefined, options: { template?: string }) => {
+    .option("-f, --force", "[boolean] skip confirm prompts and allow scaffolding into existing directories")
+    .action(async (projectName: string | undefined, options: { template?: string; force?: boolean }) => {
       const logger = createToolLogger("info");
       try {
         const targetName = projectName ?? ".";
         const result = await scaffoldProject({
           projectName: targetName,
           template: options.template ?? "react-ts",
+          force: options.force,
         });
         const isCurrentDirectory = targetName === "." || targetName === "";
         const createdLabel = isCurrentDirectory ? "current directory" : targetName;

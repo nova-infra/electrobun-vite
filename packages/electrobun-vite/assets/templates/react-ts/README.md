@@ -46,7 +46,7 @@ bunx -p @nova-infra/electrobun-vite create-electrobun .
 bunx -p @nova-infra/electrobun-vite create-electrobun
 ```
 
-Both forms target the current directory; if it is not empty, the CLI will ask you to confirm before continuing.
+Both forms target the current directory; if it is not empty, the CLI will ask you to confirm before continuing. Add `--force` to skip the prompt and scaffold into the directory immediately.
 
 ## Structure
 

@@ -26,7 +26,15 @@ npm config set @nova-infra:registry https://npm.pkg.github.com
 
 ```ini
 @nova-infra:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=YOUR_TOKEN
+//npm.pkg.github.com/:_authToken=${NPM_TOKEN}
+```
+
+把 `NPM_TOKEN` 设置成一个 GitHub classic personal access token，至少需要 `read:packages` 才能安装。到了 CI 里，也可以直接从 secret 注入这个环境变量，不需要把 token 写死在 `.npmrc` 里。
+
+如果想最快本地试通，可以先在当前 shell 里导出：
+
+```bash
+export NPM_TOKEN=ghp_your_token_here
 ```
 
 然后按常规方式安装即可：
@@ -37,7 +45,7 @@ npm install @nova-infra/electrobun-vite
 bun add @nova-infra/electrobun-vite
 ```
 
-如果包在你的环境里是公开可用的，token 行有时可以省略，但作用域 registry 映射是关键。
+如果包在你的环境里是公开可用的，token 行有时可以省略，但作用域 registry 映射是关键。把 token 放到环境变量里，也更方便给脚本、CI 或大模型自动补齐配置。
 
 ---
 
@@ -56,8 +64,9 @@ bun add @nova-infra/electrobun-vite
    ```bash
    bunx -p @nova-infra/electrobun-vite create-electrobun .
    bunx -p @nova-infra/electrobun-vite create-electrobun
+   bunx -p @nova-infra/electrobun-vite create-electrobun --force
    ```
-   这两种写法都会指向当前目录；如果目录不为空，脚手架会先让你确认再继续。
+   前两种写法都会指向当前目录；如果目录不为空，脚手架会先让你确认再继续。加上 `--force` 就会跳过确认，直接执行。
 
    **从本仓库执行**（monorepo 根目录）：
    ```bash
@@ -102,7 +111,7 @@ bun add @nova-infra/electrobun-vite
 - **`electrobun-vite build [root]`** — 构建 renderer 并交给 Electrobun 打包。
 - **`electrobun-vite preview [root]`** — 用生产资源启动桌面应用；`--skipBuild` 跳过构建。
 - **`electrobun-vite info [root]`** — 输出解析后的配置与版本信息。
-- **`create-electrobun <projectName>`** — 创建新项目（当前模板：react-ts）。省略 `<projectName>` 或传 `.` 都会在当前目录生成；如果目录不为空，会先确认。
+- **`create-electrobun <projectName>`** — 创建新项目（当前模板：react-ts）。省略 `<projectName>` 或传 `.` 都会在当前目录生成；如果目录不为空，会先确认，除非你加上 `--force`。
 
 常用全局参数：`-c, --config`、`-l, --logLevel`、`--clearScreen`、`-m, --mode`、`-w, --watch`、`--outDir`。
 

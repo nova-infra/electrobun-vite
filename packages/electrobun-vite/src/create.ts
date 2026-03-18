@@ -26,6 +26,7 @@ export type ScaffoldProjectOptions = {
   cwd?: string;
   projectName: string;
   template?: string;
+  force?: boolean;
 };
 
 const ignoredDirectories = new Set(["node_modules", "dist", "build"]);
@@ -97,6 +98,15 @@ const confirmCurrentDirectoryScaffold = async (targetDir: string) => {
   }
 };
 
+const ensureTargetDirectory = async (targetDir: string, force = false) => {
+  if (force) {
+    await mkdir(targetDir, { recursive: true });
+    return;
+  }
+
+  await mkdir(targetDir, { recursive: false });
+};
+
 const sanitizePackageName = (value: string) =>
   value
     .trim()
@@ -154,6 +164,7 @@ export const scaffoldProject = async ({
   cwd = process.cwd(),
   projectName,
   template = "react-ts",
+  force = false,
 }: ScaffoldProjectOptions) => {
   const templateDir = getTemplateDirectory(template);
   const sourceDir = findTemplateSourceDir(templateDir);
@@ -162,12 +173,12 @@ export const scaffoldProject = async ({
   const projectSlug = isCurrentDirectory ? basename(cwd) : basename(projectName);
 
   if (isCurrentDirectory) {
-    const confirmed = await confirmCurrentDirectoryScaffold(targetDir);
+    const confirmed = force || (await confirmCurrentDirectoryScaffold(targetDir));
     if (!confirmed) {
       throw new Error("Aborted.");
     }
   } else {
-    await mkdir(targetDir, { recursive: false });
+    await ensureTargetDirectory(targetDir, force);
   }
 
   await cp(sourceDir, targetDir, {
