@@ -25,6 +25,7 @@ export default defineConfig({
     lib: {
       entry: {
         index: resolve(rootDir, "src/index.ts"),
+        metadata: resolve(rootDir, "src/metadata.ts"),
         "bin/electrobun-vite": resolve(rootDir, "src/bin/electrobun-vite.ts"),
         "bin/create-electrobun": resolve(rootDir, "src/bin/create-electrobun.ts"),
       },

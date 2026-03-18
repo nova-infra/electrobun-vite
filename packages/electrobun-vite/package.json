@@ -13,6 +13,10 @@
     "electrobun-vite": "./dist/bin/electrobun-vite.js",
     "create-electrobun": "./dist/bin/create-electrobun.js"
   },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
