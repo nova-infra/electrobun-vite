@@ -249,6 +249,15 @@ export function App() {
             ],
           },
           {
+            title: "更新",
+            command: "electrobun-vite update [root]",
+            description: "刷新已有项目里的模板管理依赖版本，然后执行 bun install。",
+            details: [
+              "适合项目已经创建过、但你想和当前 starter 版本对齐的时候。",
+              "`[root]` 可选，默认当前目录。",
+            ],
+          },
+          {
             title: "脚手架",
             command: "create-electrobun <projectName>",
             description: "创建新的桌面项目目录，并写入当前默认模板。",
@@ -390,6 +399,15 @@ export function App() {
             details: [
               "Useful when you need to confirm which config file the CLI actually resolved.",
               "`[root]` lets you inspect a specific project directory.",
+            ],
+          },
+          {
+            title: "Update",
+            command: "electrobun-vite update [root]",
+            description: "Refresh template-managed dependency versions in an existing project, then run bun install.",
+            details: [
+              "Use this when a project was created earlier and you want it aligned with the current starter versions.",
+              "`[root]` is optional and defaults to the current directory.",
             ],
           },
           {

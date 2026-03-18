@@ -99,6 +99,7 @@ If the package is public in your environment, the token line may still be useful
 | `bun run dev:template` | Start dev from template project |
 | `bun run dev:docs` | Start docs site |
 | `bun run new -- <name>` | Scaffold a new project (create-electrobun) |
+| `bun run update` | Refresh template-managed dependencies in an existing project |
 | `bun run build` | Build demo + template |
 | `bun run build:docs` | Build docs site |
 | `bun run typecheck` | Type check |
@@ -111,6 +112,7 @@ If the package is public in your environment, the token line may still be useful
 - **`electrobun-vite build [root]`** — Build renderer and hand off to Electrobun packaging.
 - **`electrobun-vite preview [root]`** — Run desktop app with production assets; `--skipBuild` skips build.
 - **`electrobun-vite info [root]`** — Print resolved config and version info.
+- **`electrobun-vite update [root]`** — Refresh template-managed dependencies in an existing project, then run `bun install`.
 - **`create-electrobun <projectName>`** — Create a new project (current template: react-ts). Omit `<projectName>` or pass `.` to scaffold into the current directory; if it is not empty, you will be asked to confirm unless you pass `--force`.
 
 Common flags: `-c, --config`, `-l, --logLevel`, `--clearScreen`, `-m, --mode`, `-w, --watch`, `--outDir`.

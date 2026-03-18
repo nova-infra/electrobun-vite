@@ -17,6 +17,7 @@ import { build } from "./build";
 import { createToolLogger } from "./logger";
 import { createServer } from "./server";
 import { preview } from "./preview";
+import { updateProject } from "./update";
 
 type GlobalCLIOptions = {
   config?: string;
@@ -121,6 +122,18 @@ export const runCLI = async (argv = process.argv) => {
     logger.output(colors.cyan("resolved config:"));
     logger.output(JSON.stringify(out, null, 2));
   });
+
+  cli
+    .command("update [root]", "update template-managed dependencies in an existing project to the latest starter versions")
+    .action(async (root: string | undefined, options: GlobalCLIOptions) => {
+      try {
+        await updateProject({
+          cwd: root,
+        });
+      } catch (error) {
+        handleError(options.logLevel, "error during update:", error);
+      }
+    });
 
   cli
     .command(

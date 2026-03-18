@@ -34,10 +34,12 @@ bun install
 bun run dev
 bun run build
 bun run preview
+bun run update
 bun run typecheck
 ```
 
 `bun run dev` will generate the initial `dist` output once, then keep Electrobun in watch mode with the Vite dev server.
+`bun run update` refreshes the template-managed dependency versions and then runs `bun install`.
 
 ## Scaffold into the current directory
 

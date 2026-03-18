@@ -4,5 +4,6 @@ export { preview } from "./preview";
 export * from "./cli";
 export * from "./config";
 export * from "./create";
+export * from "./update";
 export * from "./logger";
 export * from "./metadata";

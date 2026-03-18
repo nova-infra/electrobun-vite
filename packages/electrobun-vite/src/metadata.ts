@@ -22,6 +22,18 @@ export const starterVersions = {
   tailwindcss: "4.2.1",
 } as const;
 
+export const starterDependencyVersions = {
+  electrobun: starterVersions.electrobun,
+  react: starterVersions.react,
+  "react-dom": starterVersions.reactDom,
+  vite: starterVersions.vite,
+  "@vitejs/plugin-react": "6.0.1",
+  typescript: "^5.9.3",
+  "@types/bun": "latest",
+  "@types/react": "19.2.14",
+  "@types/react-dom": "19.2.3",
+} as const;
+
 export const workspaceModules: WorkspaceModule[] = [
   {
     name: "config",
