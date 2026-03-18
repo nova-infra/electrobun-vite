@@ -141,8 +141,8 @@ export function App() {
           {
             title: "1. 创建项目",
             description: "用 npx/bunx 一键生成项目（无需克隆本仓库），或在本仓库根目录执行脚手架。",
-            code: `# 一键创建（推荐）\nnpx -p @nova-infra/electrobun-vite create-electrobun my-app\ncd my-app\n\n# 或从本仓库：bun install && bun run new -- my-app && cd my-app`,
-            note: "Bun 用户可用 `bunx -p @nova-infra/electrobun-vite create-electrobun my-app`。模板目前为 `react-ts`。",
+            code: `# 一键创建（推荐）\nnpx -p @nova-infra/electrobun-vite create-electrobun my-app\ncd my-app\n\n# 或在空目录里直接生成到当前目录\nbunx -p @nova-infra/electrobun-vite create-electrobun .\nbunx -p @nova-infra/electrobun-vite create-electrobun\n\n# 或从本仓库：bun install && bun run new -- my-app && cd my-app`,
+            note: "Bun 用户也可以用 `bunx -p @nova-infra/electrobun-vite create-electrobun my-app`。如果当前目录是空的，`bunx -p @nova-infra/electrobun-vite create-electrobun .` 和 `bunx -p @nova-infra/electrobun-vite create-electrobun` 是同样效果。",
           },
           {
             title: "2. 本地开发",
@@ -207,6 +207,7 @@ export function App() {
             details: [
               "无需克隆仓库即可创建：`npx -p @nova-infra/electrobun-vite create-electrobun my-app`（Bun：`bunx -p @nova-infra/electrobun-vite create-electrobun my-app`）。",
               "`<projectName>` 是目标目录名，也是生成后的项目名。",
+              "如果要在当前目录生成，请先进入一个空目录，再执行 `create-electrobun .` 或直接执行 `create-electrobun`。",
               "`-t, --template` 目前只接受 `react-ts`。",
             ],
           },
@@ -302,8 +303,8 @@ export function App() {
           {
             title: "1. Scaffold a project",
             description: "Use npx/bunx to create a project in one shot (no clone), or run the scaffold from this repo root.",
-            code: `# One-liner (recommended)\nnpx -p @nova-infra/electrobun-vite create-electrobun my-app\ncd my-app\n\n# Or from this repo: bun install && bun run new -- my-app && cd my-app`,
-            note: "With Bun: `bunx -p @nova-infra/electrobun-vite create-electrobun my-app`. Template is `react-ts`.",
+            code: `# One-liner (recommended)\nnpx -p @nova-infra/electrobun-vite create-electrobun my-app\ncd my-app\n\n# Or generate directly into the current empty directory\nbunx -p @nova-infra/electrobun-vite create-electrobun .\nbunx -p @nova-infra/electrobun-vite create-electrobun\n\n# Or from this repo: bun install && bun run new -- my-app && cd my-app`,
+            note: "With Bun: `bunx -p @nova-infra/electrobun-vite create-electrobun my-app`. If the current directory is empty, `bunx -p @nova-infra/electrobun-vite create-electrobun .` and `bunx -p @nova-infra/electrobun-vite create-electrobun` behave the same.",
           },
           {
             title: "2. Start local development",
@@ -368,6 +369,7 @@ export function App() {
             details: [
               "No clone needed: `npx -p @nova-infra/electrobun-vite create-electrobun my-app` (Bun: `bunx -p @nova-infra/electrobun-vite create-electrobun my-app`).",
               "`<projectName>` becomes the output directory name.",
+              "To scaffold into the current directory, first move into an empty folder and run `create-electrobun .` or just `create-electrobun`.",
               "`-t, --template` is currently limited to `react-ts`.",
             ],
           },

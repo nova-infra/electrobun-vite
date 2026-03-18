@@ -1,7 +1,6 @@
 import { existsSync } from "node:fs";
-import { cp, mkdir, readFile, writeFile } from "node:fs/promises";
+import { cp, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { basename, dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
 import { getTemplateDirectory } from "./config";
 import { templatePackages } from "./metadata";
 
@@ -38,14 +37,41 @@ const findWorkspaceRoot = (startDir: string) => {
 
     const parentDir = dirname(currentDir);
     if (parentDir === currentDir) {
-      throw new Error("Could not locate workspace root containing templates/react-ts.");
+      return null;
     }
 
     currentDir = parentDir;
   }
 };
 
-const repoRoot = findWorkspaceRoot(dirname(fileURLToPath(import.meta.url)));
+const findTemplateSourceDir = (templateDir: string) => {
+  const localWorkspaceRoot = findWorkspaceRoot(import.meta.dir);
+  const localTemplateDir = localWorkspaceRoot
+    ? resolve(localWorkspaceRoot, "templates", templateDir)
+    : null;
+
+  if (localTemplateDir && existsSync(localTemplateDir)) {
+    return localTemplateDir;
+  }
+
+  const packagedTemplateDirs = [
+    resolve(import.meta.dir, "..", "assets", "templates", templateDir),
+    resolve(import.meta.dir, "..", "..", "assets", "templates", templateDir),
+  ];
+
+  for (const packagedTemplateDir of packagedTemplateDirs) {
+    if (existsSync(packagedTemplateDir)) {
+      return packagedTemplateDir;
+    }
+  }
+
+  throw new Error(`Could not locate template files for ${templateDir}.`);
+};
+
+const isDirectoryEmpty = async (dir: string) => {
+  const entries = await readdir(dir, { withFileTypes: true });
+  return entries.length === 0;
+};
 
 const sanitizePackageName = (value: string) =>
   value
@@ -106,17 +132,25 @@ export const scaffoldProject = async ({
   template = "react-ts",
 }: ScaffoldProjectOptions) => {
   const templateDir = getTemplateDirectory(template);
-  const sourceDir = resolve(repoRoot, "templates", templateDir);
+  const sourceDir = findTemplateSourceDir(templateDir);
   const targetDir = resolve(cwd, projectName);
+  const isCurrentDirectory = projectName === "." || projectName === "";
+  const projectSlug = isCurrentDirectory ? basename(cwd) : basename(projectName);
 
-  await mkdir(targetDir, { recursive: false });
+  if (isCurrentDirectory) {
+    if (!(await isDirectoryEmpty(targetDir))) {
+      throw new Error("Current directory is not empty. Use an empty directory when scaffolding into .");
+    }
+  } else {
+    await mkdir(targetDir, { recursive: false });
+  }
 
   await cp(sourceDir, targetDir, {
     recursive: true,
     filter: (source) => !ignoredDirectories.has(basename(source)),
   });
 
-  await patchTemplateFiles(targetDir, projectName);
+  await patchTemplateFiles(targetDir, projectSlug);
 
   return {
     targetDir,

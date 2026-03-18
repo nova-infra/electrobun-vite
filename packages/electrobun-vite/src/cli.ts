@@ -123,23 +123,28 @@ export const runCLI = async (argv = process.argv) => {
   });
 
   cli
-    .command("create <projectName>", "scaffold a new react-ts project into <projectName>")
+    .command("create [projectName]", "scaffold a new react-ts project into <projectName> or into an empty current directory with '.'")
     .option("-t, --template <template>", "[string] choose scaffold template; currently only react-ts is supported")
-    .action(async (projectName: string, options: { template?: string }) => {
+    .action(async (projectName: string | undefined, options: { template?: string }) => {
       const logger = createToolLogger("info");
       try {
+        const targetName = projectName ?? ".";
         const result = await scaffoldProject({
-          projectName,
+          projectName: targetName,
           template: options.template ?? "react-ts",
         });
+        const isCurrentDirectory = targetName === "." || targetName === "";
+        const createdLabel = isCurrentDirectory ? "current directory" : targetName;
 
         logger.output(
-          `${colors.green(colors.bold("✓"))} created ${projectName} from template ${result.template.directory}`,
+          `${colors.green(colors.bold("✓"))} created ${createdLabel} from template ${result.template.directory}`,
         );
         logger.output(colors.dim(`  ${result.targetDir}`));
         logger.output("");
         logger.output(colors.dim("next steps:"));
-        logger.output(colors.cyan(`  cd ${projectName}`));
+        if (!isCurrentDirectory) {
+          logger.output(colors.cyan(`  cd ${targetName}`));
+        }
         logger.output(colors.cyan("  bun install"));
         logger.output(colors.cyan("  bun run dev"));
       } catch (error) {

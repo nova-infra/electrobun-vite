@@ -37,17 +37,6 @@ bun run preview
 bun run typecheck
 ```
 
-## Scaffold into the current directory
-
-If you want to generate the starter directly in an empty folder, use either of these equivalent commands:
-
-```bash
-bunx -p @nova-infra/electrobun-vite create-electrobun .
-bunx -p @nova-infra/electrobun-vite create-electrobun
-```
-
-Both forms only work when the current directory is empty, so the starter files can be written safely without overwriting anything.
-
 ## Structure
 
 - [src/bun/index.ts](src/bun/index.ts): native app entry
