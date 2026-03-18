@@ -81,7 +81,13 @@
 
 ### 从 GitHub Packages 安装
 
-如果你希望安装时把 `@nova-infra` 作用域解析到 GitHub Packages，可以在项目级 `.npmrc` 里加入：
+如果你希望在这台机器上让 `@nova-infra` 作用域默认解析到 GitHub Packages，可以先执行：
+
+```bash
+npm config set @nova-infra:registry https://npm.pkg.github.com
+```
+
+然后再在项目级 `.npmrc` 里加入认证信息：
 
 ```ini
 @nova-infra:registry=https://npm.pkg.github.com

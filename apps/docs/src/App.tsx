@@ -274,8 +274,13 @@ export function App() {
           "包已经关联到这个 GitHub 仓库，并默认发布到 GitHub Packages。下面是安装时需要的最小配置。",
         packageBlocks: [
           {
+            title: "全局 registry",
+            body: "先把 `@nova-infra` 作用域在这台机器上指向 GitHub Packages。",
+            code: `npm config set @nova-infra:registry https://npm.pkg.github.com`,
+          },
+          {
             title: "项目级 .npmrc",
-            body: "把 `@nova-infra` 作用域指向 GitHub Packages，安装时就会从这里解析包。",
+            body: "再在项目里写入认证信息，确保安装时能通过 GitHub Packages 读取包。",
             code: `@nova-infra:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=YOUR_TOKEN`,
           },
           {
@@ -455,8 +460,13 @@ export function App() {
           "The package is linked to this GitHub repository and now publishes to GitHub Packages by default. Here is the minimum install setup.",
         packageBlocks: [
           {
+            title: "Global registry",
+            body: "First point the `@nova-infra` scope at GitHub Packages on this machine.",
+            code: `npm config set @nova-infra:registry https://npm.pkg.github.com`,
+          },
+          {
             title: "Project .npmrc",
-            body: "Point the `@nova-infra` scope at GitHub Packages so installs resolve from the right registry.",
+            body: "Then add auth in the project so installs can actually read from GitHub Packages.",
             code: `@nova-infra:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=YOUR_TOKEN`,
           },
           {
