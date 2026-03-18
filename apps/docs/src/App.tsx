@@ -68,6 +68,9 @@ type DocsCopy = {
   configTitle: string;
   configIntro: string;
   configBlocks: GuideBlock[];
+  packageTitle: string;
+  packageIntro: string;
+  packageBlocks: GuideBlock[];
   faqTitle: string;
   faqs: FAQItem[];
 };
@@ -132,6 +135,7 @@ export function App() {
           { id: "quickstart", label: "Quick Start", summary: "从创建项目到 build / preview 的最短路径。" },
           { id: "cli", label: "CLI", summary: "每个命令做什么，以及参数分别影响哪里。" },
           { id: "config", label: "Config", summary: "围绕一个 electrobun.vite.config.ts 工作。" },
+          { id: "packages", label: "Packages", summary: "GitHub Packages 发布与安装方式。" },
           { id: "faq", label: "FAQ", summary: "保留两个最常见的问题，避免页面继续膨胀。" },
         ],
         quickStartTitle: "Quick Start",
@@ -265,6 +269,24 @@ export function App() {
             ],
           },
         ],
+        packageTitle: "Packages",
+        packageIntro:
+          "包已经关联到这个 GitHub 仓库，并默认发布到 GitHub Packages。下面是安装时需要的最小配置。",
+        packageBlocks: [
+          {
+            title: "项目级 .npmrc",
+            body: "把 `@nova-infra` 作用域指向 GitHub Packages，安装时就会从这里解析包。",
+            code: `@nova-infra:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=YOUR_TOKEN`,
+          },
+          {
+            title: "安装命令",
+            body: "然后按常规方式安装即可。Bun 和 npm 都可以直接使用同一个包名。",
+            bullets: [
+              "npm install @nova-infra/electrobun-vite",
+              "bun add @nova-infra/electrobun-vite",
+            ],
+          },
+        ],
         faqTitle: "FAQ",
         faqs: [
           {
@@ -294,6 +316,7 @@ export function App() {
           { id: "quickstart", label: "Quick Start", summary: "The shortest path from scaffold to build / preview." },
           { id: "cli", label: "CLI", summary: "What each command does and what every parameter affects." },
           { id: "config", label: "Config", summary: "Work around one electrobun.vite.config.ts file." },
+          { id: "packages", label: "Packages", summary: "How to publish and install from GitHub Packages." },
           { id: "faq", label: "FAQ", summary: "Two common questions, without bringing back unrelated sections." },
         ],
         quickStartTitle: "Quick Start",
@@ -424,6 +447,24 @@ export function App() {
               "`renderer.vite`: inline Vite configuration.",
               "`electrobun.outDir`: shared output directory between renderer output and desktop packaging.",
               "`electrobun.config`: app / build / copy details in one place.",
+            ],
+          },
+        ],
+        packageTitle: "Packages",
+        packageIntro:
+          "The package is linked to this GitHub repository and now publishes to GitHub Packages by default. Here is the minimum install setup.",
+        packageBlocks: [
+          {
+            title: "Project .npmrc",
+            body: "Point the `@nova-infra` scope at GitHub Packages so installs resolve from the right registry.",
+            code: `@nova-infra:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=YOUR_TOKEN`,
+          },
+          {
+            title: "Install commands",
+            body: "Then install the package normally. npm and Bun both use the same package name.",
+            bullets: [
+              "npm install @nova-infra/electrobun-vite",
+              "bun add @nova-infra/electrobun-vite",
             ],
           },
         ],
@@ -637,6 +678,36 @@ export function App() {
                 <p className="mt-3 max-w-4xl text-sm leading-8 text-stone-600">{activeCopy.configIntro}</p>
                 <div className="mt-6 grid gap-4 lg:grid-cols-2">
                   {activeCopy.configBlocks.map((block) => (
+                    <article
+                      className={`rounded-[20px] border p-5 ${
+                        block.tone === "accent"
+                          ? "border-teal-700/12 bg-[linear-gradient(135deg,rgba(221,245,239,0.92),rgba(255,251,245,0.94))]"
+                          : "border-stone-900/10 bg-white/80"
+                      }`}
+                      key={block.title}
+                    >
+                      <h3 className="m-0 text-lg text-stone-950">{block.title}</h3>
+                      <p className="mt-3 text-sm leading-7 text-stone-600">{block.body}</p>
+                      {block.bullets ? (
+                        <ul className="mt-4 space-y-2 pl-5 text-sm leading-7 text-stone-700">
+                          {block.bullets.map((item) => (
+                            <li key={item}>{item}</li>
+                          ))}
+                        </ul>
+                      ) : null}
+                      {block.code ? (
+                        <pre className="mt-4 overflow-x-auto rounded-[18px] bg-stone-950 p-4 text-sm leading-7 text-stone-100"><code>{block.code}</code></pre>
+                      ) : null}
+                    </article>
+                  ))}
+                </div>
+              </section>
+
+              <section className="rounded-[24px] border border-stone-900/10 bg-[rgba(255,251,245,0.86)] p-6" id="packages">
+                <h2 className="m-0 text-2xl md:text-3xl">{activeCopy.packageTitle}</h2>
+                <p className="mt-3 max-w-4xl text-sm leading-8 text-stone-600">{activeCopy.packageIntro}</p>
+                <div className="mt-6 grid gap-4 lg:grid-cols-2">
+                  {activeCopy.packageBlocks.map((block) => (
                     <article
                       className={`rounded-[20px] border p-5 ${
                         block.tone === "accent"

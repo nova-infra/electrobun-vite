@@ -21,6 +21,13 @@ Shortest path to first run: single config, Quick Start, and a react-ts template 
    ```
    Or with Bun: `bunx -p @nova-infra/electrobun-vite create-electrobun my-app`
 
+   **Into the current empty directory:**
+   ```bash
+   bunx -p @nova-infra/electrobun-vite create-electrobun .
+   bunx -p @nova-infra/electrobun-vite create-electrobun
+   ```
+   Both forms behave the same when the current directory is empty.
+
    **From this repo** (monorepo root):
    ```bash
    bun install
@@ -64,9 +71,32 @@ Shortest path to first run: single config, Quick Start, and a react-ts template 
 - **`electrobun-vite build [root]`** — Build renderer and hand off to Electrobun packaging.
 - **`electrobun-vite preview [root]`** — Run desktop app with production assets; `--skipBuild` skips build.
 - **`electrobun-vite info [root]`** — Print resolved config and version info.
-- **`create-electrobun <projectName>`** — Create a new project (current template: react-ts).
+- **`create-electrobun <projectName>`** — Create a new project (current template: react-ts). Omit `<projectName>` or pass `.` to scaffold into an empty current directory.
 
 Common flags: `-c, --config`, `-l, --logLevel`, `--clearScreen`, `-m, --mode`, `-w, --watch`, `--outDir`.
+
+## GitHub Packages
+
+The `@nova-infra/electrobun-vite` package is linked to this GitHub repository through its `repository` metadata. Its `publishConfig` now targets GitHub Packages, and the publish workflow in [`.github/workflows/publish-package.yml`](.github/workflows/publish-package.yml) is tag-only: push a `packages/electrobun-vite-v*` tag to publish.
+
+### Install from GitHub Packages
+
+Add this to your project-level `.npmrc` if you want installs to resolve the `@nova-infra` scope from GitHub Packages:
+
+```ini
+@nova-infra:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=YOUR_TOKEN
+```
+
+Then install the package as usual:
+
+```bash
+npm install @nova-infra/electrobun-vite
+# or
+bun add @nova-infra/electrobun-vite
+```
+
+If the package is public in your environment, the token line may still be useful for GitHub rate limits or private repo access, but the scoped registry entry is the important part.
 
 ---
 
@@ -80,15 +110,3 @@ Common flags: `-c, --config`, `-l, --logLevel`, `--clearScreen`, `-m, --mode`, `
 | [apps/docs](apps/docs) | Docs site source, deployed to GitHub Pages |
 
 One **`electrobun.vite.config.ts`** per project: renderer and Electrobun config in a single file.
-
----
-
-## App icon (macOS)
-
-When you run `dev` or `build`, electrobun-vite generates **`icon.iconset`** at the app root (from `AppIcon.appiconset/icon-1024.png` or the package default). Config generation injects `build.mac.icons: "icon.iconset"`.
-
----
-
-## Docs deployment
-
-Docs are built from [apps/docs](apps/docs) and deployed via [.github/workflows/deploy-docs.yml](.github/workflows/deploy-docs.yml). Enable **GitHub Pages → Source: GitHub Actions** in repo settings. Base path is set by `DOCS_BASE_PATH` (currently `/electrobun-vite/`).

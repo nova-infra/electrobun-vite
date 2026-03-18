@@ -21,6 +21,13 @@
    ```
    使用 Bun 时：`bunx -p @nova-infra/electrobun-vite create-electrobun my-app`
 
+   **直接生成到当前空目录：**
+   ```bash
+   bunx -p @nova-infra/electrobun-vite create-electrobun .
+   bunx -p @nova-infra/electrobun-vite create-electrobun
+   ```
+   当前目录为空时，这两种写法效果相同。
+
    **从本仓库执行**（monorepo 根目录）：
    ```bash
    bun install
@@ -64,9 +71,32 @@
 - **`electrobun-vite build [root]`** — 构建 renderer 并交给 Electrobun 打包。
 - **`electrobun-vite preview [root]`** — 用生产资源启动桌面应用；`--skipBuild` 跳过构建。
 - **`electrobun-vite info [root]`** — 输出解析后的配置与版本信息。
-- **`create-electrobun <projectName>`** — 创建新项目（当前模板：react-ts）。
+- **`create-electrobun <projectName>`** — 创建新项目（当前模板：react-ts）。省略 `<projectName>` 或传 `.` 都会在空的当前目录生成。
 
 常用全局参数：`-c, --config`、`-l, --logLevel`、`--clearScreen`、`-m, --mode`、`-w, --watch`、`--outDir`。
+
+## GitHub Packages
+
+`@nova-infra/electrobun-vite` 已通过 `repository` 元数据关联到这个 GitHub 仓库，并且 `publishConfig` 现在默认指向 GitHub Packages。发布流程见 [`.github/workflows/publish-package.yml`](.github/workflows/publish-package.yml)，只会在 push `packages/electrobun-vite-v*` tag 时触发。
+
+### 从 GitHub Packages 安装
+
+如果你希望安装时把 `@nova-infra` 作用域解析到 GitHub Packages，可以在项目级 `.npmrc` 里加入：
+
+```ini
+@nova-infra:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=YOUR_TOKEN
+```
+
+然后按常规方式安装即可：
+
+```bash
+npm install @nova-infra/electrobun-vite
+# 或
+bun add @nova-infra/electrobun-vite
+```
+
+如果包在你的环境里是公开可用的，token 行有时可以省略，但作用域 registry 映射是关键。
 
 ---
 
@@ -80,15 +110,3 @@
 | [apps/docs](apps/docs) | 官网源码，部署到 GitHub Pages |
 
 项目层围绕 **一个** `electrobun.vite.config.ts`：renderer 与 Electrobun 配置同文件。
-
----
-
-## 应用图标（macOS）
-
-运行 `dev` 或 `build` 时，electrobun-vite 会在应用根目录生成符合 Electrobun 约定的 **`icon.iconset`**（来源：项目内 `AppIcon.appiconset/icon-1024.png` 或包内默认图标）。生成配置时会注入 `build.mac.icons: "icon.iconset"`。
-
----
-
-## 文档发布
-
-文档由 [apps/docs](apps/docs) 构建，通过 [.github/workflows/deploy-docs.yml](.github/workflows/deploy-docs.yml) 部署到 GitHub Pages。仓库设置中需启用 **GitHub Pages → Source: GitHub Actions**。生产路径由 `DOCS_BASE_PATH` 控制（当前为 `/electrobun-vite/`）。
