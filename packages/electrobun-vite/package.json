@@ -1,0 +1,33 @@
+{
+  "name": "@nova-infra/electrobun-vite",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "bin": {
+    "electrobun-vite": "./bin/electrobun-vite.ts",
+    "create-electrobun": "./bin/create-electrobun.ts"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./metadata": "./src/metadata.ts"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./dist --target node --packages external && bun build ./bin/electrobun-vite.ts --outfile ./dist/electrobun-vite.js --target bun --packages external && bun build ./bin/create-electrobun.ts --outfile ./dist/create-electrobun.js --target bun --packages external && tsc -p tsconfig.build.json && chmod +x ./dist/electrobun-vite.js ./dist/create-electrobun.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "cac": "^6.7.14",
+    "picocolors": "^1.1.1",
+    "vite": "8.0.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.9.3"
+  }
+}

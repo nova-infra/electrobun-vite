@@ -1,32 +1,42 @@
 # electrobun-vite
 
-`electrobun-vite` is now organized as a Bun workspace so the toolchain, templates, and docs can evolve separately.
+`electrobun-vite` is a Bun workspace for shipping desktop apps with `electrobun@1.16.0`, `react@19`, and `vite@8` while keeping project setup intentionally small.
 
 ## Workspace Layout
 
-- [packages/core](/Users/Bigo/Desktop/develop/workflow/electrobun-vite/packages/core): config discovery and shared toolchain logic
-- [packages/cli](/Users/Bigo/Desktop/develop/workflow/electrobun-vite/packages/cli): `electrobun-vite` CLI entry
-- [packages/create](/Users/Bigo/Desktop/develop/workflow/electrobun-vite/packages/create): starter scaffolding helpers
-- [packages/shared](/Users/Bigo/Desktop/develop/workflow/electrobun-vite/packages/shared): shared metadata and types
-- [templates/react-ts](/Users/Bigo/Desktop/develop/workflow/electrobun-vite/templates/react-ts): default `electrobun@1.16.0 + react@19 + vite@8` starter
-- [apps/docs](/Users/Bigo/Desktop/develop/workflow/electrobun-vite/apps/docs): static docs site for GitHub Pages
+- [packages/electrobun-vite](/Users/Bigo/Desktop/develop/workflow/electrobun-vite/packages/electrobun-vite): integrated tool package for `dev`, `serve`, `build`, `preview`, config loading, and scaffolding
+- [apps/demo](/Users/Bigo/Desktop/develop/workflow/electrobun-vite/apps/demo): acceptance app driven by a single `electrobun.vite.config.ts`
+- [templates/react-ts](/Users/Bigo/Desktop/develop/workflow/electrobun-vite/templates/react-ts): default starter template, also centered on one `electrobun.vite.config.ts`
+- [apps/docs](/Users/Bigo/Desktop/develop/workflow/electrobun-vite/apps/docs): official docs site for GitHub Pages
 
 ## Commands
 
 ```bash
 bun install
 bun run dev
+bun run dev:demo
+bun run dev:template
 bun run dev:docs
 bun run new -- my-app
 bun run build
+bun run build:docs
 bun run typecheck
 ```
 
-## Current Direction
+## Product Shape
 
-This repo is no longer just a single starter app. The goal is to grow it into the `electrobun` equivalent of the `electron-vite` ecosystem:
+- single integrated `electrobun-vite` package
+- single-config project model via `electrobun.vite.config.ts`
+- current template registry intentionally limited to `react-ts`
+- docs and demo both serve as acceptance surfaces for the toolchain
+- built-in AI workflow guidance through `AGENTS.md` and local skills
 
-- a reusable CLI and config layer
-- curated starter templates
-- built-in AI workflow guidance
-- a public docs site deployable to GitHub Pages
+## Docs Deploy
+
+The docs site is built from [apps/docs](/Users/Bigo/Desktop/develop/workflow/electrobun-vite/apps/docs) and deployed to GitHub Pages with GitHub Actions.
+
+- Expected URL: [https://nova-infra.github.io/electrobun-vite/](https://nova-infra.github.io/electrobun-vite/)
+- Workflow: [.github/workflows/deploy-docs.yml](/Users/Bigo/Desktop/develop/workflow/electrobun-vite/.github/workflows/deploy-docs.yml)
+- Production base path comes from `DOCS_BASE_PATH`, currently set to `/electrobun-vite/`
+
+To publish the docs, enable **GitHub Pages -> Build and deployment -> Source: GitHub Actions** in the repository settings.

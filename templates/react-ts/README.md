@@ -16,6 +16,7 @@ The project is intentionally small so it is easy to extend with AI-assisted "vib
 - Production mode builds the web app with Vite and copies the output into `views://app/...`.
 - A small typed RPC example is included so the React UI can immediately talk to the Bun process.
 - A local skill file is bundled in [skills/electrobun-best-practices/SKILL.md](skills/electrobun-best-practices/SKILL.md) and referenced from [AGENTS.md](AGENTS.md).
+- The template keeps all top-level runtime configuration inside [electrobun.vite.config.ts](electrobun.vite.config.ts).
 
 ## Version constraints
 
@@ -31,17 +32,8 @@ This starter is pinned to:
 ```bash
 bun install
 bun run dev
-```
-
-For a production-style build:
-
-```bash
 bun run build
-```
-
-Type-checking:
-
-```bash
+bun run preview
 bun run typecheck
 ```
 
@@ -52,7 +44,8 @@ bun run typecheck
 - [src/ui/index.html](src/ui/index.html): Vite HTML entry
 - [src/ui/main.tsx](src/ui/main.tsx): React bootstrap
 - [src/ui/App.tsx](src/ui/App.tsx): starter UI
-- [scripts/dev.ts](scripts/dev.ts): runs Vite and Electrobun together
+- [electrobun.vite.config.ts](electrobun.vite.config.ts): the only top-level config file
+- [scripts/electrobun-vite.ts](scripts/electrobun-vite.ts): local dev/build/preview orchestrator for generated projects
 
 ## Extending the starter
 

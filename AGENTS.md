@@ -1,19 +1,16 @@
 # Agent Notes
 
-This repository is a Bun workspace, not a single app.
+This repository is a Bun workspace centered on one main tool package.
 
 Top-level responsibilities:
 
-- `packages/core`: toolchain logic and config helpers
-- `packages/cli`: command routing
-- `packages/create`: scaffolding helpers
-- `packages/shared`: reusable metadata
+- `packages/electrobun-vite`: integrated toolchain package for config, CLI, scaffolding, and metadata
 - `templates/react-ts`: the default app template
 - `apps/docs`: the website and GitHub Pages output
 
 When changing behavior:
 
-- Prefer improving `packages/core` over duplicating logic in templates.
+- Prefer improving `packages/electrobun-vite` over duplicating logic in templates.
 - Keep `templates/react-ts` focused on the generated app experience.
 - Keep docs changes in `apps/docs`.
 - Preserve the local skill in `templates/react-ts/skills/electrobun-best-practices`.

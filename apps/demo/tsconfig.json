@@ -19,7 +19,6 @@
   },
   "include": [
     "electrobun.vite.config.ts",
-    "scripts/**/*.ts",
     "src/**/*.ts",
     "src/**/*.tsx"
   ]
