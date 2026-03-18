@@ -16,7 +16,7 @@ const ICONSET_ENTRIES: { size: number; name: string }[] = [
   { size: 1024, name: "icon_512x512@2x.png" },
 ];
 
-const SOURCE_FILENAME = "icon-1024.png";
+const SOURCE_FILENAME = "logo.png";
 const APPBUNDLE_ICONSET_DIR = "AppIcon.appiconset";
 
 /** 包内默认图标路径（无 AppIcon.appiconset 时使用） */
@@ -72,7 +72,7 @@ async function generateIconIconsetFromPng(
 
 /**
  * 确保 appRoot 下存在符合 Electrobun 约定的 icon.iconset。
- * 优先使用应用目录或上级的 AppIcon.appiconset/icon-1024.png，否则使用包内默认图标。
+ * 优先使用应用目录或上级的 AppIcon.appiconset/logo.png，否则使用包内默认图标。
  * 返回是否已确保 icon.iconset 可用（可用于决定是否写入 build.mac.icons）。
  */
 export async function ensureIconIconset(appRoot: string): Promise<boolean> {
