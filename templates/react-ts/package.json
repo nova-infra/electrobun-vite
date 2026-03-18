@@ -1,7 +1,26 @@
 {
   "name": "@nova-infra/template-react-ts",
-  "version": "0.0.1",
-  "private": true,
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nova-infra/electrobun-vite.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
+  },
+  "files": [
+    ".gitignore",
+    "AGENTS.md",
+    "README.md",
+    "logo.png",
+    "electrobun.vite.config.ts",
+    "package.json",
+    "tsconfig.json",
+    "dist",
+    "skills",
+    "src"
+  ],
   "scripts": {
     "dev": "electrobun-vite",
     "build": "electrobun-vite build",

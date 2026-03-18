@@ -264,6 +264,7 @@ export function App() {
             details: [
               "无需克隆仓库即可创建：`npx -p @nova-infra/electrobun-vite create-electrobun my-app`（Bun：`bunx -p @nova-infra/electrobun-vite create-electrobun my-app`）。",
               "`<projectName>` 是目标目录名，也是生成后的项目名。",
+              "当前 starter 模板已独立发布为 `@nova-infra/template-react-ts`，脚手架会在生成时解析它。",
               "如果要在当前目录生成，请直接执行 `create-electrobun .` 或 `create-electrobun`；目录不为空时会先确认，或改用 `--force` 跳过确认。",
               "`-t, --template` 目前只接受 `react-ts`。",
               "`-f, --force` 会跳过确认并允许生成到已有目录。",
@@ -417,6 +418,7 @@ export function App() {
             details: [
               "No clone needed: `npx -p @nova-infra/electrobun-vite create-electrobun my-app` (Bun: `bunx -p @nova-infra/electrobun-vite create-electrobun my-app`).",
               "`<projectName>` becomes the output directory name.",
+              "The current starter template is published separately as `@nova-infra/template-react-ts` and resolved by the CLI when scaffolding.",
               "To scaffold into the current directory, run `create-electrobun .` or just `create-electrobun`; if the directory is not empty, the CLI will ask before continuing, or pass `--force` to skip the prompt.",
               "`-t, --template` is currently limited to `react-ts`.",
               "`-f, --force` skips confirm prompts and allows scaffolding into existing directories.",

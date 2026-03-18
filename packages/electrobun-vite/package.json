@@ -4,7 +4,7 @@
   "homepage": "https://nova-infra.github.io/electrobun-vite/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nova-infra/electrobun-vite.git"
+    "url": "git+https://github.com/nova-infra/electrobun-vite.git"
   },
   "type": "module",
   "main": "./dist/index.js",
@@ -28,7 +28,7 @@
     }
   },
   "files": [
-    "assets",
+    "assets/logo.png",
     "dist"
   ],
   "scripts": {
@@ -38,7 +38,8 @@
   "dependencies": {
     "cac": "^6.7.14",
     "picocolors": "^1.1.1",
-    "vite": "8.0.0"
+    "vite": "8.0.0",
+    "@nova-infra/template-react-ts": "latest"
   },
   "devDependencies": {
     "@types/bun": "latest",

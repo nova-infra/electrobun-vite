@@ -1,6 +1,7 @@
 import { existsSync } from "node:fs";
 import { cp, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { basename, dirname, join, resolve } from "node:path";
+import { createRequire } from "node:module";
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 import { getTemplateDirectory } from "./config";
@@ -47,7 +48,17 @@ const findWorkspaceRoot = (startDir: string) => {
   }
 };
 
-const findTemplateSourceDir = (templateDir: string) => {
+const require = createRequire(import.meta.url);
+
+const resolveInstalledTemplateDir = (packageName: string) => {
+  try {
+    return dirname(require.resolve(`${packageName}/package.json`));
+  } catch {
+    return null;
+  }
+};
+
+const findTemplateSourceDir = (templateDir: string, packageName: string) => {
   const localWorkspaceRoot = findWorkspaceRoot(import.meta.dir);
   const localTemplateDir = localWorkspaceRoot
     ? resolve(localWorkspaceRoot, "templates", templateDir)
@@ -57,15 +68,9 @@ const findTemplateSourceDir = (templateDir: string) => {
     return localTemplateDir;
   }
 
-  const packagedTemplateDirs = [
-    resolve(import.meta.dir, "..", "assets", "templates", templateDir),
-    resolve(import.meta.dir, "..", "..", "assets", "templates", templateDir),
-  ];
-
-  for (const packagedTemplateDir of packagedTemplateDirs) {
-    if (existsSync(packagedTemplateDir)) {
-      return packagedTemplateDir;
-    }
+  const installedTemplateDir = resolveInstalledTemplateDir(packageName);
+  if (installedTemplateDir && existsSync(installedTemplateDir)) {
+    return installedTemplateDir;
   }
 
   throw new Error(`Could not locate template files for ${templateDir}.`);
@@ -167,7 +172,8 @@ export const scaffoldProject = async ({
   force = false,
 }: ScaffoldProjectOptions) => {
   const templateDir = getTemplateDirectory(template);
-  const sourceDir = findTemplateSourceDir(templateDir);
+  const templatePackage = resolveTemplate(template);
+  const sourceDir = findTemplateSourceDir(templateDir, templatePackage.packageName);
   const targetDir = resolve(cwd, projectName);
   const isCurrentDirectory = projectName === "." || projectName === "";
   const projectSlug = isCurrentDirectory ? basename(cwd) : basename(projectName);
@@ -190,6 +196,6 @@ export const scaffoldProject = async ({
 
   return {
     targetDir,
-    template: resolveTemplate(template),
+    template: templatePackage,
   };
 };

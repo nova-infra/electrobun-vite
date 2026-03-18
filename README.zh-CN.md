@@ -113,7 +113,7 @@ bun add @nova-infra/electrobun-vite
 - **`electrobun-vite preview [root]`** — 用生产资源启动桌面应用；`--skipBuild` 跳过构建。
 - **`electrobun-vite info [root]`** — 输出解析后的配置与版本信息。
 - **`electrobun-vite update [root]`** — 刷新已有项目里的模板依赖版本、迁移旧脚本，并执行 `bun install`。
-- **`create-electrobun <projectName>`** — 创建新项目（当前模板：react-ts）。省略 `<projectName>` 或传 `.` 都会在当前目录生成；如果目录不为空，会先确认，除非你加上 `--force`。
+- **`create-electrobun <projectName>`** — 创建新项目（当前模板：react-ts，已独立发布为 `@nova-infra/template-react-ts`）。省略 `<projectName>` 或传 `.` 都会在当前目录生成；如果目录不为空，会先确认，除非你加上 `--force`。
 
 常用全局参数：`-c, --config`、`-l, --logLevel`、`--clearScreen`、`-m, --mode`、`-w, --watch`、`--outDir`。
 
@@ -123,7 +123,7 @@ bun add @nova-infra/electrobun-vite
 |------|------|
 | [packages/electrobun-vite](packages/electrobun-vite) | 集成 CLI、配置加载、脚手架、图标与日志 |
 | [apps/demo](apps/demo) | 验收应用，多 tab 演示 Electrobun 能力 |
-| [templates/react-ts](templates/react-ts) | 默认 starter 模板 |
+| [templates/react-ts](templates/react-ts) | 默认 starter 模板源码，已独立发布为 `@nova-infra/template-react-ts` |
 | [apps/docs](apps/docs) | 官网源码，部署到 GitHub Pages |
 
 项目层围绕 **一个** `electrobun.vite.config.ts`：renderer 与 Electrobun 配置同文件。

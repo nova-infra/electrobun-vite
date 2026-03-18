@@ -10,6 +10,8 @@ This template is a minimal desktop starter focused on two things:
 
 The project is intentionally small so it is easy to extend with AI-assisted "vibe coding" sessions.
 
+This template is published independently as `@nova-infra/template-react-ts`.
+
 ## Why this shape
 
 - Development mode loads the Vite dev server directly in an `Electrobun` window.

@@ -113,7 +113,7 @@ If the package is public in your environment, the token line may still be useful
 - **`electrobun-vite preview [root]`** — Run desktop app with production assets; `--skipBuild` skips build.
 - **`electrobun-vite info [root]`** — Print resolved config and version info.
 - **`electrobun-vite update [root]`** — Refresh template-managed dependencies, migrate old scripts, and then run `bun install`.
-- **`create-electrobun <projectName>`** — Create a new project (current template: react-ts). Omit `<projectName>` or pass `.` to scaffold into the current directory; if it is not empty, you will be asked to confirm unless you pass `--force`.
+- **`create-electrobun <projectName>`** — Create a new project (current template: react-ts, published separately as `@nova-infra/template-react-ts`). Omit `<projectName>` or pass `.` to scaffold into the current directory; if it is not empty, you will be asked to confirm unless you pass `--force`.
 
 Common flags: `-c, --config`, `-l, --logLevel`, `--clearScreen`, `-m, --mode`, `-w, --watch`, `--outDir`.
 
@@ -123,7 +123,7 @@ Common flags: `-c, --config`, `-l, --logLevel`, `--clearScreen`, `-m, --mode`, `
 |------|-------------|
 | [packages/electrobun-vite](packages/electrobun-vite) | CLI, config loading, scaffolding, icons, logging |
 | [apps/demo](apps/demo) | Demo app with multi-tab Electrobun features |
-| [templates/react-ts](templates/react-ts) | Default starter template |
+| [templates/react-ts](templates/react-ts) | Default starter template source, published separately as `@nova-infra/template-react-ts` |
 | [apps/docs](apps/docs) | Docs site source, deployed to GitHub Pages |
 
 One **`electrobun.vite.config.ts`** per project: renderer and Electrobun config in a single file.
