@@ -54,6 +54,65 @@ const loadConfig = async (): Promise<{ config: TemplateConfig; outDir: string }>
   };
 };
 
+type StreamedProcess = {
+  stdout: ReadableStream<Uint8Array> | null;
+  stderr: ReadableStream<Uint8Array> | null;
+};
+
+const pipeSubprocessLogs = async (child: StreamedProcess, prefix: string) => {
+  const readLines = async (
+    stream: ReadableStream<Uint8Array> | null,
+    writer: (line: string) => void,
+  ) => {
+    if (!stream) {
+      return;
+    }
+
+    const reader = stream.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+          break;
+        }
+
+        buffer += decoder.decode(value, { stream: true });
+
+        let newlineIndex = buffer.indexOf("\n");
+        while (newlineIndex >= 0) {
+          const line = buffer.slice(0, newlineIndex).replace(/\r$/, "");
+          if (line.length > 0) {
+            writer(line);
+          }
+
+          buffer = buffer.slice(newlineIndex + 1);
+          newlineIndex = buffer.indexOf("\n");
+        }
+      }
+
+      buffer += decoder.decode();
+      const trailingLine = buffer.replace(/\r$/, "");
+      if (trailingLine.length > 0) {
+        writer(trailingLine);
+      }
+    } finally {
+      reader.releaseLock();
+    }
+  };
+
+  await Promise.all([
+    readLines(child.stdout, (line) => {
+      console.log(`[${prefix}] ${line}`);
+    }),
+    readLines(child.stderr, (line) => {
+      console.error(`[${prefix}] ${line}`);
+    }),
+  ]);
+};
+
 const ensureElectrobunConfig = async (command: Command, mode: string, outDir: string, config: TemplateConfig) => {
   const configValue = config.electrobun?.config;
   if (!configValue) {
@@ -83,11 +142,13 @@ export const runBuild = async () => {
         ELECTROBUN_VITE_OUT_DIR: outDir,
       },
       stdin: "inherit",
-      stdout: "inherit",
-      stderr: "inherit",
+      stdout: "pipe",
+      stderr: "pipe",
     });
 
+    const childLogs = pipeSubprocessLogs(child, "electrobun-build");
     const exitCode = await child.exited;
+    await childLogs;
     if (exitCode !== 0) {
       logger.error(`[template] build failed with exit code ${exitCode}`);
       process.exit(exitCode);
@@ -109,6 +170,7 @@ export const runDev = async () => {
   };
 
   try {
+    await viteBuild(config.renderer?.vite);
     await server.listen();
     const devServerUrl = server.resolvedUrls?.local[0] ?? "http://127.0.0.1:5173/";
     const child = Bun.spawn(["bunx", "electrobun", "dev", "--watch"], {
@@ -119,9 +181,10 @@ export const runDev = async () => {
         ELECTROBUN_VITE_OUT_DIR: outDir,
       },
       stdin: "inherit",
-      stdout: "inherit",
-      stderr: "inherit",
+      stdout: "pipe",
+      stderr: "pipe",
     });
+    const childLogs = pipeSubprocessLogs(child, "electrobun-dev");
 
     const onSignal = async () => {
       if (child.exitCode === null) {
@@ -136,6 +199,7 @@ export const runDev = async () => {
     process.once("SIGTERM", onSignal);
 
     const exitCode = await child.exited;
+    await childLogs;
     await stop();
     if (exitCode !== 0) {
       logger.error(`[template] dev failed with exit code ${exitCode}`);
@@ -160,11 +224,13 @@ export const runPreview = async () => {
         ELECTROBUN_VITE_OUT_DIR: outDir,
       },
       stdin: "inherit",
-      stdout: "inherit",
-      stderr: "inherit",
+      stdout: "pipe",
+      stderr: "pipe",
     });
 
+    const childLogs = pipeSubprocessLogs(child, "electrobun-preview");
     const exitCode = await child.exited;
+    await childLogs;
     if (exitCode !== 0) {
       logger.error(`[template] preview failed with exit code ${exitCode}`);
       process.exit(exitCode);

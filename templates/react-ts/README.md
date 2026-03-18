@@ -37,6 +37,8 @@ bun run preview
 bun run typecheck
 ```
 
+`bun run dev` will generate the initial `dist` output once, then keep Electrobun in watch mode with the Vite dev server.
+
 ## Scaffold into the current directory
 
 If you want to generate the starter directly in an empty folder, use either of these equivalent commands:
