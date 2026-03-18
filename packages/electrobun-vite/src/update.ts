@@ -102,7 +102,35 @@ export const updateProject = async ({ cwd = process.cwd() }: UpdateProjectOption
 
   packageJson.scripts = scripts;
 
-  const allChanges = [...dependencyChanges, ...scriptChanges];
+  const gitignorePath = resolve(cwd, ".gitignore");
+  const gitignoreEntries = ["electrobun.config.ts", "icon.iconset"];
+  const gitignoreChanges: Array<{ name: string; from: string; to: string }> = [];
+
+  if (existsSync(gitignorePath)) {
+    const currentGitignore = await readFile(gitignorePath, "utf8");
+    const gitignoreLines = currentGitignore.split(/\r?\n/);
+    const missingEntries = gitignoreEntries.filter(
+      (entry) => !gitignoreLines.includes(entry),
+    );
+
+    if (missingEntries.length > 0) {
+      const nextGitignore = [
+        ...gitignoreLines.filter((line) => line.length > 0),
+        ...missingEntries,
+        "",
+      ].join("\n");
+      await writeFile(gitignorePath, nextGitignore);
+      for (const entry of missingEntries) {
+        gitignoreChanges.push({
+          name: `.gitignore`,
+          from: "(missing entry)",
+          to: entry,
+        });
+      }
+    }
+  }
+
+  const allChanges = [...dependencyChanges, ...scriptChanges, ...gitignoreChanges];
 
   if (allChanges.length === 0) {
     logger.info("No template project updates were needed.");
