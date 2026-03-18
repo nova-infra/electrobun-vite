@@ -52,12 +52,12 @@ bun add @nova-infra/electrobun-vite
    ```
    使用 Bun 时：`bunx -p @nova-infra/electrobun-vite create-electrobun my-app`
 
-   **直接生成到当前空目录：**
+   **直接生成到当前目录并确认：**
    ```bash
    bunx -p @nova-infra/electrobun-vite create-electrobun .
    bunx -p @nova-infra/electrobun-vite create-electrobun
    ```
-   当前目录为空时，这两种写法效果相同。
+   这两种写法都会指向当前目录；如果目录不为空，脚手架会先让你确认再继续。
 
    **从本仓库执行**（monorepo 根目录）：
    ```bash
@@ -102,7 +102,7 @@ bun add @nova-infra/electrobun-vite
 - **`electrobun-vite build [root]`** — 构建 renderer 并交给 Electrobun 打包。
 - **`electrobun-vite preview [root]`** — 用生产资源启动桌面应用；`--skipBuild` 跳过构建。
 - **`electrobun-vite info [root]`** — 输出解析后的配置与版本信息。
-- **`create-electrobun <projectName>`** — 创建新项目（当前模板：react-ts）。省略 `<projectName>` 或传 `.` 都会在空的当前目录生成。
+- **`create-electrobun <projectName>`** — 创建新项目（当前模板：react-ts）。省略 `<projectName>` 或传 `.` 都会在当前目录生成；如果目录不为空，会先确认。
 
 常用全局参数：`-c, --config`、`-l, --logLevel`、`--clearScreen`、`-m, --mode`、`-w, --watch`、`--outDir`。
 

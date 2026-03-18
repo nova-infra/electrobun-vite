@@ -123,7 +123,7 @@ export const runCLI = async (argv = process.argv) => {
   });
 
   cli
-    .command("create [projectName]", "scaffold a new react-ts project into <projectName> or into an empty current directory with '.'")
+    .command("create [projectName]", "scaffold a new react-ts project into <projectName> or into the current directory with '.' and a confirm prompt")
     .option("-t, --template <template>", "[string] choose scaffold template; currently only react-ts is supported")
     .action(async (projectName: string | undefined, options: { template?: string }) => {
       const logger = createToolLogger("info");

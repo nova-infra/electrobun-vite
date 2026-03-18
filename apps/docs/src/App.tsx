@@ -188,8 +188,8 @@ export function App() {
           {
             title: "1. 创建项目",
             description: "用 npx/bunx 一键生成项目（无需克隆本仓库），或在本仓库根目录执行脚手架。",
-            code: `# 一键创建（推荐）\nnpx -p @nova-infra/electrobun-vite create-electrobun my-app\ncd my-app\n\n# 或在空目录里直接生成到当前目录\nbunx -p @nova-infra/electrobun-vite create-electrobun .\nbunx -p @nova-infra/electrobun-vite create-electrobun\n\n# 或从本仓库：bun install && bun run new -- my-app && cd my-app`,
-            note: "Bun 用户也可以用 `bunx -p @nova-infra/electrobun-vite create-electrobun my-app`。如果当前目录是空的，`bunx -p @nova-infra/electrobun-vite create-electrobun .` 和 `bunx -p @nova-infra/electrobun-vite create-electrobun` 是同样效果。",
+            code: `# 一键创建（推荐）\nnpx -p @nova-infra/electrobun-vite create-electrobun my-app\ncd my-app\n\n# 或在当前目录生成，并在需要时确认\nbunx -p @nova-infra/electrobun-vite create-electrobun .\nbunx -p @nova-infra/electrobun-vite create-electrobun\n\n# 或从本仓库：bun install && bun run new -- my-app && cd my-app`,
+            note: "Bun 用户也可以用 `bunx -p @nova-infra/electrobun-vite create-electrobun my-app`。`bunx -p @nova-infra/electrobun-vite create-electrobun .` 和 `bunx -p @nova-infra/electrobun-vite create-electrobun` 都会指向当前目录；如果目录不为空，会先确认再继续。",
           },
           {
             title: "2. 本地开发",
@@ -254,7 +254,7 @@ export function App() {
             details: [
               "无需克隆仓库即可创建：`npx -p @nova-infra/electrobun-vite create-electrobun my-app`（Bun：`bunx -p @nova-infra/electrobun-vite create-electrobun my-app`）。",
               "`<projectName>` 是目标目录名，也是生成后的项目名。",
-              "如果要在当前目录生成，请先进入一个空目录，再执行 `create-electrobun .` 或直接执行 `create-electrobun`。",
+              "如果要在当前目录生成，请直接执行 `create-electrobun .` 或 `create-electrobun`；目录不为空时会先确认。",
               "`-t, --template` 目前只接受 `react-ts`。",
             ],
           },
@@ -331,8 +331,8 @@ export function App() {
           {
             title: "1. Scaffold a project",
             description: "Use npx/bunx to create a project in one shot (no clone), or run the scaffold from this repo root.",
-            code: `# One-liner (recommended)\nnpx -p @nova-infra/electrobun-vite create-electrobun my-app\ncd my-app\n\n# Or generate directly into the current empty directory\nbunx -p @nova-infra/electrobun-vite create-electrobun .\nbunx -p @nova-infra/electrobun-vite create-electrobun\n\n# Or from this repo: bun install && bun run new -- my-app && cd my-app`,
-            note: "With Bun: `bunx -p @nova-infra/electrobun-vite create-electrobun my-app`. If the current directory is empty, `bunx -p @nova-infra/electrobun-vite create-electrobun .` and `bunx -p @nova-infra/electrobun-vite create-electrobun` behave the same.",
+            code: `# One-liner (recommended)\nnpx -p @nova-infra/electrobun-vite create-electrobun my-app\ncd my-app\n\n# Or generate into the current directory and confirm if needed\nbunx -p @nova-infra/electrobun-vite create-electrobun .\nbunx -p @nova-infra/electrobun-vite create-electrobun\n\n# Or from this repo: bun install && bun run new -- my-app && cd my-app`,
+            note: "With Bun: `bunx -p @nova-infra/electrobun-vite create-electrobun my-app`. `bunx -p @nova-infra/electrobun-vite create-electrobun .` and `bunx -p @nova-infra/electrobun-vite create-electrobun` both target the current directory; if it is not empty, you will be asked to confirm first.",
           },
           {
             title: "2. Start local development",
@@ -397,7 +397,7 @@ export function App() {
             details: [
               "No clone needed: `npx -p @nova-infra/electrobun-vite create-electrobun my-app` (Bun: `bunx -p @nova-infra/electrobun-vite create-electrobun my-app`).",
               "`<projectName>` becomes the output directory name.",
-              "To scaffold into the current directory, first move into an empty folder and run `create-electrobun .` or just `create-electrobun`.",
+              "To scaffold into the current directory, run `create-electrobun .` or just `create-electrobun`; if the directory is not empty, the CLI will ask before continuing.",
               "`-t, --template` is currently limited to `react-ts`.",
             ],
           },

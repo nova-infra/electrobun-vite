@@ -52,12 +52,12 @@ If the package is public in your environment, the token line may still be useful
    ```
    Or with Bun: `bunx -p @nova-infra/electrobun-vite create-electrobun my-app`
 
-   **Into the current empty directory:**
+   **Into the current directory with confirm:**
    ```bash
    bunx -p @nova-infra/electrobun-vite create-electrobun .
    bunx -p @nova-infra/electrobun-vite create-electrobun
    ```
-   Both forms behave the same when the current directory is empty.
+   Both forms target the current directory; if it is not empty, you will be asked to confirm before scaffolding continues.
 
    **From this repo** (monorepo root):
    ```bash
@@ -102,7 +102,7 @@ If the package is public in your environment, the token line may still be useful
 - **`electrobun-vite build [root]`** — Build renderer and hand off to Electrobun packaging.
 - **`electrobun-vite preview [root]`** — Run desktop app with production assets; `--skipBuild` skips build.
 - **`electrobun-vite info [root]`** — Print resolved config and version info.
-- **`create-electrobun <projectName>`** — Create a new project (current template: react-ts). Omit `<projectName>` or pass `.` to scaffold into an empty current directory.
+- **`create-electrobun <projectName>`** — Create a new project (current template: react-ts). Omit `<projectName>` or pass `.` to scaffold into the current directory with a confirm prompt if it is not empty.
 
 Common flags: `-c, --config`, `-l, --logLevel`, `--clearScreen`, `-m, --mode`, `-w, --watch`, `--outDir`.
 

@@ -1,6 +1,8 @@
 import { existsSync } from "node:fs";
 import { cp, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { basename, dirname, join, resolve } from "node:path";
+import { createInterface } from "node:readline/promises";
+import { stdin as input, stdout as output } from "node:process";
 import { getTemplateDirectory } from "./config";
 import { templatePackages } from "./metadata";
 
@@ -73,6 +75,28 @@ const isDirectoryEmpty = async (dir: string) => {
   return entries.length === 0;
 };
 
+const confirmCurrentDirectoryScaffold = async (targetDir: string) => {
+  if (await isDirectoryEmpty(targetDir)) {
+    return true;
+  }
+
+  if (!input.isTTY || !output.isTTY) {
+    throw new Error(
+      "Current directory is not empty. Run this command in an interactive terminal to confirm scaffolding into .",
+    );
+  }
+
+  const terminal = createInterface({ input, output });
+  try {
+    const answer = await terminal.question(
+      "Current directory is not empty. Continue scaffolding here? [y/N] ",
+    );
+    return /^y(es)?$/i.test(answer.trim());
+  } finally {
+    terminal.close();
+  }
+};
+
 const sanitizePackageName = (value: string) =>
   value
     .trim()
@@ -138,8 +162,9 @@ export const scaffoldProject = async ({
   const projectSlug = isCurrentDirectory ? basename(cwd) : basename(projectName);
 
   if (isCurrentDirectory) {
-    if (!(await isDirectoryEmpty(targetDir))) {
-      throw new Error("Current directory is not empty. Use an empty directory when scaffolding into .");
+    const confirmed = await confirmCurrentDirectoryScaffold(targetDir);
+    if (!confirmed) {
+      throw new Error("Aborted.");
     }
   } else {
     await mkdir(targetDir, { recursive: false });

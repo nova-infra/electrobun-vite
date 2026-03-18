@@ -39,14 +39,14 @@ bun run typecheck
 
 ## Scaffold into the current directory
 
-If you want to generate the starter directly in an empty folder, use either of these equivalent commands:
+If you want to generate the starter directly in the current folder, use either of these equivalent commands:
 
 ```bash
 bunx -p @nova-infra/electrobun-vite create-electrobun .
 bunx -p @nova-infra/electrobun-vite create-electrobun
 ```
 
-Both forms only work when the current directory is empty, so the starter files can be written safely without overwriting anything.
+Both forms target the current directory; if it is not empty, the CLI will ask you to confirm before continuing.
 
 ## Structure
 
