@@ -2,6 +2,7 @@
   "name": "electrobun-vite-workspace",
   "version": "0.1.1",
   "private": true,
+  "homepage": "https://nova-infra.github.io/electrobun-vite/",
   "packageManager": "bun@1.3.10",
   "workspaces": [
     "apps/*",

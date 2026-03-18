@@ -54,6 +54,8 @@ type DocsCopy = {
   sublede: string;
   primaryCta: string;
   secondaryCta: string;
+  repoLink: string;
+  electrobunRepoLink: string;
   badges: string[];
   sections: SectionLink[];
   quickStartTitle: string;
@@ -123,7 +125,9 @@ export function App() {
         sublede: `当前默认模板为 react-ts，文档示例基于 electrobun@${starterVersions.electrobun}、react@${starterVersions.react}、vite@${starterVersions.vite}。`,
         primaryCta: "Quick Start",
         secondaryCta: "查看 CLI",
-        badges: ["中文优先", "Quick Start", "单配置", "react-ts 模板", "CLI 参数说明"],
+        repoLink: "项目仓库",
+        electrobunRepoLink: "Electrobun",
+        badges: ["Quick Start", "单配置", "react-ts 模板", "CLI 参数说明"],
         sections: [
           { id: "quickstart", label: "Quick Start", summary: "从创建项目到 build / preview 的最短路径。" },
           { id: "cli", label: "CLI", summary: "每个命令做什么，以及参数分别影响哪里。" },
@@ -281,7 +285,9 @@ export function App() {
         sublede: `The default template is still react-ts, and the examples here target electrobun@${starterVersions.electrobun}, react@${starterVersions.react}, and vite@${starterVersions.vite}.`,
         primaryCta: "Quick Start",
         secondaryCta: "See CLI",
-        badges: ["Chinese-first docs", "Quick Start", "Single config", "react-ts template", "CLI parameter notes"],
+        repoLink: "Repository",
+        electrobunRepoLink: "Electrobun",
+        badges: ["Quick Start", "Single config", "react-ts template", "CLI parameter notes"],
         sections: [
           { id: "quickstart", label: "Quick Start", summary: "The shortest path from scaffold to build / preview." },
           { id: "cli", label: "CLI", summary: "What each command does and what every parameter affects." },
@@ -505,6 +511,22 @@ export function App() {
                   href="#cli"
                 >
                   {activeCopy.secondaryCta}
+                </a>
+                <a
+                  className="rounded-full border border-stone-900/10 bg-white/80 px-5 py-3 text-sm font-medium text-stone-800 transition hover:border-stone-900/20 hover:bg-white"
+                  href="https://github.com/nova-infra/electrobun-vite"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {activeCopy.repoLink}
+                </a>
+                <a
+                  className="rounded-full border border-stone-900/10 bg-white/80 px-5 py-3 text-sm font-medium text-stone-800 transition hover:border-stone-900/20 hover:bg-white"
+                  href="https://github.com/blackboardsh/electrobun"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {activeCopy.electrobunRepoLink}
                 </a>
               </div>
             </div>
