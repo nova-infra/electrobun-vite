@@ -34,7 +34,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          node -e "const fs=require('fs'),p=JSON.parse(fs.readFileSync('package.json','utf8')); p.workspaces=p.workspaces.filter(w=>w!=='templates/*'); fs.writeFileSync('package.json',JSON.stringify(p,null,2))"
+          node -e "const fs=require('fs'),p=JSON.parse(fs.readFileSync('package.json','utf8')); p.workspaces=['apps/docs','packages/electrobun-vite']; fs.writeFileSync('package.json',JSON.stringify(p,null,2))"
           bun install --ignore-scripts
 
       - name: Build Package
