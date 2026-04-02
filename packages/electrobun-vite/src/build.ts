@@ -46,19 +46,22 @@ const preBundleEntrypoint = async (
     return { config: inlineConfig, cleanup: async () => {} };
   }
 
-  const tmpDir = join(tmpdir(), `electrobun-vite-${process.pid}-prebundle`);
+  // Output inside project dir — Electrobun CLI resolves paths relative to cwd
+  const tmpDir = resolve(cwd, `.electrobun-prebundle-${process.pid}`);
   const absoluteEntrypoint = resolve(cwd, entrypoint);
 
   logger.info(
-    `pre-bundling ${entrypoint} (external: ${[...ELECTROBUN_EXTERNALS, ...externals].join(", ")})...`,
+    `pre-bundling ${entrypoint} (bundling ${externals.length} heavy deps, external: ${ELECTROBUN_EXTERNALS.join(", ")})...`,
     { scope: LOG_SCOPE_BUILD },
   );
 
+  // Only externalize electrobun itself — bundle everything else (including user externals)
+  // so that Electrobun's own bundler doesn't need to resolve npm packages.
   const result = await Bun.build({
     entrypoints: [absoluteEntrypoint],
     outdir: tmpDir,
     target: "bun",
-    external: [...ELECTROBUN_EXTERNALS, ...externals],
+    external: ELECTROBUN_EXTERNALS,
     minify: false,
   });
 
@@ -68,7 +71,8 @@ const preBundleEntrypoint = async (
   }
 
   const outputName = basename(entrypoint).replace(/\.(ts|tsx|mts)$/, ".js");
-  const bundledPath = join(tmpDir, outputName);
+  // Relative to cwd so Electrobun CLI can resolve it
+  const bundledPath = `.electrobun-prebundle-${process.pid}/${outputName}`;
 
   const build = inlineConfig.build as ElectrobunRecord | undefined;
   const bun = build?.bun as ElectrobunRecord | undefined;
