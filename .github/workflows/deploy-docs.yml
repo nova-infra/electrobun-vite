@@ -33,7 +33,9 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Install Dependencies
-        run: bun install --frozen-lockfile --ignore-scripts
+        run: |
+          node -e "const fs=require('fs'),p=JSON.parse(fs.readFileSync('package.json','utf8')); p.workspaces=p.workspaces.filter(w=>w!=='templates/*'); fs.writeFileSync('package.json',JSON.stringify(p,null,2))"
+          bun install --ignore-scripts
 
       - name: Build Package
         run: bun run build:package
