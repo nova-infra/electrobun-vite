@@ -32,6 +32,11 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
+      - name: Configure GitHub Packages auth
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > .npmrc
+          echo "@nova-infra:registry=https://npm.pkg.github.com" >> .npmrc
+
       - name: Install Dependencies
         run: |
           node -e "const fs=require('fs'),p=JSON.parse(fs.readFileSync('package.json','utf8')); p.workspaces=['apps/docs','packages/electrobun-vite']; fs.writeFileSync('package.json',JSON.stringify(p,null,2))"
