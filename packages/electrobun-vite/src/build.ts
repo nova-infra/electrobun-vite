@@ -59,6 +59,13 @@ export async function build(inlineConfig: InlineConfig = {}): Promise<void> {
       logger.fatal(colors.red(`electrobun build failed (exit ${exitCode})`), {
         scope: LOG_SCOPE_BUILD,
       });
+      logger.info(
+        colors.dim(
+          "hint: if the bun entrypoint imports npm packages with native bindings or complex dependency trees, " +
+            "add them to electrobun.config → build.bun.external (e.g. external: [\"grammy\", \"zod\"])",
+        ),
+        { scope: LOG_SCOPE_BUILD },
+      );
       process.exit(exitCode);
     }
     logger.success("build complete.", { scope: LOG_SCOPE_BUILD });

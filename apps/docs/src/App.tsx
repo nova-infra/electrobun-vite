@@ -185,6 +185,16 @@ export function App() {
               "可以在 `renderer.vite.publicDir` 里覆盖这个路径。",
             ],
           },
+          {
+            title: "build.bun.external — 跳过不兼容的 npm 包",
+            body: "如果 Bun 入口引用了带 native binding、复杂依赖树或自定义 loader 的包，Electrobun 的内部 bundler 可能报 'Bundle failed'。把这些包加到 `build.bun.external` 即可跳过打包。",
+            code: `electrobun: {\n  config: ({ outDir }) => ({\n    build: {\n      bun: {\n        entrypoint: "src/bun/index.ts",\n        external: ["grammy", "zod", "qrcode"],\n      },\n    },\n  }),\n}`,
+            bullets: [
+              "被 external 的包不会被打进 bundle，需要在运行时通过 node_modules 加载。",
+              "如果只有 `electrobun/bun` 导入，通常不需要 external。",
+              "构建失败时 CLI 会输出提示，按提示添加即可。",
+            ],
+          },
         ],
         packageTitle: "Packages",
         packageIntro:
@@ -348,6 +358,11 @@ export function App() {
             question: "为什么 Bun 主进程读不到 VITE_ 开头的环境变量？",
             answer:
               "VITE_ 前缀的变量默认只会注入 Vite renderer 进程；Bun 主进程只接收 BUN_VITE_ 前缀的变量。如果你需要在两侧都能访问，改用 BUN_VITE_ 前缀，或在 electrobun.vite.config.ts 里通过 define 显式传入。",
+          },
+          {
+            question: "为什么 electrobun build 报 'Bundle failed' 但没有更多信息？",
+            answer:
+              "Electrobun 内部使用 Bun.build() 打包 bun 入口文件，如果入口引用了带 native binding 或复杂依赖树的包（如 grammy、@modelcontextprotocol/sdk），bundler 会失败。在 config 的 build.bun.external 里声明这些包即可跳过打包。CLI 现在会在失败时输出这个提示。",
           },
         ],
       },
@@ -538,6 +553,16 @@ export function App() {
               "Override with `renderer.vite.publicDir` if a different path is needed.",
             ],
           },
+          {
+            title: "build.bun.external — skip incompatible npm packages",
+            body: "If your Bun entrypoint imports packages with native bindings, complex dependency trees, or custom loaders, Electrobun's internal bundler may report 'Bundle failed'. Add those packages to `build.bun.external` to skip bundling them.",
+            code: `electrobun: {\n  config: ({ outDir }) => ({\n    build: {\n      bun: {\n        entrypoint: "src/bun/index.ts",\n        external: ["grammy", "zod", "qrcode"],\n      },\n    },\n  }),\n}`,
+            bullets: [
+              "Externalized packages are not included in the bundle — they load from node_modules at runtime.",
+              "If only `electrobun/bun` is imported, external is usually not needed.",
+              "The CLI now prints a hint when the build fails, pointing to this option.",
+            ],
+          },
         ],
         packageTitle: "Packages",
         packageIntro:
@@ -579,6 +604,11 @@ export function App() {
             question: "Why can't the Bun main process see VITE_-prefixed variables?",
             answer:
               "VITE_ variables are injected into the Vite renderer process only. The Bun main process receives BUN_VITE_-prefixed variables. If you need the same value in both, use the BUN_VITE_ prefix, or pass it explicitly via define in electrobun.vite.config.ts.",
+          },
+          {
+            question: "Why does electrobun build show 'Bundle failed' with no details?",
+            answer:
+              "Electrobun uses Bun.build() internally to bundle the bun entrypoint. If it imports packages with native bindings or complex dependency trees (e.g. grammy, @modelcontextprotocol/sdk), the bundler fails. Add those packages to build.bun.external in your config to skip bundling them. The CLI now prints a hint when this happens.",
           },
         ],
       },

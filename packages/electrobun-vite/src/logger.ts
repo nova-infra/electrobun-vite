@@ -386,10 +386,15 @@ const classifyUnscopedSubprocessLine = (
   }
 
   if (context === "electrobun-build") {
+    const isError =
+      normalizedLine.includes("bundle failed") ||
+      normalizedLine.includes("failed to build") ||
+      normalizedLine.includes("build failed") ||
+      normalizedLine.startsWith("error:");
     return {
       scope: LOG_SCOPE_BUILD,
       message: line,
-      level: defaultLevel,
+      level: isError ? "error" : defaultLevel,
     };
   }
 
