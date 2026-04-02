@@ -33,7 +33,10 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Install Dependencies
-        run: bun install --frozen-lockfile
+        run: bun install --frozen-lockfile --ignore-scripts
+
+      - name: Build Package
+        run: bun run build:package
 
       - name: Build Docs
         run: bun run build:docs
