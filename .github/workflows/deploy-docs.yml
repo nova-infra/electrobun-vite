@@ -49,6 +49,7 @@ jobs:
         run: |
           node -e "const fs=require('fs'),p=JSON.parse(fs.readFileSync('package.json','utf8')); p.workspaces=['apps/docs','packages/electrobun-vite']; fs.writeFileSync('package.json',JSON.stringify(p,null,2))"
           node -e "const fs=require('fs'),p=JSON.parse(fs.readFileSync('packages/electrobun-vite/package.json','utf8')); delete p.devDependencies['@nova-infra/template-react-ts']; fs.writeFileSync('packages/electrobun-vite/package.json',JSON.stringify(p,null,2))"
+          rm -f bun.lock
           bun install --ignore-scripts
 
       - name: Build Package
