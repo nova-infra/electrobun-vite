@@ -93,7 +93,7 @@ const preBundleEntrypoint = async (
   };
 };
 
-const withPreBundle = async (
+export const withPreBundle = async (
   resolved: ResolvedElectrobunViteConfig,
   logger: ReturnType<typeof createToolLogger>,
 ): Promise<{

@@ -6,6 +6,7 @@ import {
   loadUserConfig,
   type InlineConfig,
 } from "./config";
+import { withPreBundle } from "./build";
 import { loadEnv } from "./env";
 import {
   createLogEnvironment,
@@ -50,7 +51,12 @@ export async function createServer(
     customLogger: viteLogger,
   });
 
-  const electrobunConfig = await ensureElectrobunConfigFile(resolved);
+  const { resolved: resolvedForDev, cleanup: preBundleCleanup } = await withPreBundle(
+    resolved,
+    logger,
+  );
+
+  const electrobunConfig = await ensureElectrobunConfigFile(resolvedForDev);
 
   try {
     await server.listen();
@@ -66,6 +72,7 @@ export async function createServer(
       await waitForTermination(async () => {
         await server.close();
         await electrobunConfig.cleanup();
+        await preBundleCleanup();
       });
       return;
     }
@@ -95,6 +102,7 @@ export async function createServer(
         await childLogs;
         await server.close();
         await electrobunConfig.cleanup();
+        await preBundleCleanup();
         if (exitCode !== 0) {
           logger.fatal(colors.red(`electrobun dev failed (exit ${exitCode})`), {
             scope: LOG_SCOPE_LAUNCHER,
@@ -110,11 +118,13 @@ export async function createServer(
         await childLogs;
         await server.close();
         await electrobunConfig.cleanup();
+        await preBundleCleanup();
       }),
     ]);
   } catch (error) {
     await server.close();
     await electrobunConfig.cleanup();
+    await preBundleCleanup();
     throw error;
   }
 }
