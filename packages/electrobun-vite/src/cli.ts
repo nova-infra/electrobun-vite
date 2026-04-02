@@ -38,7 +38,7 @@ type PreviewCLIOptions = GlobalCLIOptions & {
   skipBuild?: boolean;
 };
 
-const createInlineConfig = (root: string | undefined, options: GlobalCLIOptions): InlineConfig => ({
+export const createInlineConfig = (root: string | undefined, options: GlobalCLIOptions): InlineConfig => ({
   root,
   mode: options.mode,
   configFile: typeof options.config === "string" ? options.config : undefined,

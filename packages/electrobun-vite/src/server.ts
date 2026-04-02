@@ -6,6 +6,7 @@ import {
   loadUserConfig,
   type InlineConfig,
 } from "./config";
+import { loadEnv } from "./env";
 import {
   createLogEnvironment,
   createToolLogger,
@@ -78,6 +79,7 @@ export async function createServer(
       cwd: resolved.cwd,
       env: {
         ...process.env,
+        ...loadEnv(resolved.mode, resolved.cwd, ["BUN_VITE_", "VITE_"]),
         ELECTROBUN_VITE_DEV_SERVER_URL: devServerUrl,
         ELECTROBUN_VITE_OUT_DIR: getRendererOutDir(resolved),
         ...createLogEnvironment(resolved.logLevel),

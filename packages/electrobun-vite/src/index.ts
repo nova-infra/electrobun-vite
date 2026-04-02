@@ -7,3 +7,4 @@ export * from "./create";
 export * from "./update";
 export * from "./logger";
 export * from "./metadata";
+export { loadEnv } from "./env";
