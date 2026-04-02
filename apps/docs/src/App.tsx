@@ -125,12 +125,12 @@ export function App() {
         title: "把第一次上手需要的命令收敛成最短主路径。",
         lede:
           "electrobun-vite 现在更适合作为一个直接上手的桌面开发入口：先创建项目，再启动 dev，最后 build / preview，不需要先消化一整页背景介绍。",
-        sublede: `当前默认模板为 react-ts，文档示例基于 electrobun@${starterVersions.electrobun}、react@${starterVersions.react}、vite@${starterVersions.vite}。`,
+        sublede: `当前默认模板为 react-ts，文档示例基于 electrobun@${starterVersions.electrobun}、react@${starterVersions.react}、vite@${starterVersions.vite}。v0.2.0 新增 loadEnv 环境变量加载、多格式配置发现（.ts/.mts/.js/.mjs）以及 publicDir 默认约定。`,
         primaryCta: "Quick Start",
         secondaryCta: "查看 CLI",
         repoLink: "项目仓库",
         electrobunRepoLink: "Electrobun",
-        badges: ["Quick Start", "单配置", "react-ts 模板", "CLI 参数说明"],
+        badges: ["Quick Start", "单配置", "react-ts 模板", "CLI 参数说明", "v0.2.0 env 加载"],
         sections: [
           { id: "packages", label: "Packages", summary: "GitHub Packages 发布与安装方式。" },
           { id: "quickstart", label: "Quick Start", summary: "从创建项目到 build / preview 的最短路径。" },
@@ -155,6 +155,34 @@ export function App() {
               "`renderer.vite`：直接内联 Vite 配置。",
               "`electrobun.outDir`：renderer 和桌面打包共用的产物目录。",
               "`electrobun.config`：集中声明 app / build / copy 信息。",
+            ],
+          },
+          {
+            title: "多格式配置发现",
+            body: "electrobun-vite 会按顺序查找以下文件，找到第一个存在的即停止。不需要手动指定后缀。",
+            bullets: [
+              "`electrobun.vite.config.ts`（默认，推荐）",
+              "`electrobun.vite.config.mts`",
+              "`electrobun.vite.config.js`",
+              "`electrobun.vite.config.mjs`",
+            ],
+          },
+          {
+            title: "环境变量加载（v0.2.0）",
+            body: "dev 和 build 命令会自动从项目根目录读取 `.env` 系列文件，并把匹配前缀的变量注入到 Electrobun 子进程环境中。",
+            bullets: [
+              "加载顺序：`.env` → `.env.local` → `.env.[mode]` → `.env.[mode].local`（后者覆盖前者）。",
+              "注入前缀：`BUN_VITE_` 和 `VITE_`，其他变量不会被注入。",
+              "在 renderer 中通过 `import.meta.env.VITE_XXX` 访问（Vite 原生支持）。",
+              "在 Bun 主进程中通过 `process.env.BUN_VITE_XXX` 访问。",
+            ],
+          },
+          {
+            title: "publicDir 默认约定（v0.2.0）",
+            body: "Vite 的静态资源目录默认指向项目根目录下的 `resources/`，与 Electrobun 的资源约定对齐，无需额外配置。",
+            bullets: [
+              "把图标、字体等静态资源放到 `resources/` 即可直接被 Vite 打包。",
+              "可以在 `renderer.vite.publicDir` 里覆盖这个路径。",
             ],
           },
         ],
@@ -314,7 +342,12 @@ export function App() {
           {
             question: "为什么构建日志里还会看到 electrobun.config.ts？",
             answer:
-              "因为 Electrobun CLI 目前仍会查找这个文件，electrobun-vite 会在运行时临时生成并在命令结束后清理掉。",
+              "因为 Electrobun CLI 目前仍会查找这个文件，electrobun-vite 会在运行时临时生成（写入系统临时目录）并在命令结束后自动清理掉，不会污染项目目录。",
+          },
+          {
+            question: "为什么 Bun 主进程读不到 VITE_ 开头的环境变量？",
+            answer:
+              "VITE_ 前缀的变量默认只会注入 Vite renderer 进程；Bun 主进程只接收 BUN_VITE_ 前缀的变量。如果你需要在两侧都能访问，改用 BUN_VITE_ 前缀，或在 electrobun.vite.config.ts 里通过 define 显式传入。",
           },
         ],
       },
@@ -323,12 +356,12 @@ export function App() {
         title: "Reduce first-run docs to the commands people actually need.",
         lede:
           "electrobun-vite now reads more like a practical getting-started guide: create a project, run dev, then build and preview. The landing page should help people ship, not make them scroll through repo history.",
-        sublede: `The default template is still react-ts, and the examples here target electrobun@${starterVersions.electrobun}, react@${starterVersions.react}, and vite@${starterVersions.vite}.`,
+        sublede: `The default template is still react-ts, and the examples here target electrobun@${starterVersions.electrobun}, react@${starterVersions.react}, and vite@${starterVersions.vite}. v0.2.0 adds loadEnv env-file loading, multi-format config discovery (.ts/.mts/.js/.mjs), and a publicDir default convention.`,
         primaryCta: "Quick Start",
         secondaryCta: "See CLI",
         repoLink: "Repository",
         electrobunRepoLink: "Electrobun",
-        badges: ["Quick Start", "Single config", "react-ts template", "CLI parameter notes"],
+        badges: ["Quick Start", "Single config", "react-ts template", "CLI parameter notes", "v0.2.0 loadEnv"],
         sections: [
           { id: "quickstart", label: "Quick Start", summary: "The shortest path from scaffold to build / preview." },
           { id: "cli", label: "CLI", summary: "What each command does and what every parameter affects." },
@@ -477,6 +510,34 @@ export function App() {
               "`electrobun.config`: app / build / copy details in one place.",
             ],
           },
+          {
+            title: "Multi-format config discovery",
+            body: "electrobun-vite searches for the config file in this order and stops at the first match. No suffix is required.",
+            bullets: [
+              "`electrobun.vite.config.ts` (default, recommended)",
+              "`electrobun.vite.config.mts`",
+              "`electrobun.vite.config.js`",
+              "`electrobun.vite.config.mjs`",
+            ],
+          },
+          {
+            title: "Env file loading (v0.2.0)",
+            body: "The dev and build commands automatically load `.env` files from the project root and inject prefix-matched variables into the Electrobun subprocess environment.",
+            bullets: [
+              "Load order: `.env` → `.env.local` → `.env.[mode]` → `.env.[mode].local` (later files override earlier ones).",
+              "Injected prefixes: `BUN_VITE_` and `VITE_`. Other variables are not injected.",
+              "In the renderer, access them via `import.meta.env.VITE_XXX` (standard Vite behavior).",
+              "In the Bun main process, access them via `process.env.BUN_VITE_XXX`.",
+            ],
+          },
+          {
+            title: "publicDir default (v0.2.0)",
+            body: "The Vite static assets directory now defaults to `resources/` in the project root, aligned with Electrobun's resource conventions. No extra config needed.",
+            bullets: [
+              "Drop icons, fonts, and other static assets into `resources/` to have them picked up by Vite automatically.",
+              "Override with `renderer.vite.publicDir` if a different path is needed.",
+            ],
+          },
         ],
         packageTitle: "Packages",
         packageIntro:
@@ -512,7 +573,12 @@ export function App() {
           {
             question: "Why do build logs still mention electrobun.config.ts?",
             answer:
-              "Because the Electrobun CLI still looks for that file today, so electrobun-vite generates it temporarily at runtime and cleans it up afterward.",
+              "Because the Electrobun CLI still looks for that file today, so electrobun-vite generates it temporarily in the system temp directory and cleans it up automatically when the command exits — your project directory is never touched.",
+          },
+          {
+            question: "Why can't the Bun main process see VITE_-prefixed variables?",
+            answer:
+              "VITE_ variables are injected into the Vite renderer process only. The Bun main process receives BUN_VITE_-prefixed variables. If you need the same value in both, use the BUN_VITE_ prefix, or pass it explicitly via define in electrobun.vite.config.ts.",
           },
         ],
       },
