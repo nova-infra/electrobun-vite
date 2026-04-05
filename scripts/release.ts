@@ -143,10 +143,10 @@ if (target === "template") {
   updateTemplateDependency(readCliVersion());
 }
 
-run("bun", ["install", "--ignore-scripts"], path.dirname(targetConfig.packageJsonPath));
+run("npm", ["install", "--ignore-scripts", "--no-package-lock"], path.dirname(targetConfig.packageJsonPath));
 run(...targetConfig.typecheckCommand);
 run(...targetConfig.buildCommand);
-run("bun", ["install", "--frozen-lockfile", "--ignore-scripts"], path.dirname(targetConfig.packageJsonPath));
+run("npm", ["install", "--ignore-scripts", "--no-package-lock"], path.dirname(targetConfig.packageJsonPath));
 
 const commitMessage =
   target === "package"
