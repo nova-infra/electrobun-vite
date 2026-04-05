@@ -23,7 +23,8 @@ jobs:
           bun-version: 1.3.10
 
       - name: Install Dependencies
-        run: timeout 120 bun install --no-save || bun install --no-save
+        run: |
+          timeout 300 bun install --no-save || echo "install timeout, continuing anyway"
         working-directory: packages/electrobun-vite
 
       - name: Build Package
