@@ -12,7 +12,9 @@
 
 ## npm Registry
 
-`@nova-infra/electrobun-vite` 通过 [Trusted Publishers](https://docs.npmjs.com/trusted-publishers#supported-cicd-providers) 发布到 [npmjs.com](https://www.npmjs.com/)。发布流程见 [`.github/workflows/publish-package.yml`](.github/workflows/publish-package.yml)，只会在 push `packages/electrobun-vite-v*` tag 时触发。
+`@nova-infra/electrobun-vite` 和 `@nova-infra/template-react-ts` 都通过 [Trusted Publishers](https://docs.npmjs.com/trusted-publishers#supported-cicd-providers) 发布到 [npmjs.com](https://www.npmjs.com/)。发布流程见 [`.github/workflows/publish-package.yml`](.github/workflows/publish-package.yml) 和 [`.github/workflows/publish-template-react-ts.yml`](.github/workflows/publish-template-react-ts.yml)，分别在 push `packages/electrobun-vite-v*` 或 `templates/react-ts-v*` tag 时触发。
+
+可用 `bun run release:package:patch` 或 `bun run release:template:patch` 来自动 bump、提交、打 tag 并 push。
 
 ### 从 npm 安装
 

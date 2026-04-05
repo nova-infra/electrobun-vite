@@ -30,6 +30,12 @@
     "typecheck:demo": "bun run --cwd apps/demo typecheck",
     "typecheck:template": "bun run --cwd templates/react-ts typecheck",
     "typecheck:docs": "bun run --cwd apps/docs typecheck",
+    "release:package:patch": "bun scripts/release.ts package patch",
+    "release:package:minor": "bun scripts/release.ts package minor",
+    "release:package:major": "bun scripts/release.ts package major",
+    "release:template:patch": "bun scripts/release.ts template patch",
+    "release:template:minor": "bun scripts/release.ts template minor",
+    "release:template:major": "bun scripts/release.ts template major",
     "postinstall": "bun run build:package"
   },
   "devDependencies": {

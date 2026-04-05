@@ -12,7 +12,9 @@ Shortest path to first run: single config, Quick Start, and a react-ts template 
 
 ## npm Registry
 
-The `@nova-infra/electrobun-vite` package is published to [npmjs.com](https://www.npmjs.com/) using [Trusted Publishers](https://docs.npmjs.com/trusted-publishers#supported-cicd-providers). The publish workflow in [`.github/workflows/publish-package.yml`](.github/workflows/publish-package.yml) is tag-only: push a `packages/electrobun-vite-v*` tag to publish.
+The `@nova-infra/electrobun-vite` and `@nova-infra/template-react-ts` packages are published to [npmjs.com](https://www.npmjs.com/) using [Trusted Publishers](https://docs.npmjs.com/trusted-publishers#supported-cicd-providers). Their publish workflows are tag-only: push a `packages/electrobun-vite-v*` or `templates/react-ts-v*` tag to publish.
+
+Use `bun run release:package:patch` or `bun run release:template:patch` to bump, commit, tag, and push a release.
 
 ### Install from npm
 

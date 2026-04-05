@@ -33,6 +33,7 @@
   ],
   "scripts": {
     "build": "vite build && tsc -p tsconfig.build.json && chmod +x ./dist/bin/electrobun-vite.js ./dist/bin/create-electrobun.js && ln -sf electrobun-vite.js ./dist/bin/electrobun-vite && ln -sf create-electrobun.js ./dist/bin/create-electrobun",
+    "prepublishOnly": "npm run build",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

@@ -26,6 +26,7 @@
     "build": "electrobun-vite build",
     "preview": "electrobun-vite preview",
     "update": "electrobun-vite update",
+    "prepublishOnly": "npm run build",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
