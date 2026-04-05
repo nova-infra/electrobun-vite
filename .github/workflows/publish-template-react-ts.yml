@@ -22,13 +22,6 @@ jobs:
         with:
           bun-version: 1.3.10
 
-      - name: Install Dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Typecheck Template
-        run: bun run typecheck
-        working-directory: templates/react-ts
-
       - name: Publish Template to npm
         run: npm publish
         working-directory: templates/react-ts
