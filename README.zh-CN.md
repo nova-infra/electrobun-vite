@@ -10,42 +10,19 @@
 
 ---
 
-## GitHub Packages
+## npm Registry
 
-`@nova-infra/electrobun-vite` 已通过 `repository` 元数据关联到这个 GitHub 仓库，并且 `publishConfig` 现在默认指向 GitHub Packages。发布流程见 [`.github/workflows/publish-package.yml`](.github/workflows/publish-package.yml)，只会在 push `packages/electrobun-vite-v*` tag 时触发。
+`@nova-infra/electrobun-vite` 通过 [Trusted Publishers](https://docs.npmjs.com/trusted-publishers#supported-cicd-providers) 发布到 [npmjs.com](https://www.npmjs.com/)。发布流程见 [`.github/workflows/publish-package.yml`](.github/workflows/publish-package.yml)，只会在 push `packages/electrobun-vite-v*` tag 时触发。
 
-### 从 GitHub Packages 安装
+### 从 npm 安装
 
-先执行这条命令，把这台机器上的 `@nova-infra` 作用域切到 GitHub Packages：
-
-```bash
-npm config set @nova-infra:registry https://npm.pkg.github.com
-```
-
-然后再在项目级 `.npmrc` 里加入认证信息：
-
-```ini
-@nova-infra:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${NPM_TOKEN}
-```
-
-把 `NPM_TOKEN` 设置成一个 GitHub classic personal access token，至少需要 `read:packages` 才能安装。到了 CI 里，也可以直接从 secret 注入这个环境变量，不需要把 token 写死在 `.npmrc` 里。
-
-如果想最快本地试通，可以先在当前 shell 里导出：
-
-```bash
-export NPM_TOKEN=ghp_your_token_here
-```
-
-然后按常规方式安装即可：
+无需配置，直接安装：
 
 ```bash
 npm install @nova-infra/electrobun-vite
 # 或
 bun add @nova-infra/electrobun-vite
 ```
-
-如果包在你的环境里是公开可用的，token 行有时可以省略，但作用域 registry 映射是关键。把 token 放到环境变量里，也更方便给脚本、CI 或大模型自动补齐配置。
 
 ---
 

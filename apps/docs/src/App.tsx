@@ -198,22 +198,11 @@ export function App() {
         ],
         packageTitle: "Packages",
         packageIntro:
-          "包已经关联到这个 GitHub 仓库，并默认发布到 GitHub Packages。下面是安装时需要的最小配置。",
+          "包通过 Trusted Publishers 发布到 npmjs.com，无需额外配置即可安装。",
         packageBlocks: [
           {
-            title: "全局 registry",
-            body: "先把 `@nova-infra` 作用域在这台机器上指向 GitHub Packages。",
-            code: `npm config set @nova-infra:registry https://npm.pkg.github.com`,
-          },
-          {
-            title: "项目级 .npmrc",
-            body: "再在项目里写入认证信息，确保安装时能通过 GitHub Packages 读取包。",
-            code: `@nova-infra:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=\${NPM_TOKEN}`,
-            note: "把 `NPM_TOKEN` 设成一个 GitHub classic PAT，至少需要 `read:packages`。本地可以 `export NPM_TOKEN=...`，CI 则放到 secret 里注入。",
-          },
-          {
             title: "安装命令",
-            body: "然后按常规方式安装即可。Bun 和 npm 都可以直接使用同一个包名。",
+            body: "直接安装即可，无需配置 registry 或认证信息。",
             bullets: [
               "npm install @nova-infra/electrobun-vite",
               "bun add @nova-infra/electrobun-vite",
@@ -566,22 +555,11 @@ export function App() {
         ],
         packageTitle: "Packages",
         packageIntro:
-          "The package is linked to this GitHub repository and now publishes to GitHub Packages by default. Here is the minimum install setup.",
+          "The package is published to npmjs.com via Trusted Publishers. No extra configuration needed.",
         packageBlocks: [
           {
-            title: "Global registry",
-            body: "First point the `@nova-infra` scope at GitHub Packages on this machine.",
-            code: `npm config set @nova-infra:registry https://npm.pkg.github.com`,
-          },
-          {
-            title: "Project .npmrc",
-            body: "Then add auth in the project so installs can actually read from GitHub Packages.",
-            code: `@nova-infra:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=\${NPM_TOKEN}`,
-            note: "Set `NPM_TOKEN` to a GitHub classic PAT with at least `read:packages`. Locally you can `export NPM_TOKEN=...`; in CI, inject it from a secret.",
-          },
-          {
             title: "Install commands",
-            body: "Then install the package normally. npm and Bun both use the same package name.",
+            body: "Install directly. No registry or auth setup required.",
             bullets: [
               "npm install @nova-infra/electrobun-vite",
               "bun add @nova-infra/electrobun-vite",
