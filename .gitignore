@@ -4,3 +4,6 @@ build
 artifacts
 .DS_Store
 .vite
+
+# Exception for published dist
+!packages/electrobun-vite/dist
