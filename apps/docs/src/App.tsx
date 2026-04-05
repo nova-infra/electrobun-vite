@@ -103,12 +103,10 @@ const recommendedConfigCode = `export default defineConfig({
 })`;
 
 export function App() {
-  const previewImage = `${import.meta.env.BASE_URL}app-preview.png`;
   const [locale, setLocale] = useState<Locale>(() => {
     if (typeof window === "undefined") {
       return "zh";
     }
-
     const saved = window.localStorage.getItem(localeStorageKey);
     return saved === "en" || saved === "zh" ? saved : "zh";
   });
@@ -122,29 +120,27 @@ export function App() {
     () => ({
       zh: {
         eyebrow: "Electrobun + Vite",
-        title: "把第一次上手需要的命令收敛成最短主路径。",
-        lede:
-          "electrobun-vite 现在更适合作为一个直接上手的桌面开发入口：先创建项目，再启动 dev，最后 build / preview，不需要先消化一整页背景介绍。",
-        sublede: `当前默认模板为 react-ts，文档示例基于 electrobun@${starterVersions.electrobun}、react@${starterVersions.react}、vite@${starterVersions.vite}。v0.2.0 新增 loadEnv 环境变量加载、多格式配置发现（.ts/.mts/.js/.mjs）以及 publicDir 默认约定。`,
-        primaryCta: "Quick Start",
-        secondaryCta: "查看 CLI",
+        title: "把第一次上手收敛成最短路径。",
+        lede: "electrobun-vite 现在更像一份直接上手的桌面开发指南：创建项目、启动 dev、构建预览。不需要先消化一整页背景。",
+        sublede: `默认模板 react-ts，基于 electrobun@${starterVersions.electrobun}、react@${starterVersions.react}、vite@${starterVersions.vite}。支持 loadEnv 环境变量加载、多格式配置发现及 publicDir 约定。`,
+        primaryCta: "立即上手",
+        secondaryCta: "CLI 参考",
         repoLink: "项目仓库",
         electrobunRepoLink: "Electrobun",
-        badges: ["Quick Start", "单配置", "react-ts 模板", "CLI 参数说明", "v0.2.0 env 加载"],
+        badges: ["Quick Start", "单配置", "react-ts 模板", "CLI 参数", "env 加载"],
         sections: [
-          { id: "packages", label: "Packages", summary: "GitHub Packages 发布与安装方式。" },
-          { id: "quickstart", label: "Quick Start", summary: "从创建项目到 build / preview 的最短路径。" },
-          { id: "cli", label: "CLI", summary: "每个命令做什么，以及参数分别影响哪里。" },
-          { id: "config", label: "Config", summary: "围绕一个 electrobun.vite.config.ts 工作。" },
-          { id: "faq", label: "FAQ", summary: "保留两个最常见的问题，避免页面继续膨胀。" },
+          { id: "packages", label: "安装", summary: "npm 一键安装，无需配置。" },
+          { id: "quickstart", label: "快速上手", summary: "从创建到构建预览的最短路径。" },
+          { id: "cli", label: "CLI", summary: "每个命令及其参数说明。" },
+          { id: "config", label: "配置", summary: "围绕一个 electrobun.vite.config.ts 工作。" },
+          { id: "faq", label: "FAQ", summary: "常见问题与解答。" },
         ],
-        configTitle: "Config",
-        configIntro:
-          "项目层继续围绕一个 `electrobun.vite.config.ts` 工作，把 renderer 和 Electrobun 相关配置放在同一个入口里看清楚。",
+        configTitle: "配置",
+        configIntro: "项目层围绕一个 `electrobun.vite.config.ts` 工作，把 renderer 和 Electrobun 配置放在同一个入口。",
         configBlocks: [
           {
             title: "推荐结构",
-            body: "如果你是第一次接入 electrobun-vite，先从这个结构开始，不必急着拆成多份配置。",
+            body: "如果是第一次接入，从这个结构开始，不必急着拆成多份配置。",
             code: recommendedConfigCode,
             tone: "accent",
           },
@@ -159,7 +155,7 @@ export function App() {
           },
           {
             title: "多格式配置发现",
-            body: "electrobun-vite 会按顺序查找以下文件，找到第一个存在的即停止。不需要手动指定后缀。",
+            body: "electrobun-vite 按顺序查找以下文件，找到第一个存在的即停止。",
             bullets: [
               "`electrobun.vite.config.ts`（默认，推荐）",
               "`electrobun.vite.config.mts`",
@@ -172,353 +168,309 @@ export function App() {
             body: "dev 和 build 命令会自动从项目根目录读取 `.env` 系列文件，并把匹配前缀的变量注入到 Electrobun 子进程环境中。",
             bullets: [
               "加载顺序：`.env` → `.env.local` → `.env.[mode]` → `.env.[mode].local`（后者覆盖前者）。",
-              "注入前缀：`BUN_VITE_` 和 `VITE_`，其他变量不会被注入。",
-              "在 renderer 中通过 `import.meta.env.VITE_XXX` 访问（Vite 原生支持）。",
-              "在 Bun 主进程中通过 `process.env.BUN_VITE_XXX` 访问。",
+              "注入前缀：`BUN_VITE_` 和 `VITE_`。",
+              "renderer 中通过 `import.meta.env.VITE_XXX` 访问。",
+              "Bun 主进程中通过 `process.env.BUN_VITE_XXX` 访问。",
             ],
           },
           {
             title: "publicDir 默认约定（v0.2.0）",
-            body: "Vite 的静态资源目录默认指向项目根目录下的 `resources/`，与 Electrobun 的资源约定对齐，无需额外配置。",
+            body: "Vite 的静态资源目录默认指向项目根目录下的 `resources/`，与 Electrobun 的资源约定对齐。",
             bullets: [
-              "把图标、字体等静态资源放到 `resources/` 即可直接被 Vite 打包。",
-              "可以在 `renderer.vite.publicDir` 里覆盖这个路径。",
+              "把图标、字体等静态资源放到 `resources/` 即可。",
+              "可以在 `renderer.vite.publicDir` 里覆盖。",
             ],
           },
           {
-            title: "build.bun.external — 跳过不兼容的 npm 包",
-            body: "如果 Bun 入口引用了带 native binding、复杂依赖树或自定义 loader 的包，Electrobun 的内部 bundler 可能报 'Bundle failed'。把这些包加到 `build.bun.external` 即可跳过打包。",
+            title: "build.bun.external",
+            body: "如果 Bun 入口引用了带 native binding 或复杂依赖树的包，把这些包加到 `build.bun.external` 即可跳过打包。",
             code: `electrobun: {\n  config: ({ outDir }) => ({\n    build: {\n      bun: {\n        entrypoint: "src/bun/index.ts",\n        external: ["grammy", "zod", "qrcode"],\n      },\n    },\n  }),\n}`,
             bullets: [
-              "被 external 的包不会被打进 bundle，需要在运行时通过 node_modules 加载。",
+              "被 external 的包不会被打进 bundle，需要在运行时加载。",
               "如果只有 `electrobun/bun` 导入，通常不需要 external。",
-              "构建失败时 CLI 会输出提示，按提示添加即可。",
             ],
           },
         ],
-        packageTitle: "Packages",
-        packageIntro:
-          "包通过 Trusted Publishers 发布到 npmjs.com，无需额外配置即可安装。",
+        packageTitle: "安装",
+        packageIntro: "包通过 Trusted Publishers 发布到 npmjs.com，无需额外配置。",
         packageBlocks: [
           {
-            title: "安装命令",
-            body: "直接安装即可，无需配置 registry 或认证信息。",
+            title: "一行命令安装",
+            body: "直接安装即可，不需要配置 registry 或认证信息。",
             bullets: [
               "npm install @nova-infra/electrobun-vite",
               "bun add @nova-infra/electrobun-vite",
             ],
           },
         ],
-        quickStartTitle: "Quick Start",
-        quickStartIntro:
-          "第一次使用时，按下面三步走就够了。先生成项目，再本地联调，最后构建和预览生产产物。",
+        quickStartTitle: "快速上手",
+        quickStartIntro: "三步搞定：生成项目、本地开发、构建预览。",
         quickStartSteps: [
           {
             title: "1. 创建项目",
-            description: "用 npx/bunx 一键生成项目（无需克隆本仓库），或在本仓库根目录执行脚手架。",
-            code: `# 一键创建（推荐）\nnpx -p @nova-infra/electrobun-vite create-electrobun my-app\ncd my-app\n\n# 或在当前目录生成，并在需要时确认\nbunx -p @nova-infra/electrobun-vite create-electrobun .\nbunx -p @nova-infra/electrobun-vite create-electrobun\nbunx -p @nova-infra/electrobun-vite create-electrobun --force\n\n# 或从本仓库：bun install && bun run new -- my-app && cd my-app`,
-            note: "Bun 用户也可以用 `bunx -p @nova-infra/electrobun-vite create-electrobun my-app`。`bunx -p @nova-infra/electrobun-vite create-electrobun .` 和 `bunx -p @nova-infra/electrobun-vite create-electrobun` 都会指向当前目录；如果目录不为空，会先确认再继续。加上 `--force` 就会跳过确认，直接生成。",
+            description: "用 npx/bunx 一键生成，无需克隆仓库。",
+            code: `# 推荐方式\nnpx -p @nova-infra/electrobun-vite create-electrobun my-app\ncd my-app\n\n# 在当前目录生成\nbunx -p @nova-infra/electrobun-vite create-electrobun .`,
+            note: "`--force` 可跳过确认，直接覆盖已有目录。",
           },
           {
             title: "2. 本地开发",
-            description: "安装依赖后直接启动开发模式，Vite renderer 和 Electrobun shell 会一起拉起。",
+            description: "安装依赖后直接启动，Vite renderer 和 Electrobun 同时拉起。",
             code: `bun install\nbun run dev`,
-            note: "如果你只想调试 renderer，可以在项目里运行 `electrobun-vite --rendererOnly`。",
+            note: "`electrobun-vite --rendererOnly` 可只启动 renderer。",
           },
           {
-            title: "3. 构建与预览",
-            description: "确认生产资源和桌面壳子都能正常工作，再决定是否继续发布流程。",
+            title: "3. 构建预览",
+            description: "验证生产资源和桌面壳子正常后，再决定是否发布。",
             code: `bun run build\nbun run preview`,
-            note: "`preview` 默认会先 build；如果你已经构建过，可以加 `--skipBuild`。",
+            note: "`--skipBuild` 可跳过构建，直接预览已有产物。",
           },
         ],
         commandsTitle: "CLI",
-        commandsIntro:
-          "CLI 只保留和日常使用直接相关的命令。下面先看命令本身，再看位置参数、全局参数和命令专属参数分别影响什么。",
+        commandsIntro: "CLI 只保留日常直接相关的命令。",
         commands: [
           {
             title: "开发",
             command: "electrobun-vite [root]",
-            description: "默认命令，等同于 `electrobun-vite dev [root]`，会同时启动 Vite dev server 和 Electrobun 应用。",
+            description: "默认命令，等同于 `dev`，同时启动 Vite dev server 和 Electrobun 应用。",
             details: [
               "`[root]` 可选，默认当前目录。",
-              "`serve` 和 `dev` 都是它的别名。",
-              "`--rendererOnly` 只启动 renderer，适合纯前端联调。",
+              "`--rendererOnly` 只启动 renderer。",
             ],
           },
           {
             title: "构建",
             command: "electrobun-vite build [root]",
-            description: "构建 renderer 产物，并把结果交给 Electrobun 打包桌面端资源。",
+            description: "构建 renderer 产物并交给 Electrobun 打包。",
             details: [
-              "`[root]` 可选，适合从 monorepo 根目录指定子项目。",
-              "`--outDir` 会覆盖默认输出目录。",
-              "`--watch` 会在支持的链路里持续重建。",
+              "`--outDir` 覆盖输出目录。",
+              "`--watch` 持续重建。",
             ],
           },
           {
             title: "预览",
             command: "electrobun-vite preview [root]",
-            description: "使用生产资源启动桌面应用，验证最终行为是否和 build 产物一致。",
+            description: "使用生产资源启动桌面应用。",
             details: [
-              "`preview` 默认会先执行一次 build。",
-              "`--skipBuild` 会直接复用已有产物。",
-              "适合在发布前快速验收窗口行为和资源路径。",
+              "默认先执行 build。",
+              "`--skipBuild` 跳过构建。",
             ],
           },
           {
             title: "信息",
             command: "electrobun-vite info [root]",
-            description: "输出解析后的配置文件位置、默认模板、版本信息和模板元数据。",
-            details: [
-              "适合排查 CLI 实际读到了哪个配置文件。",
-              "`[root]` 可选，用来查看指定项目目录的解析结果。",
-            ],
+            description: "输出解析后的配置位置、版本、模板元数据。",
           },
           {
             title: "更新",
             command: "electrobun-vite update [root]",
-            description: "刷新已有项目里的模板管理依赖版本、迁移旧脚本，然后执行 bun install。",
-            details: [
-              "适合项目已经创建过、但你想和当前 starter 版本对齐并清理旧脚本入口的时候。",
-              "`[root]` 可选，默认当前目录。",
-            ],
+            description: "刷新模板依赖版本并执行 bun install。",
           },
           {
             title: "脚手架",
-            command: "create-electrobun <projectName>",
-            description: "创建新的桌面项目目录，并写入当前默认模板。",
+            command: "create-electrobun <name>",
+            description: "创建新的桌面项目目录。",
             details: [
-              "无需克隆仓库即可创建：`npx -p @nova-infra/electrobun-vite create-electrobun my-app`（Bun：`bunx -p @nova-infra/electrobun-vite create-electrobun my-app`）。",
-              "`<projectName>` 是目标目录名，也是生成后的项目名。",
-              "当前 starter 模板已独立发布为 `@nova-infra/template-react-ts`，脚手架会在生成时解析它。",
-              "如果要在当前目录生成，请直接执行 `create-electrobun .` 或 `create-electrobun`；目录不为空时会先确认，或改用 `--force` 跳过确认。",
-              "`-t, --template` 目前只接受 `react-ts`。",
-              "`-f, --force` 会跳过确认并允许生成到已有目录。",
+              "`npx -p @nova-infra/electrobun-vite create-electrobun my-app`",
+              "`-f, --force` 跳过确认。",
+              "`-t, --template` 目前只支持 `react-ts`。",
             ],
           },
         ],
         optionGroups: [
           {
             title: "位置参数",
-            intro: "这些参数写在命令名后面，不带 `--`。",
+            intro: "写在命令名后面，不带 `--`。",
             options: [
-              { flag: "[root]", effect: "指定项目根目录；不传时默认使用当前工作目录。" },
-              { flag: "<projectName>", effect: "指定脚手架输出目录名，`create` 命令必填。" },
+              { flag: "[root]", effect: "指定项目根目录，默认当前目录。" },
+              { flag: "<projectName>", effect: "脚手架输出目录名，`create` 必填。" },
             ],
           },
           {
             title: "全局参数",
-            intro: "这些参数可用于 `dev / build / preview / info`，影响配置解析、日志或输出目录。",
+            intro: "可用于 `dev / build / preview / info`。",
             options: [
-              { flag: "-c, --config <file>", effect: "指定要读取的配置文件，而不是默认查找 `electrobun.vite.config.ts`。" },
-              { flag: "-l, --logLevel <level>", effect: "控制日志级别，可选 `info | warn | error | silent`。" },
-              { flag: "--clearScreen", effect: "控制日志刷新时是否清屏，适合调试 watch 场景。" },
-              { flag: "-m, --mode <mode>", effect: "设置运行模式，并参与 env 和配置解析。" },
-              { flag: "-w, --watch", effect: "在支持 watch 的命令里持续监听文件变化并重建或重启。" },
-              { flag: "--outDir <dir>", effect: "覆盖输出目录，影响 renderer 产物和后续打包交接目录。" },
-              { flag: "--sourcemap", effect: "在支持 sourcemap 的链路里输出 source map，方便排查问题。" },
-              { flag: "--entry <file>", effect: "为未来的 Bun entry 覆盖预留；当前主要是占位参数。" },
+              { flag: "-c, --config <file>", effect: "指定配置文件路径。" },
+              { flag: "-l, --logLevel <level>", effect: "日志级别：`info | warn | error | silent`。" },
+              { flag: "-m, --mode <mode>", effect: "设置运行模式，参与 env 加载。" },
+              { flag: "-w, --watch", effect: "持续监听文件变化并重建。" },
+              { flag: "--outDir <dir>", effect: "覆盖输出目录。" },
+              { flag: "--sourcemap", effect: "输出 source map。" },
             ],
           },
           {
             title: "命令专属参数",
             intro: "只在对应命令下生效。",
             options: [
-              { flag: "--rendererOnly", effect: "仅用于 `dev`，只启动 Vite renderer，不拉起 Electrobun shell。" },
-              { flag: "--skipBuild", effect: "仅用于 `preview`，跳过预构建，直接使用现有产物。" },
-              { flag: "-t, --template <template>", effect: "仅用于 `create`，选择模板；当前只支持 `react-ts`。" },
+              { flag: "--rendererOnly", effect: "`dev` 专用，只启动 Vite renderer。" },
+              { flag: "--skipBuild", effect: "`preview` 专用，跳过预构建。" },
+              { flag: "-t, --template", effect: "`create` 专用，当前只支持 `react-ts`。" },
             ],
           },
         ],
         faqTitle: "FAQ",
         faqs: [
           {
-            question: "为什么页面里不再放部署、迁移、模板介绍这些内容？",
-            answer:
-              "因为首页现在优先承担“第一次上手”的职责。和 quick start 无关的内容先收掉，避免用户还没跑通命令就被背景信息打断。",
+            question: "页面里不再放部署、迁移等内容？",
+            answer: "首页现在优先承担\"第一次上手\"的职责。和 quick start 无关的内容先收掉，避免用户还没跑通命令就被打断。",
           },
           {
-            question: "为什么构建日志里还会看到 electrobun.config.ts？",
-            answer:
-              "因为 Electrobun CLI 目前仍会查找这个文件，electrobun-vite 会在运行时临时生成（写入系统临时目录）并在命令结束后自动清理掉，不会污染项目目录。",
+            question: "构建日志里为什么有 electrobun.config.ts？",
+            answer: "Electrobun CLI 仍会查找这个文件，electrobun-vite 会在运行时临时生成（写入系统临时目录）并在命令结束后自动清理。",
           },
           {
-            question: "为什么 Bun 主进程读不到 VITE_ 开头的环境变量？",
-            answer:
-              "VITE_ 前缀的变量默认只会注入 Vite renderer 进程；Bun 主进程只接收 BUN_VITE_ 前缀的变量。如果你需要在两侧都能访问，改用 BUN_VITE_ 前缀，或在 electrobun.vite.config.ts 里通过 define 显式传入。",
+            question: "Bun 主进程读不到 VITE_ 开头的环境变量？",
+            answer: "VITE_ 前缀的变量只注入 Vite renderer 进程；Bun 主进程只接收 BUN_VITE_ 前缀的变量。需要两侧都能访问请用 BUN_VITE_ 前缀。",
           },
           {
-            question: "为什么 electrobun build 报 'Bundle failed' 但没有更多信息？",
-            answer:
-              "Electrobun 内部使用 Bun.build() 打包 bun 入口文件，如果入口引用了带 native binding 或复杂依赖树的包（如 grammy、@modelcontextprotocol/sdk），bundler 会失败。在 config 的 build.bun.external 里声明这些包即可跳过打包。CLI 现在会在失败时输出这个提示。",
+            question: "构建报 'Bundle failed' 但没有更多信息？",
+            answer: "Electrobun 使用 Bun.build() 打包，如果入口引用了带 native binding 的包会失败。在 config 的 build.bun.external 里声明这些包即可。",
           },
         ],
       },
       en: {
         eyebrow: "Electrobun + Vite",
-        title: "Reduce first-run docs to the commands people actually need.",
-        lede:
-          "electrobun-vite now reads more like a practical getting-started guide: create a project, run dev, then build and preview. The landing page should help people ship, not make them scroll through repo history.",
-        sublede: `The default template is still react-ts, and the examples here target electrobun@${starterVersions.electrobun}, react@${starterVersions.react}, and vite@${starterVersions.vite}. v0.2.0 adds loadEnv env-file loading, multi-format config discovery (.ts/.mts/.js/.mjs), and a publicDir default convention.`,
-        primaryCta: "Quick Start",
-        secondaryCta: "See CLI",
+        title: "Reduce first-run to the commands that matter.",
+        lede: "electrobun-vite now reads like a practical getting-started guide: create, dev, build, preview. No background docs to scroll through.",
+        sublede: `Default template is react-ts, targeting electrobun@${starterVersions.electrobun}, react@${starterVersions.react}, vite@${starterVersions.vite}. Supports loadEnv, multi-format config discovery, and publicDir convention.`,
+        primaryCta: "Get Started",
+        secondaryCta: "CLI Reference",
         repoLink: "Repository",
         electrobunRepoLink: "Electrobun",
-        badges: ["Quick Start", "Single config", "react-ts template", "CLI parameter notes", "v0.2.0 loadEnv"],
+        badges: ["Quick Start", "Single config", "react-ts template", "CLI reference", "env loading"],
         sections: [
-          { id: "quickstart", label: "Quick Start", summary: "The shortest path from scaffold to build / preview." },
-          { id: "cli", label: "CLI", summary: "What each command does and what every parameter affects." },
-          { id: "config", label: "Config", summary: "Work around one electrobun.vite.config.ts file." },
-          { id: "packages", label: "Packages", summary: "How to publish and install from GitHub Packages." },
-          { id: "faq", label: "FAQ", summary: "Two common questions, without bringing back unrelated sections." },
+          { id: "packages", label: "Install", summary: "One-command npm install, no config." },
+          { id: "quickstart", label: "Quick Start", summary: "Shortest path from scaffold to build." },
+          { id: "cli", label: "CLI", summary: "Every command and parameter explained." },
+          { id: "config", label: "Config", summary: "Work around one config file." },
+          { id: "faq", label: "FAQ", summary: "Common questions answered." },
         ],
         quickStartTitle: "Quick Start",
-        quickStartIntro:
-          "For a first run, these three steps are enough: scaffold the project, start local development, then build and preview production assets.",
+        quickStartIntro: "Three steps: scaffold, dev, build and preview.",
         quickStartSteps: [
           {
-            title: "1. Scaffold a project",
-            description: "Use npx/bunx to create a project in one shot (no clone), or run the scaffold from this repo root.",
-            code: `# One-liner (recommended)\nnpx -p @nova-infra/electrobun-vite create-electrobun my-app\ncd my-app\n\n# Or generate into the current directory and confirm if needed\nbunx -p @nova-infra/electrobun-vite create-electrobun .\nbunx -p @nova-infra/electrobun-vite create-electrobun\nbunx -p @nova-infra/electrobun-vite create-electrobun --force\n\n# Or from this repo: bun install && bun run new -- my-app && cd my-app`,
-            note: "With Bun: `bunx -p @nova-infra/electrobun-vite create-electrobun my-app`. `bunx -p @nova-infra/electrobun-vite create-electrobun .` and `bunx -p @nova-infra/electrobun-vite create-electrobun` both target the current directory; if it is not empty, you will be asked to confirm first. Add `--force` to skip the prompt and scaffold immediately.",
+            title: "1. Scaffold",
+            description: "Use npx/bunx to create a project in one shot.",
+            code: `# Recommended\nnpx -p @nova-infra/electrobun-vite create-electrobun my-app\ncd my-app\n\n# Into current directory\nbunx -p @nova-infra/electrobun-vite create-electrobun .`,
+            note: "`--force` skips the confirm prompt.",
           },
           {
-            title: "2. Start local development",
-            description: "Install dependencies in the generated app and start the combined Vite renderer + Electrobun development flow.",
+            title: "2. Develop",
+            description: "Install deps and start the combined Vite + Electrobun dev flow.",
             code: `bun install\nbun run dev`,
-            note: "If you only need the renderer dev server, run `electrobun-vite --rendererOnly` inside the app.",
+            note: "`electrobun-vite --rendererOnly` starts only the renderer.",
           },
           {
-            title: "3. Build and preview",
-            description: "Confirm that production assets and the desktop shell still behave correctly before moving on to release work.",
+            title: "3. Build & Preview",
+            description: "Verify production assets before release.",
             code: `bun run build\nbun run preview`,
-            note: "`preview` builds first by default. Add `--skipBuild` when you want to reuse an existing build.",
+            note: "`--skipBuild` reuses existing build output.",
           },
         ],
         commandsTitle: "CLI",
-        commandsIntro:
-          "The CLI surface stays intentionally small. Read the commands first, then use the parameter groups below to see exactly what each flag changes.",
+        commandsIntro: "Small surface area — only what you need daily.",
         commands: [
           {
-            title: "Development",
+            title: "Dev",
             command: "electrobun-vite [root]",
-            description: "The default command, equivalent to `electrobun-vite dev [root]`, starts the Vite dev server and the Electrobun app together.",
+            description: "Default command. Starts Vite dev server and Electrobun together.",
             details: [
-              "`[root]` is optional and defaults to the current directory.",
-              "`serve` and `dev` are aliases for the same flow.",
-              "`--rendererOnly` keeps the run focused on the renderer dev server.",
+              "`[root]` defaults to current directory.",
+              "`--rendererOnly` starts only the renderer.",
             ],
           },
           {
             title: "Build",
             command: "electrobun-vite build [root]",
-            description: "Build the renderer output, then hand those assets off to Electrobun packaging.",
+            description: "Build renderer output and hand off to Electrobun packaging.",
             details: [
-              "`[root]` is useful when you launch from a monorepo root.",
-              "`--outDir` overrides the default output directory.",
-              "`--watch` keeps rebuilding where the flow supports it.",
+              "`--outDir` overrides output directory.",
+              "`--watch` keeps rebuilding.",
             ],
           },
           {
             title: "Preview",
             command: "electrobun-vite preview [root]",
-            description: "Run the desktop app against production assets so final behavior matches the build output you intend to ship.",
+            description: "Run desktop app against production assets.",
             details: [
-              "`preview` triggers a build first by default.",
-              "`--skipBuild` reuses existing output instead of rebuilding.",
-              "This is the fast final verification command before release work.",
+              "Builds first by default.",
+              "`--skipBuild` skips rebuilding.",
             ],
           },
           {
             title: "Info",
             command: "electrobun-vite info [root]",
-            description: "Print the resolved config path, default template, versions, and template metadata.",
-            details: [
-              "Useful when you need to confirm which config file the CLI actually resolved.",
-              "`[root]` lets you inspect a specific project directory.",
-            ],
+            description: "Print resolved config path, versions, template metadata.",
           },
           {
             title: "Update",
             command: "electrobun-vite update [root]",
-            description: "Refresh template-managed dependency versions, migrate old scripts, and then run bun install.",
-            details: [
-              "Use this when a project was created earlier and you want it aligned with the current starter versions and script layout.",
-              "`[root]` is optional and defaults to the current directory.",
-            ],
+            description: "Refresh template deps and run bun install.",
           },
           {
             title: "Scaffold",
-            command: "create-electrobun <projectName>",
-            description: "Create a new desktop project directory and write the current default starter into it.",
+            command: "create-electrobun <name>",
+            description: "Create a new desktop project from template.",
             details: [
-              "No clone needed: `npx -p @nova-infra/electrobun-vite create-electrobun my-app` (Bun: `bunx -p @nova-infra/electrobun-vite create-electrobun my-app`).",
-              "`<projectName>` becomes the output directory name.",
-              "The current starter template is published separately as `@nova-infra/template-react-ts` and resolved by the CLI when scaffolding.",
-              "To scaffold into the current directory, run `create-electrobun .` or just `create-electrobun`; if the directory is not empty, the CLI will ask before continuing, or pass `--force` to skip the prompt.",
-              "`-t, --template` is currently limited to `react-ts`.",
-              "`-f, --force` skips confirm prompts and allows scaffolding into existing directories.",
+              "`npx -p @nova-infra/electrobun-vite create-electrobun my-app`",
+              "`-f, --force` skips confirm.",
+              "`-t, --template` currently only `react-ts`.",
             ],
           },
         ],
         optionGroups: [
           {
-            title: "Positional parameters",
-            intro: "These appear directly after the command name, without `--`.",
+            title: "Positional",
+            intro: "After command name, no `--`.",
             options: [
-              { flag: "[root]", effect: "Choose the project root directory. Defaults to the current working directory." },
-              { flag: "<projectName>", effect: "Choose the scaffold output directory name. Required for `create`." },
+              { flag: "[root]", effect: "Project root. Defaults to cwd." },
+              { flag: "<projectName>", effect: "Output dir for `create`." },
             ],
           },
           {
-            title: "Global parameters",
-            intro: "These work across `dev / build / preview / info` and affect config resolution, logging, or output paths.",
+            title: "Global",
+            intro: "Work across `dev / build / preview / info`.",
             options: [
-              { flag: "-c, --config <file>", effect: "Read a specific config file instead of auto-discovering `electrobun.vite.config.ts`." },
-              { flag: "-l, --logLevel <level>", effect: "Control CLI log verbosity: `info | warn | error | silent`." },
-              { flag: "--clearScreen", effect: "Control whether previous logs are cleared between updates, especially in watch mode." },
-              { flag: "-m, --mode <mode>", effect: "Set the mode used for env loading and config resolution." },
-              { flag: "-w, --watch", effect: "Keep watching files and rebuild or restart when the active command supports it." },
-              { flag: "--outDir <dir>", effect: "Override the output directory shared between renderer output and packaging handoff." },
-              { flag: "--sourcemap", effect: "Emit source maps on commands that support them, which helps during debugging." },
-              { flag: "--entry <file>", effect: "Reserved for future Bun entry overrides; currently a placeholder option." },
+              { flag: "-c, --config <file>", effect: "Specific config file path." },
+              { flag: "-l, --logLevel <level>", effect: "`info | warn | error | silent`." },
+              { flag: "-m, --mode <mode>", effect: "Mode for env loading." },
+              { flag: "-w, --watch", effect: "Watch and rebuild." },
+              { flag: "--outDir <dir>", effect: "Override output directory." },
+              { flag: "--sourcemap", effect: "Emit source maps." },
             ],
           },
           {
-            title: "Command-specific parameters",
-            intro: "These only apply to one command family.",
+            title: "Command-specific",
+            intro: "Only on specific commands.",
             options: [
-              { flag: "--rendererOnly", effect: "For `dev` only. Start the Vite renderer dev server without launching the Electrobun shell." },
-              { flag: "--skipBuild", effect: "For `preview` only. Reuse the existing build output instead of building first." },
-              { flag: "-t, --template <template>", effect: "For `create` only. Pick the scaffold template, currently limited to `react-ts`." },
+              { flag: "--rendererOnly", effect: "On `dev`. Vite renderer only." },
+              { flag: "--skipBuild", effect: "On `preview`. Skip build." },
+              { flag: "-t, --template", effect: "On `create`. Only `react-ts`." },
             ],
           },
         ],
         configTitle: "Config",
-        configIntro:
-          "Projects still center on one `electrobun.vite.config.ts`, so renderer and Electrobun settings stay visible in the same place.",
+        configIntro: "One `electrobun.vite.config.ts` for renderer and Electrobun settings.",
         configBlocks: [
           {
             title: "Recommended shape",
-            body: "If you are starting fresh, begin with this shape instead of splitting configuration too early.",
+            body: "Start here for fresh projects.",
             code: recommendedConfigCode,
             tone: "accent",
           },
           {
             title: "Key fields",
-            body: "These are the fields worth understanding first.",
+            body: "Understand these first.",
             bullets: [
-              "`renderer.vite`: inline Vite configuration.",
-              "`electrobun.outDir`: shared output directory between renderer output and desktop packaging.",
-              "`electrobun.config`: app / build / copy details in one place.",
+              "`renderer.vite`: inline Vite config.",
+              "`electrobun.outDir`: shared output directory.",
+              "`electrobun.config`: app / build / copy details.",
             ],
           },
           {
-            title: "Multi-format config discovery",
-            body: "electrobun-vite searches for the config file in this order and stops at the first match. No suffix is required.",
+            title: "Multi-format discovery",
+            body: "Searches in order, stops at first match.",
             bullets: [
-              "`electrobun.vite.config.ts` (default, recommended)",
+              "`electrobun.vite.config.ts` (default)",
               "`electrobun.vite.config.mts`",
               "`electrobun.vite.config.js`",
               "`electrobun.vite.config.mjs`",
@@ -526,40 +478,38 @@ export function App() {
           },
           {
             title: "Env file loading (v0.2.0)",
-            body: "The dev and build commands automatically load `.env` files from the project root and inject prefix-matched variables into the Electrobun subprocess environment.",
+            body: "dev and build load `.env` files and inject prefix-matched vars.",
             bullets: [
-              "Load order: `.env` → `.env.local` → `.env.[mode]` → `.env.[mode].local` (later files override earlier ones).",
-              "Injected prefixes: `BUN_VITE_` and `VITE_`. Other variables are not injected.",
-              "In the renderer, access them via `import.meta.env.VITE_XXX` (standard Vite behavior).",
-              "In the Bun main process, access them via `process.env.BUN_VITE_XXX`.",
+              "Order: `.env` → `.env.local` → `.env.[mode]` → `.env.[mode].local`.",
+              "Injected prefixes: `BUN_VITE_` and `VITE_`.",
+              "Renderer: `import.meta.env.VITE_XXX`.",
+              "Bun main: `process.env.BUN_VITE_XXX`.",
             ],
           },
           {
             title: "publicDir default (v0.2.0)",
-            body: "The Vite static assets directory now defaults to `resources/` in the project root, aligned with Electrobun's resource conventions. No extra config needed.",
+            body: "Vite static assets default to `resources/`, aligned with Electrobun conventions.",
             bullets: [
-              "Drop icons, fonts, and other static assets into `resources/` to have them picked up by Vite automatically.",
-              "Override with `renderer.vite.publicDir` if a different path is needed.",
+              "Drop icons, fonts into `resources/`.",
+              "Override with `renderer.vite.publicDir`.",
             ],
           },
           {
-            title: "build.bun.external — skip incompatible npm packages",
-            body: "If your Bun entrypoint imports packages with native bindings, complex dependency trees, or custom loaders, Electrobun's internal bundler may report 'Bundle failed'. Add those packages to `build.bun.external` to skip bundling them.",
+            title: "build.bun.external",
+            body: "Skip bundling packages with native bindings.",
             code: `electrobun: {\n  config: ({ outDir }) => ({\n    build: {\n      bun: {\n        entrypoint: "src/bun/index.ts",\n        external: ["grammy", "zod", "qrcode"],\n      },\n    },\n  }),\n}`,
             bullets: [
-              "Externalized packages are not included in the bundle — they load from node_modules at runtime.",
-              "If only `electrobun/bun` is imported, external is usually not needed.",
-              "The CLI now prints a hint when the build fails, pointing to this option.",
+              "External packages load from node_modules at runtime.",
+              "Usually not needed if only `electrobun/bun` is imported.",
             ],
           },
         ],
-        packageTitle: "Packages",
-        packageIntro:
-          "The package is published to npmjs.com via Trusted Publishers. No extra configuration needed.",
+        packageTitle: "Install",
+        packageIntro: "Published to npmjs.com via Trusted Publishers. No config needed.",
         packageBlocks: [
           {
-            title: "Install commands",
-            body: "Install directly. No registry or auth setup required.",
+            title: "One-command install",
+            body: "Install directly. No registry or auth setup.",
             bullets: [
               "npm install @nova-infra/electrobun-vite",
               "bun add @nova-infra/electrobun-vite",
@@ -569,24 +519,20 @@ export function App() {
         faqTitle: "FAQ",
         faqs: [
           {
-            question: "Why remove deploy, migration, and template overview content from the landing page?",
-            answer:
-              "Because the page should now act as a first-run guide. Anything that interrupts quick start without helping someone run their first commands was cut back.",
+            question: "Why remove deploy, migration content?",
+            answer: "The landing page now acts as a first-run guide. Anything not helping run commands was cut.",
           },
           {
-            question: "Why do build logs still mention electrobun.config.ts?",
-            answer:
-              "Because the Electrobun CLI still looks for that file today, so electrobun-vite generates it temporarily in the system temp directory and cleans it up automatically when the command exits — your project directory is never touched.",
+            question: "Why does build log mention electrobun.config.ts?",
+            answer: "Electrobun CLI still looks for it. electrobun-vite generates it in system temp and cleans up after.",
           },
           {
-            question: "Why can't the Bun main process see VITE_-prefixed variables?",
-            answer:
-              "VITE_ variables are injected into the Vite renderer process only. The Bun main process receives BUN_VITE_-prefixed variables. If you need the same value in both, use the BUN_VITE_ prefix, or pass it explicitly via define in electrobun.vite.config.ts.",
+            question: "Why can't Bun see VITE_ env vars?",
+            answer: "VITE_ vars go to Vite renderer only. Bun receives BUN_VITE_ vars. Use BUN_VITE_ for both.",
           },
           {
-            question: "Why does electrobun build show 'Bundle failed' with no details?",
-            answer:
-              "Electrobun uses Bun.build() internally to bundle the bun entrypoint. If it imports packages with native bindings or complex dependency trees (e.g. grammy, @modelcontextprotocol/sdk), the bundler fails. Add those packages to build.bun.external in your config to skip bundling them. The CLI now prints a hint when this happens.",
+            question: "Why does build show 'Bundle failed'?",
+            answer: "Electrobun uses Bun.build(). Native bindings or complex deps fail. Add them to build.bun.external.",
           },
         ],
       },
@@ -597,19 +543,95 @@ export function App() {
   const activeCopy = copy[locale];
 
   return (
-    <div className="min-h-screen text-stone-900">
-      <div className="mx-auto w-[min(1280px,calc(100vw-28px))] px-3 py-4 md:px-6 md:py-6">
-        <div className="rounded-[30px] border border-white/50 bg-[rgba(252,248,241,0.74)] p-4 shadow-[0_28px_90px_rgba(56,36,22,0.16)] backdrop-blur-[18px] md:p-6">
-          <header className="grid gap-6 rounded-[26px] bg-[linear-gradient(130deg,rgba(255,255,255,0.9),rgba(249,237,220,0.92)),linear-gradient(140deg,rgba(15,118,110,0.12),rgba(255,138,61,0.14))] p-6 md:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.88fr)] md:p-8">
-            <div>
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="rounded-full border border-stone-900/10 bg-white/75 px-4 py-1 text-xs uppercase tracking-[0.18em] text-teal-700">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 text-stone-900">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
+        
+        :root {
+          font-family: 'DM Sans', system-ui, sans-serif;
+        }
+        
+        .font-display {
+          font-family: 'Fraunces', Georgia, serif;
+          font-weight: 700;
+        }
+        
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        @keyframes slideIn {
+          from { opacity: 0; transform: translateX(-16px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes scaleIn {
+          from { opacity: 0; transform: scale(0.96); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        
+        .animate-fade-up {
+          animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          opacity: 0;
+        }
+        
+        .animate-fade-in {
+          animation: fadeIn 0.5s ease-out forwards;
+          opacity: 0;
+        }
+        
+        .animate-slide-in {
+          animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          opacity: 0;
+        }
+        
+        .animate-scale-in {
+          animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          opacity: 0;
+        }
+        
+        .delay-1 { animation-delay: 0.08s; }
+        .delay-2 { animation-delay: 0.16s; }
+        .delay-3 { animation-delay: 0.24s; }
+        .delay-4 { animation-delay: 0.32s; }
+        .delay-5 { animation-delay: 0.40s; }
+        .delay-6 { animation-delay: 0.48s; }
+        
+        .card-hover {
+          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .card-hover:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 12px 32px rgba(180, 83, 9, 0.12);
+        }
+        
+        .glow-border {
+          box-shadow: inset 0 0 0 1px rgba(180, 83, 9, 0.08), 0 4px 24px rgba(180, 83, 9, 0.06);
+        }
+      `}</style>
+      
+      <div className="mx-auto w-[min(1280px,calc(100vw-32px))] px-4 py-6 md:px-8">
+        <div className="rounded-[28px] border border-amber-200/60 bg-white/80 p-5 shadow-xl shadow-amber-900/5 backdrop-blur-xl md:p-8">
+          <header className="relative overflow-hidden rounded-[24px] bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 border border-amber-100/80 p-6 md:p-10">
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-orange-200/30 via-amber-100/20 to-transparent rounded-full blur-3xl" />
+            <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-gradient-to-tr from-amber-200/20 via-orange-100/15 to-transparent rounded-full blur-3xl" />
+            
+            <div className="relative">
+              <div className="flex flex-wrap items-center gap-3 animate-fade-up">
+                <span className="rounded-full border border-amber-300/50 bg-gradient-to-r from-amber-100 to-orange-100 px-4 py-1 text-xs font-medium uppercase tracking-[0.18em] text-amber-800">
                   {activeCopy.eyebrow}
                 </span>
-                <div className="inline-flex rounded-full border border-stone-900/10 bg-white/80 p-1 text-sm shadow-sm">
+                <div className="inline-flex rounded-full border border-amber-200/60 bg-white/90 shadow-sm p-1 text-sm">
                   <button
-                    className={`rounded-full px-3 py-1.5 transition ${
-                      locale === "zh" ? "bg-teal-700 text-white" : "text-stone-600 hover:text-stone-950"
+                    className={`rounded-full px-3 py-1.5 transition-all duration-300 ${
+                      locale === "zh" ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md" : "text-stone-500 hover:text-stone-900"
                     }`}
                     onClick={() => setLocale("zh")}
                     type="button"
@@ -617,34 +639,37 @@ export function App() {
                     中文
                   </button>
                   <button
-                    className={`rounded-full px-3 py-1.5 transition ${
-                      locale === "en" ? "bg-teal-700 text-white" : "text-stone-600 hover:text-stone-950"
+                    className={`rounded-full px-3 py-1.5 transition-all duration-300 ${
+                      locale === "en" ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md" : "text-stone-500 hover:text-stone-900"
                     }`}
                     onClick={() => setLocale("en")}
                     type="button"
                   >
-                    English
+                    EN
                   </button>
                 </div>
               </div>
 
-              <h1 className="mt-5 text-[clamp(2.6rem,6vw,5.6rem)] leading-[0.9] tracking-[-0.07em] text-stone-950">
+              <h1 className="mt-6 font-display text-[clamp(2.8rem,7vw,5rem)] leading-[0.95] tracking-[-0.02em] text-stone-900 animate-fade-up delay-1">
                 electrobun-vite
               </h1>
-              <p className="mt-5 max-w-4xl text-xl leading-9 text-stone-700 md:text-2xl">
+              
+              <p className="mt-6 text-lg leading-[1.6] text-stone-700 max-w-xl animate-fade-up delay-2">
                 {activeCopy.title}
               </p>
-              <p className="mt-4 max-w-3xl text-base leading-8 text-stone-600">
+              
+              <p className="mt-4 text-sm leading-7 text-stone-500 max-w-2xl animate-fade-up delay-3">
                 {activeCopy.lede}
               </p>
-              <p className="mt-3 max-w-3xl text-sm leading-7 text-stone-500">
+              
+              <p className="mt-3 text-xs leading-6 text-stone-400 animate-fade-up delay-3">
                 {activeCopy.sublede}
               </p>
 
-              <div className="mt-6 flex flex-wrap gap-2.5 text-sm text-stone-700">
+              <div className="mt-6 flex flex-wrap gap-2 animate-fade-up delay-4">
                 {activeCopy.badges.map((badge) => (
                   <span
-                    className="rounded-full border border-stone-900/10 bg-white/70 px-4 py-2"
+                    className="rounded-full border border-amber-200/60 bg-white/80 px-3 py-1.5 text-xs text-stone-600 shadow-sm"
                     key={badge}
                   >
                     {badge}
@@ -652,21 +677,21 @@ export function App() {
                 ))}
               </div>
 
-              <div className="mt-7 flex flex-wrap gap-3">
+              <div className="mt-8 flex flex-wrap gap-3 animate-fade-up delay-5">
                 <a
-                  className="rounded-full bg-teal-700 px-5 py-3 text-sm font-medium text-white shadow-[0_16px_30px_rgba(15,118,110,0.24)] transition hover:bg-teal-800"
+                  className="group relative rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500 bg-[length:200%_100%] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-orange-500/30 transition-all duration-500 hover:bg-right hover:shadow-orange-500/50 hover:scale-105"
                   href="#quickstart"
                 >
                   {activeCopy.primaryCta}
                 </a>
                 <a
-                  className="rounded-full border border-stone-900/10 bg-white/80 px-5 py-3 text-sm font-medium text-stone-800 transition hover:border-stone-900/20 hover:bg-white"
+                  className="rounded-full border border-amber-200/80 bg-white/90 px-6 py-3 text-sm font-medium text-stone-700 shadow-sm transition-all duration-300 hover:border-amber-300 hover:bg-white hover:shadow-md"
                   href="#cli"
                 >
                   {activeCopy.secondaryCta}
                 </a>
                 <a
-                  className="rounded-full border border-stone-900/10 bg-white/80 px-5 py-3 text-sm font-medium text-stone-800 transition hover:border-stone-900/20 hover:bg-white"
+                  className="rounded-full border border-amber-200/80 bg-white/90 px-6 py-3 text-sm font-medium text-stone-700 shadow-sm transition-all duration-300 hover:border-amber-300 hover:bg-white hover:shadow-md"
                   href="https://github.com/nova-infra/electrobun-vite"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -674,7 +699,7 @@ export function App() {
                   {activeCopy.repoLink}
                 </a>
                 <a
-                  className="rounded-full border border-stone-900/10 bg-white/80 px-5 py-3 text-sm font-medium text-stone-800 transition hover:border-stone-900/20 hover:bg-white"
+                  className="rounded-full border border-amber-200/80 bg-white/90 px-6 py-3 text-sm font-medium text-stone-700 shadow-sm transition-all duration-300 hover:border-amber-300 hover:bg-white hover:shadow-md"
                   href="https://github.com/blackboardsh/electrobun"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -683,176 +708,156 @@ export function App() {
                 </a>
               </div>
             </div>
-
-            <div className="space-y-4">
-              <img
-                alt="electrobun-vite app preview"
-                className="w-full rounded-[22px] border border-stone-900/10 bg-white object-cover shadow-[0_24px_50px_rgba(26,32,35,0.18)]"
-                src={previewImage}
-              />
-              <nav className="grid grid-cols-2 gap-3 rounded-[20px] border border-stone-900/10 bg-white/72 p-4 text-sm md:grid-cols-2">
-                {activeCopy.sections.map((section) => (
-                  <a
-                    className="rounded-2xl border border-stone-900/8 bg-[rgba(250,248,244,0.92)] px-4 py-3 text-stone-700 transition hover:-translate-y-0.5 hover:border-teal-700/25 hover:text-stone-950"
-                    href={`#${section.id}`}
-                    key={section.id}
-                  >
-                    <strong className="block text-sm">{section.label}</strong>
-                    <span className="mt-1 block text-xs leading-6 text-stone-500">{section.summary}</span>
-                  </a>
-                ))}
-              </nav>
-            </div>
           </header>
 
-          <main className="mt-6 grid gap-6 xl:grid-cols-[280px_minmax(0,1fr)]">
-            <aside className="xl:sticky xl:top-6 xl:self-start">
-              <div className="rounded-[24px] border border-stone-900/10 bg-[rgba(255,251,245,0.86)] p-5">
-                <h2 className="m-0 text-lg text-stone-950">Documentation</h2>
-                <div className="mt-4 space-y-3 text-sm">
-                  {activeCopy.sections.map((section) => (
-                    <a
-                      className="block rounded-[18px] border border-stone-900/10 bg-white/78 px-4 py-3 text-stone-700 transition hover:border-teal-700/25 hover:text-stone-950"
-                      href={`#${section.id}`}
-                      key={section.id}
-                    >
-                      <strong className="block">{section.label}</strong>
-                      <span className="mt-1 block leading-6 text-stone-500">{section.summary}</span>
-                    </a>
-                  ))}
-                </div>
+          <main className="mt-6 space-y-6">
+            <section className="rounded-[24px] border border-amber-100/80 bg-gradient-to-b from-amber-50/50 to-orange-50/30 p-6 glow-border" id="packages">
+              <div className="flex items-center gap-3">
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300/40 to-transparent" />
+                <h2 className="font-display text-2xl md:text-3xl text-stone-900">{activeCopy.packageTitle}</h2>
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300/40 to-transparent" />
               </div>
-            </aside>
-
-            <div className="space-y-6">
-              <section className="rounded-[24px] border border-stone-900/10 bg-[rgba(255,251,245,0.86)] p-6" id="packages">
-                <h2 className="m-0 text-2xl md:text-3xl">{activeCopy.packageTitle}</h2>
-                <p className="mt-3 max-w-4xl text-sm leading-8 text-stone-600">{activeCopy.packageIntro}</p>
-                <div className="mt-6 space-y-4">
-                  {activeCopy.packageBlocks.map((block) => (
-                    <article
-                      className={`rounded-[20px] border p-5 ${
-                        block.tone === "accent"
-                          ? "border-teal-700/12 bg-[linear-gradient(135deg,rgba(221,245,239,0.92),rgba(255,251,245,0.94))]"
-                          : "border-stone-900/10 bg-white/80"
-                      }`}
-                      key={block.title}
-                    >
-                      <h3 className="m-0 text-lg text-stone-950">{block.title}</h3>
-                      <p className="mt-3 text-sm leading-7 text-stone-600">{block.body}</p>
-                      {block.bullets ? (
-                        <ul className="mt-4 space-y-2 pl-5 text-sm leading-7 text-stone-700">
-                          {block.bullets.map((item) => (
-                            <li key={item}>{item}</li>
-                          ))}
-                        </ul>
-                      ) : null}
-                      {block.code ? (
-                        <pre className="mt-4 overflow-x-auto rounded-[18px] bg-stone-950 p-4 text-sm leading-7 text-stone-100"><code>{block.code}</code></pre>
-                      ) : null}
-                    </article>
-                  ))}
-                </div>
-              </section>
-
-              <section className="rounded-[24px] border border-stone-900/10 bg-[rgba(255,251,245,0.86)] p-6" id="quickstart">
-                <h2 className="m-0 text-2xl md:text-3xl">{activeCopy.quickStartTitle}</h2>
-                <p className="mt-3 max-w-4xl text-sm leading-8 text-stone-600">{activeCopy.quickStartIntro}</p>
-                <div className="mt-6 grid gap-4 lg:grid-cols-3">
-                  {activeCopy.quickStartSteps.map((step) => (
-                    <article
-                      className="rounded-[20px] border border-teal-700/12 bg-[linear-gradient(135deg,rgba(221,245,239,0.92),rgba(255,251,245,0.94))] p-5"
-                      key={step.title}
-                    >
-                      <h3 className="m-0 text-lg text-stone-950">{step.title}</h3>
-                      <p className="mt-3 text-sm leading-7 text-stone-600">{step.description}</p>
-                      <pre className="mt-4 overflow-x-auto rounded-[18px] bg-stone-950 p-4 text-sm leading-7 text-stone-100"><code>{step.code}</code></pre>
-                      {step.note ? <p className="mt-3 text-xs leading-6 text-stone-500">{step.note}</p> : null}
-                    </article>
-                  ))}
-                </div>
-              </section>
-
-              <section className="rounded-[24px] border border-stone-900/10 bg-[rgba(255,251,245,0.86)] p-6" id="cli">
-                <h2 className="m-0 text-2xl md:text-3xl">{activeCopy.commandsTitle}</h2>
-                <p className="mt-3 max-w-4xl text-sm leading-8 text-stone-600">{activeCopy.commandsIntro}</p>
-                <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                  {activeCopy.commands.map((item) => (
-                    <article className="rounded-[20px] border border-stone-900/10 bg-white/80 p-5" key={item.command}>
-                      <p className="m-0 text-xs uppercase tracking-[0.14em] text-stone-500">{item.title}</p>
-                      <code className="mt-3 block text-sm text-stone-950">{item.command}</code>
-                      <p className="mt-3 text-sm leading-7 text-stone-600">{item.description}</p>
-                      {item.details ? (
-                        <ul className="mt-4 space-y-2 pl-5 text-sm leading-7 text-stone-700">
-                          {item.details.map((detail) => (
-                            <li key={detail}>{detail}</li>
-                          ))}
-                        </ul>
-                      ) : null}
-                    </article>
-                  ))}
-                </div>
-
-                <div className="mt-6 grid gap-4 xl:grid-cols-3">
-                  {activeCopy.optionGroups.map((group) => (
-                    <article className="rounded-[20px] border border-stone-900/10 bg-white/80 p-5" key={group.title}>
-                      <h3 className="m-0 text-lg text-stone-950">{group.title}</h3>
-                      <p className="mt-3 text-sm leading-7 text-stone-600">{group.intro}</p>
-                      <div className="mt-4 space-y-3">
-                        {group.options.map((option) => (
-                          <div className="rounded-[16px] border border-stone-900/8 bg-[rgba(250,248,244,0.92)] px-4 py-3" key={option.flag}>
-                            <code className="block text-sm text-stone-950">{option.flag}</code>
-                            <p className="mt-2 text-sm leading-7 text-stone-600">{option.effect}</p>
-                          </div>
+              <p className="mt-4 text-sm leading-7 text-stone-500">{activeCopy.packageIntro}</p>
+              <div className="mt-6 grid gap-4 md:grid-cols-2">
+                {activeCopy.packageBlocks.map((block, i) => (
+                  <article
+                    className={`rounded-[20px] border p-5 card-hover animate-scale-in ${
+                      block.tone === "accent"
+                        ? "border-amber-300/50 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 shadow-md"
+                        : "border-amber-100/60 bg-white/80 shadow-sm"
+                    }`}
+                    style={{ animationDelay: `${0.1 * i}s` }}
+                    key={block.title}
+                  >
+                    <h3 className="font-display text-lg text-stone-900">{block.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-stone-600">{block.body}</p>
+                    {block.bullets ? (
+                      <ul className="mt-4 space-y-2 pl-4 text-sm leading-6 text-stone-600">
+                        {block.bullets.map((item) => (
+                          <li className="text-stone-700" key={item}>{item}</li>
                         ))}
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </section>
+                      </ul>
+                    ) : null}
+                  </article>
+                ))}
+              </div>
+            </section>
 
-              <section className="rounded-[24px] border border-stone-900/10 bg-[rgba(255,251,245,0.86)] p-6" id="config">
-                <h2 className="m-0 text-2xl md:text-3xl">{activeCopy.configTitle}</h2>
-                <p className="mt-3 max-w-4xl text-sm leading-8 text-stone-600">{activeCopy.configIntro}</p>
-                <div className="mt-6 space-y-4">
-                  {activeCopy.configBlocks.map((block) => (
-                    <article
-                      className={`rounded-[20px] border p-5 ${
-                        block.tone === "accent"
-                          ? "border-teal-700/12 bg-[linear-gradient(135deg,rgba(221,245,239,0.92),rgba(255,251,245,0.94))]"
-                          : "border-stone-900/10 bg-white/80"
-                      }`}
-                      key={block.title}
-                    >
-                      <h3 className="m-0 text-lg text-stone-950">{block.title}</h3>
-                      <p className="mt-3 text-sm leading-7 text-stone-600">{block.body}</p>
-                      {block.bullets ? (
-                        <ul className="mt-4 space-y-2 pl-5 text-sm leading-7 text-stone-700">
-                          {block.bullets.map((item) => (
-                            <li key={item}>{item}</li>
-                          ))}
-                        </ul>
-                      ) : null}
-                      {block.code ? (
-                        <pre className="mt-4 overflow-x-auto rounded-[18px] bg-stone-950 p-4 text-sm leading-7 text-stone-100"><code>{block.code}</code></pre>
-                      ) : null}
-                    </article>
-                  ))}
-                </div>
-              </section>
+            <section className="rounded-[24px] border border-amber-100/80 bg-gradient-to-b from-amber-50/50 to-orange-50/30 p-6 glow-border" id="quickstart">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300/40 to-transparent" />
+                <h2 className="font-display text-2xl md:text-3xl text-stone-900">{activeCopy.quickStartTitle}</h2>
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300/40 to-transparent" />
+              </div>
+              <p className="text-sm leading-7 text-stone-500">{activeCopy.quickStartIntro}</p>
+              <div className="mt-6 grid gap-4 lg:grid-cols-3">
+                {activeCopy.quickStartSteps.map((step, i) => (
+                  <article
+                    className="rounded-[20px] border border-amber-200/50 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 p-5 card-hover animate-fade-up shadow-sm"
+                    style={{ animationDelay: `${0.12 * i}s` }}
+                    key={step.title}
+                  >
+                    <h3 className="font-display text-lg text-stone-900">{step.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-stone-600">{step.description}</p>
+                    <pre className="mt-4 overflow-x-auto rounded-[12px] bg-stone-900/90 p-3 text-xs leading-6 text-stone-100 border border-stone-700"><code>{step.code}</code></pre>
+                    {step.note ? <p className="mt-3 text-xs leading-5 text-stone-500">{step.note}</p> : null}
+                  </article>
+                ))}
+              </div>
+            </section>
 
-              <section className="rounded-[24px] border border-stone-900/10 bg-[rgba(255,251,245,0.86)] p-6" id="faq">
-                <h2 className="m-0 text-2xl md:text-3xl">{activeCopy.faqTitle}</h2>
-                <div className="mt-6 space-y-4">
-                  {activeCopy.faqs.map((item) => (
-                    <article className="rounded-[20px] border border-stone-900/10 bg-white/80 p-5" key={item.question}>
-                      <strong className="block text-base text-stone-950">{item.question}</strong>
-                      <p className="mt-3 text-sm leading-7 text-stone-600">{item.answer}</p>
-                    </article>
-                  ))}
-                </div>
-              </section>
-            </div>
+            <section className="rounded-[24px] border border-amber-100/80 bg-gradient-to-b from-amber-50/50 to-orange-50/30 p-6 glow-border" id="cli">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300/40 to-transparent" />
+                <h2 className="font-display text-2xl md:text-3xl text-stone-900">{activeCopy.commandsTitle}</h2>
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300/40 to-transparent" />
+              </div>
+              <p className="text-sm leading-7 text-stone-500">{activeCopy.commandsIntro}</p>
+              <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                {activeCopy.commands.map((item, i) => (
+                  <article className="rounded-[20px] border border-amber-100/60 bg-white/80 p-5 card-hover shadow-sm animate-scale-in" style={{ animationDelay: `${0.05 * i}s` }} key={item.command}>
+                    <p className="m-0 text-xs uppercase tracking-[0.14em] text-amber-600 font-medium">{item.title}</p>
+                    <code className="mt-3 block text-sm text-stone-800 font-mono">{item.command}</code>
+                    <p className="mt-3 text-sm leading-6 text-stone-600">{item.description}</p>
+                    {item.details ? (
+                      <ul className="mt-4 space-y-1.5 pl-4 text-xs leading-5 text-stone-500">
+                        {item.details.map((detail) => (
+                          <li key={detail}>{detail}</li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </article>
+                ))}
+              </div>
+
+              <div className="mt-6 grid gap-4 xl:grid-cols-3">
+                {activeCopy.optionGroups.map((group, i) => (
+                  <article className="rounded-[20px] border border-amber-100/60 bg-white/80 p-5 card-hover shadow-sm animate-fade-up" style={{ animationDelay: `${0.1 * i}s` }} key={group.title}>
+                    <h3 className="font-display text-lg text-stone-900">{group.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-stone-500">{group.intro}</p>
+                    <div className="mt-4 space-y-2">
+                      {group.options.map((option) => (
+                        <div className="rounded-[12px] border border-amber-100/60 bg-amber-50/50 px-4 py-3" key={option.flag}>
+                          <code className="block text-xs text-amber-700 font-mono">{option.flag}</code>
+                          <p className="mt-1.5 text-xs leading-5 text-stone-600">{option.effect}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            <section className="rounded-[24px] border border-amber-100/80 bg-gradient-to-b from-amber-50/50 to-orange-50/30 p-6 glow-border" id="config">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300/40 to-transparent" />
+                <h2 className="font-display text-2xl md:text-3xl text-stone-900">{activeCopy.configTitle}</h2>
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300/40 to-transparent" />
+              </div>
+              <p className="text-sm leading-7 text-stone-500">{activeCopy.configIntro}</p>
+              <div className="mt-6 space-y-4">
+                {activeCopy.configBlocks.map((block, i) => (
+                  <article
+                    className={`rounded-[20px] border p-5 card-hover ${
+                      block.tone === "accent"
+                        ? "border-amber-300/50 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 shadow-md"
+                        : "border-amber-100/60 bg-white/80 shadow-sm"
+                    }`}
+                    style={{ animationDelay: `${0.08 * i}s` }}
+                    key={block.title}
+                  >
+                    <h3 className="font-display text-lg text-stone-900">{block.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-stone-600">{block.body}</p>
+                    {block.bullets ? (
+                      <ul className="mt-4 space-y-1.5 pl-4 text-sm leading-6 text-stone-600">
+                        {block.bullets.map((item) => (
+                          <li className="text-stone-700" key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    ) : null}
+                    {block.code ? (
+                      <pre className="mt-4 overflow-x-auto rounded-[12px] bg-stone-900/90 p-4 text-xs leading-6 text-stone-100 border border-stone-700 font-mono"><code>{block.code}</code></pre>
+                    ) : null}
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            <section className="rounded-[24px] border border-amber-100/80 bg-gradient-to-b from-amber-50/50 to-orange-50/30 p-6 glow-border" id="faq">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300/40 to-transparent" />
+                <h2 className="font-display text-2xl md:text-3xl text-stone-900">{activeCopy.faqTitle}</h2>
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300/40 to-transparent" />
+              </div>
+              <div className="mt-6 space-y-4">
+                {activeCopy.faqs.map((item, i) => (
+                  <article className="rounded-[20px] border border-amber-100/60 bg-white/80 p-5 card-hover shadow-sm animate-fade-up" style={{ animationDelay: `${0.1 * i}s` }} key={item.question}>
+                    <strong className="block text-base text-stone-900">{item.question}</strong>
+                    <p className="mt-3 text-sm leading-6 text-stone-600">{item.answer}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
           </main>
         </div>
       </div>
