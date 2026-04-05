@@ -143,10 +143,8 @@ if (target === "template") {
   updateTemplateDependency(readCliVersion());
 }
 
-run("npm", ["install", "--ignore-scripts", "--no-package-lock"], path.dirname(targetConfig.packageJsonPath));
 run(...targetConfig.typecheckCommand);
 run(...targetConfig.buildCommand);
-run("npm", ["install", "--ignore-scripts", "--no-package-lock"], path.dirname(targetConfig.packageJsonPath));
 
 const commitMessage =
   target === "package"
@@ -164,7 +162,7 @@ const commitBody =
         "Confidence: high",
         "Scope-risk: moderate",
         "Directive: Keep src/metadata.ts, bun.lock, and the template devDependency in sync with the package version",
-        "Tested: package typecheck, package build, bun install --frozen-lockfile",
+        "Tested: package typecheck, package build",
         "Not-tested: npm publish in the Trusted Publisher workflow",
       ].join("\n")
     : [
@@ -176,7 +174,7 @@ const commitBody =
         "Confidence: high",
         "Scope-risk: narrow",
         "Directive: Keep the template package version and bun.lock aligned before tagging",
-        "Tested: template typecheck, template build, bun install --frozen-lockfile",
+        "Tested: template typecheck, template build",
         "Not-tested: npm publish in the Trusted Publisher workflow",
       ].join("\n");
 
