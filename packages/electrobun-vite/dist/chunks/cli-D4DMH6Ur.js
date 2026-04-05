@@ -1,4 +1,4 @@
-import { a as workspaceModules, i as templatePackages, n as starterDependencyVersions, r as starterVersions, t as PACKAGE_VERSION } from "./metadata-D1UUA67U.js";
+import { a as workspaceModules, i as templatePackages, n as starterDependencyVersions, r as starterVersions, t as PACKAGE_VERSION } from "./metadata-HvlgkXcG.js";
 import colors from "picocolors";
 import { build, createServer, mergeConfig } from "vite";
 import { existsSync, readFileSync, rmSync } from "node:fs";

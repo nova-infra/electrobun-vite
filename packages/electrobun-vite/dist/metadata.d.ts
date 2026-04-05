@@ -1,4 +1,4 @@
-export declare const PACKAGE_VERSION = "0.2.2";
+export declare const PACKAGE_VERSION = "0.2.3";
 export type WorkspaceModule = {
     name: string;
     description: string;
@@ -19,7 +19,7 @@ export declare const starterVersions: {
     readonly tailwindcss: "4.2.1";
 };
 export declare const starterDependencyVersions: {
-    readonly "@nova-infra/electrobun-vite": "0.2.2";
+    readonly "@nova-infra/electrobun-vite": "0.2.3";
     readonly electrobun: "1.16.0";
     readonly react: "19.2.4";
     readonly "react-dom": "19.2.4";

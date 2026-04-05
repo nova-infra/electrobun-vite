@@ -1,5 +1,5 @@
 //#region src/metadata.ts
-var PACKAGE_VERSION = "0.2.2";
+var PACKAGE_VERSION = "0.2.3";
 var starterVersions = {
 	electrobun: "1.16.0",
 	react: "19.2.4",

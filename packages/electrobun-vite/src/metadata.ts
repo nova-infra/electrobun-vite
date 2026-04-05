@@ -1,4 +1,4 @@
-export const PACKAGE_VERSION = "0.2.2";
+export const PACKAGE_VERSION = "0.2.3";
 
 export type WorkspaceModule = {
   name: string;
