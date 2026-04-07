@@ -1,16 +1,14 @@
 @import "tailwindcss";
 
 @theme {
-  --font-serif-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 :root {
-  color: #1c1917;
-  font-family: var(--font-serif-display);
-  background:
-    radial-gradient(circle at top left, rgba(255, 199, 140, 0.92), transparent 26%),
-    radial-gradient(circle at right center, rgba(15, 118, 110, 0.16), transparent 22%),
-    linear-gradient(135deg, #f5efe6 0%, #ecddc8 48%, #f7f1e8 100%);
+  font-family: var(--font-sans);
+  color: #1d1d1f;
+  background-color: #f5f5f7;
 }
 
 html {
@@ -32,5 +30,23 @@ a {
 }
 
 ::selection {
-  background: rgba(15, 118, 110, 0.18);
+  background: rgba(0, 113, 227, 0.2);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f5f5f7;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d2d2d7;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #86868b;
 }

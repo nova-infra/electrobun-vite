@@ -543,17 +543,20 @@ export function App() {
   const activeCopy = copy[locale];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 text-stone-900">
+    <div className="min-h-screen bg-[#f5f5f7] text-[#1d1d1f]">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
-        
         :root {
-          font-family: 'DM Sans', system-ui, sans-serif;
+          font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
         }
         
         .font-display {
-          font-family: 'Fraunces', Georgia, serif;
-          font-weight: 700;
+          font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+          font-weight: 600;
+          letter-spacing: -0.02em;
+        }
+        
+        .font-mono {
+          font-family: ui-monospace, "SF Mono", "Helvetica Neue", Monaco, Menlo, monospace;
         }
         
         @keyframes fadeUp {
@@ -566,13 +569,8 @@ export function App() {
           to { opacity: 1; }
         }
         
-        @keyframes slideIn {
-          from { opacity: 0; transform: translateX(-16px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        
         @keyframes scaleIn {
-          from { opacity: 0; transform: scale(0.96); }
+          from { opacity: 0; transform: scale(0.98); }
           to { opacity: 1; transform: scale(1); }
         }
         
@@ -583,11 +581,6 @@ export function App() {
         
         .animate-fade-in {
           animation: fadeIn 0.5s ease-out forwards;
-          opacity: 0;
-        }
-        
-        .animate-slide-in {
-          animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
           opacity: 0;
         }
         
@@ -604,262 +597,343 @@ export function App() {
         .delay-6 { animation-delay: 0.48s; }
         
         .card-hover {
-          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+          transition: all 0.2s ease;
         }
         
         .card-hover:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 12px 32px rgba(180, 83, 9, 0.12);
+          transform: translateY(-1px);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
         
-        .glow-border {
-          box-shadow: inset 0 0 0 1px rgba(180, 83, 9, 0.08), 0 4px 24px rgba(180, 83, 9, 0.06);
+        .btn-primary {
+          background: #0071e3;
+          color: #ffffff;
+          border-radius: 980px;
+          padding: 8px 16px;
+          font-size: 14px;
+          font-weight: 400;
+          transition: all 0.2s ease;
+          display: inline-block;
+          text-decoration: none;
+        }
+        
+        .btn-primary:hover {
+          background: #0077ed;
+        }
+        
+        .btn-secondary {
+          background: transparent;
+          color: #0066cc;
+          border-radius: 980px;
+          padding: 8px 16px;
+          font-size: 14px;
+          font-weight: 400;
+          border: 1px solid #0066cc;
+          transition: all 0.2s ease;
+          display: inline-block;
+          text-decoration: none;
+        }
+        
+        .btn-secondary:hover {
+          text-decoration: underline;
+        }
+        
+        .link-blue {
+          color: #0066cc;
+          text-decoration: none;
+        }
+        
+        .link-blue:hover {
+          text-decoration: underline;
+        }
+        
+        .code-block {
+          background: #1d1d1f;
+          border-radius: 8px;
+          color: #f5f5f7;
+        }
+        
+        .section-divider {
+          height: 1px;
+          background: linear-gradient(to right, transparent, #d2d2d7, transparent);
         }
       `}</style>
       
-      <div className="mx-auto w-[min(1280px,calc(100vw-32px))] px-4 py-6 md:px-8">
-        <div className="rounded-[28px] border border-amber-200/60 bg-white/80 p-5 shadow-xl shadow-amber-900/5 backdrop-blur-xl md:p-8">
-          <header className="relative overflow-hidden rounded-[24px] bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 border border-amber-100/80 p-6 md:p-10">
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-orange-200/30 via-amber-100/20 to-transparent rounded-full blur-3xl" />
-            <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-gradient-to-tr from-amber-200/20 via-orange-100/15 to-transparent rounded-full blur-3xl" />
-            
-            <div className="relative">
-              <div className="flex flex-wrap items-center gap-3 animate-fade-up">
-                <span className="rounded-full border border-amber-300/50 bg-gradient-to-r from-amber-100 to-orange-100 px-4 py-1 text-xs font-medium uppercase tracking-[0.18em] text-amber-800">
-                  {activeCopy.eyebrow}
-                </span>
-                <div className="inline-flex rounded-full border border-amber-200/60 bg-white/90 shadow-sm p-1 text-sm">
-                  <button
-                    className={`rounded-full px-3 py-1.5 transition-all duration-300 ${
-                      locale === "zh" ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md" : "text-stone-500 hover:text-stone-900"
-                    }`}
-                    onClick={() => setLocale("zh")}
-                    type="button"
-                  >
-                    中文
-                  </button>
-                  <button
-                    className={`rounded-full px-3 py-1.5 transition-all duration-300 ${
-                      locale === "en" ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md" : "text-stone-500 hover:text-stone-900"
-                    }`}
-                    onClick={() => setLocale("en")}
-                    type="button"
-                  >
-                    EN
-                  </button>
-                </div>
-              </div>
+      <div className="mx-auto max-w-[980px] px-4 py-8 md:px-8">
+        <header className="text-center py-16 md:py-24">
+          <div className="animate-fade-up">
+            <span className="text-xs uppercase tracking-[0.1em] text-[#86868b]">
+              {activeCopy.eyebrow}
+            </span>
+          </div>
+          
+          <h1 className="mt-4 font-display text-[clamp(2.5rem,8vw,4.5rem)] leading-[1.07] tracking-[-0.028em] text-[#1d1d1f] animate-fade-up delay-1">
+            electrobun-vite
+          </h1>
+          
+          <p className="mt-6 text-[17px] leading-[1.47] tracking-[-0.374px] text-[#1d1d1f] max-w-xl mx-auto animate-fade-up delay-2">
+            {activeCopy.title}
+          </p>
+          
+          <p className="mt-4 text-[14px] leading-[1.43] tracking-[-0.224px] text-[rgba(0,0,0,0.6)] max-w-2xl mx-auto animate-fade-up delay-3">
+            {activeCopy.lede}
+          </p>
+          
+          <p className="mt-3 text-[12px] leading-[1.33] tracking-[-0.12px] text-[#86868b] animate-fade-up delay-3">
+            {activeCopy.sublede}
+          </p>
 
-              <h1 className="mt-6 font-display text-[clamp(2.8rem,7vw,5rem)] leading-[0.95] tracking-[-0.02em] text-stone-900 animate-fade-up delay-1">
-                electrobun-vite
-              </h1>
-              
-              <p className="mt-6 text-lg leading-[1.6] text-stone-700 max-w-xl animate-fade-up delay-2">
-                {activeCopy.title}
-              </p>
-              
-              <p className="mt-4 text-sm leading-7 text-stone-500 max-w-2xl animate-fade-up delay-3">
-                {activeCopy.lede}
-              </p>
-              
-              <p className="mt-3 text-xs leading-6 text-stone-400 animate-fade-up delay-3">
-                {activeCopy.sublede}
-              </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-2 animate-fade-up delay-4">
+            {activeCopy.badges.map((badge) => (
+              <span
+                className="text-[12px] tracking-[-0.12px] text-[rgba(0,0,0,0.6)]"
+                key={badge}
+              >
+                {badge}
+              </span>
+            ))}
+          </div>
 
-              <div className="mt-6 flex flex-wrap gap-2 animate-fade-up delay-4">
-                {activeCopy.badges.map((badge) => (
-                  <span
-                    className="rounded-full border border-amber-200/60 bg-white/80 px-3 py-1.5 text-xs text-stone-600 shadow-sm"
-                    key={badge}
-                  >
-                    {badge}
-                  </span>
-                ))}
-              </div>
+          <div className="mt-8 flex flex-wrap justify-center gap-3 animate-fade-up delay-5">
+            <a className="btn-primary" href="#quickstart">
+              {activeCopy.primaryCta}
+            </a>
+            <a className="btn-secondary" href="#cli">
+              {activeCopy.secondaryCta}
+            </a>
+            <a className="btn-secondary" href="https://github.com/nova-infra/electrobun-vite" target="_blank" rel="noopener noreferrer">
+              {activeCopy.repoLink}
+            </a>
+            <a className="btn-secondary" href="https://github.com/blackboardsh/electrobun" target="_blank" rel="noopener noreferrer">
+              {activeCopy.electrobunRepoLink}
+            </a>
+          </div>
+          
+          <div className="mt-6 flex justify-center gap-4 animate-fade-up delay-6">
+            <button
+              className={`text-sm px-4 py-2 rounded-full transition-all ${
+                locale === "zh" ? "bg-[#1d1d1f] text-white" : "text-[#86868b] hover:text-[#1d1d1f]"
+              }`}
+              onClick={() => setLocale("zh")}
+              type="button"
+            >
+              中文
+            </button>
+            <button
+              className={`text-sm px-4 py-2 rounded-full transition-all ${
+                locale === "en" ? "bg-[#1d1d1f] text-white" : "text-[#86868b] hover:text-[#1d1d1f]"
+              }`}
+              onClick={() => setLocale("en")}
+              type="button"
+            >
+              EN
+            </button>
+          </div>
+        </header>
 
-              <div className="mt-8 flex flex-wrap gap-3 animate-fade-up delay-5">
-                <a
-                  className="group relative rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500 bg-[length:200%_100%] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-orange-500/30 transition-all duration-500 hover:bg-right hover:shadow-orange-500/50 hover:scale-105"
-                  href="#quickstart"
-                >
-                  {activeCopy.primaryCta}
-                </a>
-                <a
-                  className="rounded-full border border-amber-200/80 bg-white/90 px-6 py-3 text-sm font-medium text-stone-700 shadow-sm transition-all duration-300 hover:border-amber-300 hover:bg-white hover:shadow-md"
-                  href="#cli"
-                >
-                  {activeCopy.secondaryCta}
-                </a>
-                <a
-                  className="rounded-full border border-amber-200/80 bg-white/90 px-6 py-3 text-sm font-medium text-stone-700 shadow-sm transition-all duration-300 hover:border-amber-300 hover:bg-white hover:shadow-md"
-                  href="https://github.com/nova-infra/electrobun-vite"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {activeCopy.repoLink}
-                </a>
-                <a
-                  className="rounded-full border border-amber-200/80 bg-white/90 px-6 py-3 text-sm font-medium text-stone-700 shadow-sm transition-all duration-300 hover:border-amber-300 hover:bg-white hover:shadow-md"
-                  href="https://github.com/blackboardsh/electrobun"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {activeCopy.electrobunRepoLink}
-                </a>
-              </div>
+        <main className="space-y-16">
+          <section id="packages">
+            <div className="text-center mb-8">
+              <h2 className="font-display text-[28px] leading-[1.14] tracking-[0.196px] text-[#1d1d1f]">
+                {activeCopy.packageTitle}
+              </h2>
+              <p className="mt-2 text-[14px] leading-[1.43] tracking-[-0.224px] text-[rgba(0,0,0,0.6)]">
+                {activeCopy.packageIntro}
+              </p>
             </div>
-          </header>
-
-          <main className="mt-6 space-y-6">
-            <section className="rounded-[24px] border border-amber-100/80 bg-gradient-to-b from-amber-50/50 to-orange-50/30 p-6 glow-border" id="packages">
-              <div className="flex items-center gap-3">
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300/40 to-transparent" />
-                <h2 className="font-display text-2xl md:text-3xl text-stone-900">{activeCopy.packageTitle}</h2>
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300/40 to-transparent" />
-              </div>
-              <p className="mt-4 text-sm leading-7 text-stone-500">{activeCopy.packageIntro}</p>
-              <div className="mt-6 grid gap-4 md:grid-cols-2">
-                {activeCopy.packageBlocks.map((block, i) => (
-                  <article
-                    className={`rounded-[20px] border p-5 card-hover animate-scale-in ${
-                      block.tone === "accent"
-                        ? "border-amber-300/50 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 shadow-md"
-                        : "border-amber-100/60 bg-white/80 shadow-sm"
-                    }`}
-                    style={{ animationDelay: `${0.1 * i}s` }}
-                    key={block.title}
-                  >
-                    <h3 className="font-display text-lg text-stone-900">{block.title}</h3>
-                    <p className="mt-2 text-sm leading-6 text-stone-600">{block.body}</p>
-                    {block.bullets ? (
-                      <ul className="mt-4 space-y-2 pl-4 text-sm leading-6 text-stone-600">
-                        {block.bullets.map((item) => (
-                          <li className="text-stone-700" key={item}>{item}</li>
-                        ))}
-                      </ul>
-                    ) : null}
-                  </article>
-                ))}
-              </div>
-            </section>
-
-            <section className="rounded-[24px] border border-amber-100/80 bg-gradient-to-b from-amber-50/50 to-orange-50/30 p-6 glow-border" id="quickstart">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300/40 to-transparent" />
-                <h2 className="font-display text-2xl md:text-3xl text-stone-900">{activeCopy.quickStartTitle}</h2>
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300/40 to-transparent" />
-              </div>
-              <p className="text-sm leading-7 text-stone-500">{activeCopy.quickStartIntro}</p>
-              <div className="mt-6 grid gap-4 lg:grid-cols-3">
-                {activeCopy.quickStartSteps.map((step, i) => (
-                  <article
-                    className="rounded-[20px] border border-amber-200/50 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 p-5 card-hover animate-fade-up shadow-sm"
-                    style={{ animationDelay: `${0.12 * i}s` }}
-                    key={step.title}
-                  >
-                    <h3 className="font-display text-lg text-stone-900">{step.title}</h3>
-                    <p className="mt-2 text-sm leading-6 text-stone-600">{step.description}</p>
-                    <pre className="mt-4 overflow-x-auto rounded-[12px] bg-stone-900/90 p-3 text-xs leading-6 text-stone-100 border border-stone-700"><code>{step.code}</code></pre>
-                    {step.note ? <p className="mt-3 text-xs leading-5 text-stone-500">{step.note}</p> : null}
-                  </article>
-                ))}
-              </div>
-            </section>
-
-            <section className="rounded-[24px] border border-amber-100/80 bg-gradient-to-b from-amber-50/50 to-orange-50/30 p-6 glow-border" id="cli">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300/40 to-transparent" />
-                <h2 className="font-display text-2xl md:text-3xl text-stone-900">{activeCopy.commandsTitle}</h2>
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300/40 to-transparent" />
-              </div>
-              <p className="text-sm leading-7 text-stone-500">{activeCopy.commandsIntro}</p>
-              <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {activeCopy.commands.map((item, i) => (
-                  <article className="rounded-[20px] border border-amber-100/60 bg-white/80 p-5 card-hover shadow-sm animate-scale-in" style={{ animationDelay: `${0.05 * i}s` }} key={item.command}>
-                    <p className="m-0 text-xs uppercase tracking-[0.14em] text-amber-600 font-medium">{item.title}</p>
-                    <code className="mt-3 block text-sm text-stone-800 font-mono">{item.command}</code>
-                    <p className="mt-3 text-sm leading-6 text-stone-600">{item.description}</p>
-                    {item.details ? (
-                      <ul className="mt-4 space-y-1.5 pl-4 text-xs leading-5 text-stone-500">
-                        {item.details.map((detail) => (
-                          <li key={detail}>{detail}</li>
-                        ))}
-                      </ul>
-                    ) : null}
-                  </article>
-                ))}
-              </div>
-
-              <div className="mt-6 grid gap-4 xl:grid-cols-3">
-                {activeCopy.optionGroups.map((group, i) => (
-                  <article className="rounded-[20px] border border-amber-100/60 bg-white/80 p-5 card-hover shadow-sm animate-fade-up" style={{ animationDelay: `${0.1 * i}s` }} key={group.title}>
-                    <h3 className="font-display text-lg text-stone-900">{group.title}</h3>
-                    <p className="mt-2 text-sm leading-6 text-stone-500">{group.intro}</p>
-                    <div className="mt-4 space-y-2">
-                      {group.options.map((option) => (
-                        <div className="rounded-[12px] border border-amber-100/60 bg-amber-50/50 px-4 py-3" key={option.flag}>
-                          <code className="block text-xs text-amber-700 font-mono">{option.flag}</code>
-                          <p className="mt-1.5 text-xs leading-5 text-stone-600">{option.effect}</p>
-                        </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              {activeCopy.packageBlocks.map((block, i) => (
+                <article
+                  className="bg-white rounded-lg p-6 card-hover animate-scale-in"
+                  style={{ animationDelay: `${0.1 * i}s` }}
+                  key={block.title}
+                >
+                  <h3 className="font-display text-[17px] leading-[1.19] tracking-[0.231px] text-[#1d1d1f] font-bold">
+                    {block.title}
+                  </h3>
+                  <p className="mt-2 text-[14px] leading-[1.43] tracking-[-0.224px] text-[rgba(0,0,0,0.6)]">
+                    {block.body}
+                  </p>
+                  {block.bullets ? (
+                    <ul className="mt-4 space-y-2 pl-4 text-[14px] leading-[1.43] tracking-[-0.224px] text-[#1d1d1f]">
+                      {block.bullets.map((item) => (
+                        <li key={item}>{item}</li>
                       ))}
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </section>
+                    </ul>
+                  ) : null}
+                </article>
+              ))}
+            </div>
+          </section>
 
-            <section className="rounded-[24px] border border-amber-100/80 bg-gradient-to-b from-amber-50/50 to-orange-50/30 p-6 glow-border" id="config">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300/40 to-transparent" />
-                <h2 className="font-display text-2xl md:text-3xl text-stone-900">{activeCopy.configTitle}</h2>
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300/40 to-transparent" />
-              </div>
-              <p className="text-sm leading-7 text-stone-500">{activeCopy.configIntro}</p>
-              <div className="mt-6 space-y-4">
-                {activeCopy.configBlocks.map((block, i) => (
-                  <article
-                    className={`rounded-[20px] border p-5 card-hover ${
-                      block.tone === "accent"
-                        ? "border-amber-300/50 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 shadow-md"
-                        : "border-amber-100/60 bg-white/80 shadow-sm"
-                    }`}
-                    style={{ animationDelay: `${0.08 * i}s` }}
-                    key={block.title}
-                  >
-                    <h3 className="font-display text-lg text-stone-900">{block.title}</h3>
-                    <p className="mt-2 text-sm leading-6 text-stone-600">{block.body}</p>
-                    {block.bullets ? (
-                      <ul className="mt-4 space-y-1.5 pl-4 text-sm leading-6 text-stone-600">
-                        {block.bullets.map((item) => (
-                          <li className="text-stone-700" key={item}>{item}</li>
-                        ))}
-                      </ul>
-                    ) : null}
-                    {block.code ? (
-                      <pre className="mt-4 overflow-x-auto rounded-[12px] bg-stone-900/90 p-4 text-xs leading-6 text-stone-100 border border-stone-700 font-mono"><code>{block.code}</code></pre>
-                    ) : null}
-                  </article>
-                ))}
-              </div>
-            </section>
+          <div className="section-divider" />
 
-            <section className="rounded-[24px] border border-amber-100/80 bg-gradient-to-b from-amber-50/50 to-orange-50/30 p-6 glow-border" id="faq">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300/40 to-transparent" />
-                <h2 className="font-display text-2xl md:text-3xl text-stone-900">{activeCopy.faqTitle}</h2>
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300/40 to-transparent" />
-              </div>
-              <div className="mt-6 space-y-4">
-                {activeCopy.faqs.map((item, i) => (
-                  <article className="rounded-[20px] border border-amber-100/60 bg-white/80 p-5 card-hover shadow-sm animate-fade-up" style={{ animationDelay: `${0.1 * i}s` }} key={item.question}>
-                    <strong className="block text-base text-stone-900">{item.question}</strong>
-                    <p className="mt-3 text-sm leading-6 text-stone-600">{item.answer}</p>
-                  </article>
-                ))}
-              </div>
-            </section>
-          </main>
-        </div>
+          <section id="quickstart">
+            <div className="text-center mb-8">
+              <h2 className="font-display text-[28px] leading-[1.14] tracking-[0.196px] text-[#1d1d1f]">
+                {activeCopy.quickStartTitle}
+              </h2>
+              <p className="mt-2 text-[14px] leading-[1.43] tracking-[-0.224px] text-[rgba(0,0,0,0.6)]">
+                {activeCopy.quickStartIntro}
+              </p>
+            </div>
+            <div className="grid gap-6 lg:grid-cols-3">
+              {activeCopy.quickStartSteps.map((step, i) => (
+                <article
+                  className="bg-white rounded-lg p-5 card-hover animate-fade-up"
+                  style={{ animationDelay: `${0.12 * i}s` }}
+                  key={step.title}
+                >
+                  <h3 className="font-display text-[17px] leading-[1.19] tracking-[0.231px] text-[#1d1d1f] font-bold">
+                    {step.title}
+                  </h3>
+                  <p className="mt-2 text-[14px] leading-[1.43] tracking-[-0.224px] text-[rgba(0,0,0,0.6)]">
+                    {step.description}
+                  </p>
+                  <pre className="mt-4 overflow-x-auto rounded-md bg-[#1d1d1f] p-4 text-[13px] leading-[1.43] text-[#f5f5f7] font-mono"><code>{step.code}</code></pre>
+                  {step.note ? (
+                    <p className="mt-3 text-[12px] leading-[1.33] tracking-[-0.12px] text-[#86868b]">
+                      {step.note}
+                    </p>
+                  ) : null}
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <div className="section-divider" />
+
+          <section id="cli">
+            <div className="text-center mb-8">
+              <h2 className="font-display text-[28px] leading-[1.14] tracking-[0.196px] text-[#1d1d1f]">
+                {activeCopy.commandsTitle}
+              </h2>
+              <p className="mt-2 text-[14px] leading-[1.43] tracking-[-0.224px] text-[rgba(0,0,0,0.6)]">
+                {activeCopy.commandsIntro}
+              </p>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {activeCopy.commands.map((item, i) => (
+                <article
+                  className="bg-white rounded-lg p-5 card-hover animate-scale-in"
+                  style={{ animationDelay: `${0.05 * i}s` }}
+                  key={item.command}
+                >
+                  <p className="text-[12px] uppercase tracking-[0.14em] text-[#0071e3] font-medium">
+                    {item.title}
+                  </p>
+                  <code className="mt-2 block text-[14px] text-[#1d1d1f] font-mono">
+                    {item.command}
+                  </code>
+                  <p className="mt-3 text-[14px] leading-[1.43] tracking-[-0.224px] text-[rgba(0,0,0,0.6)]">
+                    {item.description}
+                  </p>
+                  {item.details ? (
+                    <ul className="mt-3 space-y-1 text-[12px] leading-[1.33] tracking-[-0.12px] text-[#86868b]">
+                      {item.details.map((detail) => (
+                        <li key={detail}>{detail}</li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </article>
+              ))}
+            </div>
+
+            <div className="mt-8 grid gap-4 xl:grid-cols-3">
+              {activeCopy.optionGroups.map((group, i) => (
+                <article
+                  className="bg-white rounded-lg p-5 card-hover animate-fade-up"
+                  style={{ animationDelay: `${0.1 * i}s` }}
+                  key={group.title}
+                >
+                  <h3 className="font-display text-[17px] leading-[1.19] tracking-[0.231px] text-[#1d1d1f] font-bold">
+                    {group.title}
+                  </h3>
+                  <p className="mt-2 text-[14px] leading-[1.43] tracking-[-0.224px] text-[rgba(0,0,0,0.6)]">
+                    {group.intro}
+                  </p>
+                  <div className="mt-4 space-y-2">
+                    {group.options.map((option) => (
+                      <div className="rounded-lg bg-[#f5f5f7] px-4 py-3" key={option.flag}>
+                        <code className="block text-[13px] text-[#0071e3] font-mono">
+                          {option.flag}
+                        </code>
+                        <p className="mt-1 text-[12px] leading-[1.33] tracking-[-0.12px] text-[rgba(0,0,0,0.6)]">
+                          {option.effect}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <div className="section-divider" />
+
+          <section id="config">
+            <div className="text-center mb-8">
+              <h2 className="font-display text-[28px] leading-[1.14] tracking-[0.196px] text-[#1d1d1f]">
+                {activeCopy.configTitle}
+              </h2>
+              <p className="mt-2 text-[14px] leading-[1.43] tracking-[-0.224px] text-[rgba(0,0,0,0.6)]">
+                {activeCopy.configIntro}
+              </p>
+            </div>
+            <div className="space-y-4">
+              {activeCopy.configBlocks.map((block, i) => (
+                <article
+                  className="bg-white rounded-lg p-5 card-hover animate-fade-up"
+                  style={{ animationDelay: `${0.08 * i}s` }}
+                  key={block.title}
+                >
+                  <h3 className="font-display text-[17px] leading-[1.19] tracking-[0.231px] text-[#1d1d1f] font-bold">
+                    {block.title}
+                  </h3>
+                  <p className="mt-2 text-[14px] leading-[1.43] tracking-[-0.224px] text-[rgba(0,0,0,0.6)]">
+                    {block.body}
+                  </p>
+                  {block.bullets ? (
+                    <ul className="mt-4 space-y-1.5 pl-4 text-[14px] leading-[1.43] tracking-[-0.224px] text-[#1d1d1f]">
+                      {block.bullets.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  ) : null}
+                  {block.code ? (
+                    <pre className="mt-4 overflow-x-auto rounded-md bg-[#1d1d1f] p-4 text-[13px] leading-[1.43] text-[#00d992] font-mono"><code>{block.code}</code></pre>
+                  ) : null}
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <div className="section-divider" />
+
+          <section id="faq">
+            <div className="text-center mb-8">
+              <h2 className="font-display text-[28px] leading-[1.14] tracking-[0.196px] text-[#1d1d1f]">
+                {activeCopy.faqTitle}
+              </h2>
+            </div>
+            <div className="space-y-4">
+              {activeCopy.faqs.map((item, i) => (
+                <article
+                  className="bg-white rounded-lg p-5 card-hover animate-fade-up"
+                  style={{ animationDelay: `${0.1 * i}s` }}
+                  key={item.question}
+                >
+                  <strong className="block text-[17px] leading-[1.24] tracking-[-0.374px] text-[#1d1d1f] font-semibold">
+                    {item.question}
+                  </strong>
+                  <p className="mt-2 text-[14px] leading-[1.43] tracking-[-0.224px] text-[rgba(0,0,0,0.6)]">
+                    {item.answer}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </section>
+        </main>
       </div>
     </div>
   );
